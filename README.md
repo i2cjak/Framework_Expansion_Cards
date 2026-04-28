@@ -13,3 +13,12 @@ Wi-Fi HaLow
 <p align="center">
   <img src="img/day1.png" alt="Day 1 Wi-Fi HaLow post" title="day1.png">
 </p>
+
+## [Day 2](./Day_02_Four_Port_USB_C/)
+
+Four Port USB-C
+
+<p align="center">
+  <img src="img/day2.png" alt="Day 2 Four Port USB-C post" title="day2.png">
+</p>
+
