@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "Day_01_Wi-Fi-Halow-cache") (type "Legacy") (uri "/home/h/Documents/i2cjak/ExpansionCards/Electrical/KiCad_templates/Day_01_Wi-Fi-Halow/Day_01_Wi-Fi-Halow-cache.lib") (options "") (descr "Legacy project cache library"))
+)
