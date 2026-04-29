@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Framework_Shilling_Library") (type "KiCad") (uri "/home/h/i2cjak/Framework_Expansion_Cards/Framework_Shilling_Library/Framework_Shilling_Library.pretty") (options "") (descr ""))
+)

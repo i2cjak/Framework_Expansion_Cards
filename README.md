@@ -22,3 +22,12 @@ Four Port USB-C
   <img src="img/day2.png" alt="Day 2 Four Port USB-C post" title="day2.png">
 </p>
 
+## [Day 3](./Day_03_ECG_SPO2/)
+
+Electrocardiogram + SPO2
+
+<p align="center">
+  <img src="img/day3.png" alt="Day 3 Electrocardiogram + SPO2" title="day3.png">
+</p>
+
+
