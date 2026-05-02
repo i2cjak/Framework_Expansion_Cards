@@ -1,0 +1,3 @@
+[submodule "Day_04_Frameoscope"]
+	path = Day_04_Frameoscope
+	url = https://github.com/jlcjak/frameoscope

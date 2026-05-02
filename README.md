@@ -30,4 +30,11 @@ Electrocardiogram + SPO2
   <img src="img/day3.png" alt="Day 3 Electrocardiogram + SPO2" title="day3.png">
 </p>
 
+## [Day 4](./Day_04_Frameoscope/)
+
+Frameoscope
+
+<p align="center">
+  <img src="img/day4.png" alt="Day 4 Oscilloscope" title="day4.png">
+</p>
 
