@@ -491,7 +491,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Day_04_Linux_SBC.kicad_pro",
+    "filename": "Day_05_Linux_SBC.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -926,8 +926,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "Day_04_Linux_SBC.kicad_sch",
-        "name": "Day_04_Linux_SBC",
+        "filename": "Day_05_Linux_SBC.kicad_sch",
+        "name": "Day_05_Linux_SBC",
         "uuid": "46ec7b9e-7ce4-471b-b2a3-117ade628de1"
       }
     ],
@@ -937,7 +937,7 @@
   "sheets": [
     [
       "46ec7b9e-7ce4-471b-b2a3-117ade628de1",
-      "Day_04_Linux_SBC"
+      "Day_05_Linux_SBC"
     ]
   ],
   "text_variables": {},

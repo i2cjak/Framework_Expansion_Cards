@@ -276,7 +276,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/c8bc7a19-2726-418c-ae5c-1bc5d6e27895")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -384,7 +384,7 @@
 		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/6594a0fd-acfe-443d-863d-3f5565f28263")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -691,7 +691,7 @@
 		(property ki_fp_filters "Connector*:*_1x??-1MP*")
 		(path "/409791b4-f3e9-45d3-9ff6-f123764c0407")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1168,7 +1168,7 @@
 		)
 		(path "/ee6effac-b7cb-4e94-8b53-85f97a46be72")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1760,7 +1760,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/0cf23ec6-e85b-4008-a7af-77f8622dfc6d")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1899,7 +1899,7 @@
 		)
 		(path "/dee94947-2394-4334-b49d-c0c03cc15d42")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3352,7 +3352,7 @@
 		(property ki_fp_filters "USB*C*Plug*")
 		(path "/b72f966e-c72c-4e43-babd-272782640d58")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3725,7 +3725,7 @@
 		(property ki_fp_filters "Diodes*UDFN*1x2.5mm*P0.5mm*")
 		(path "/c6080a97-1c51-4548-8f78-76ac90ec90ee")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4078,7 +4078,7 @@
 		(property ki_fp_filters "USB*C*Receptacle*")
 		(path "/2ac640e1-753a-4902-8d20-38db86bec9ff")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4693,7 +4693,7 @@
 		)
 		(path "/33b66c46-5860-461c-a191-268d6927bda5")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -5311,7 +5311,7 @@
 		(property ki_fp_filters "microSD*")
 		(path "/5aabc0a7-b5b6-4e18-81fe-8e155ab5de3b")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -5930,7 +5930,7 @@
 		(property ki_fp_filters "QFN*1EP*5x5mm*P0.5mm*")
 		(path "/a8c038ab-8e8f-4861-a87f-75e5ef96dfe2")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -6727,7 +6727,7 @@
 		(property ki_fp_filters "*TC2030*")
 		(path "/846ad4b2-4937-4289-ad87-bf3b5b9b56ed")
 		(sheetname "/")
-		(sheetfile "Day_04_Linux_SBC.kicad_sch")
+		(sheetfile "Day_05_Linux_SBC.kicad_sch")
 		(units
 			(unit
 				(name "A")
