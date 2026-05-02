@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chudcore Framework Module Block Diagram</title>
+  <style>
+    html,
+    body {
+      width: 1800px;
+      height: 1800px;
+      margin: 0;
+      overflow: hidden;
+      background: #050807;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      font-family: "IBM Plex Mono", "Fira Mono", Consolas, monospace;
+      background-image:
+        linear-gradient(rgba(57, 255, 136, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57, 255, 136, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    main {
+      width: 1680px;
+      height: 1680px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 22px;
+      box-sizing: border-box;
+      padding: 44px;
+      border: 3px solid #39ff88;
+      border-radius: 18px;
+      background: rgba(5, 8, 7, 0.92);
+    }
+
+    header {
+      color: #e8fff1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: #8cffbd;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    #diagram {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    #diagram svg {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    .render-error {
+      color: #ffcc66;
+      white-space: pre-wrap;
+      font-size: 16px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      color: #79b990;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>CHUDCORE MICROGRAPHIC // FRAMEWORK RV1106 MODULE</h1>
+      <div class="subtitle">Mermaid routed block diagram // solid: data/power // dashed: system-manager control</div>
+    </header>
+    <div id="diagram"></div>
+    <footer>
+      <span>flash mode: STM32H503 resets RV1106 and selects GL3224 to microSD</span>
+      <span>normal mode: RV1106 owns SDMMC and USB mux path</span>
+    </footer>
+  </main>
+
+  <script src="build/mermaid.min.js"></script>
+  <script>
+    (async () => {
+      try {
+        const source = await fetch("chudcore_framework_module_block_diagram.mmd")
+          .then((response) => response.text());
+        mermaid.initialize({ startOnLoad: false, securityLevel: "loose" });
+        const rendered = await mermaid.render("chudcore-mermaid-diagram", source.trim());
+        document.getElementById("diagram").innerHTML = rendered.svg;
+        document.body.dataset.rendered = "true";
+      } catch (error) {
+        document.getElementById("diagram").innerHTML =
+          `<div class="render-error">${String(error && error.stack ? error.stack : error)}</div>`;
+        document.body.dataset.rendered = "error";
+      }
+    })();
+  </script>
+</body>
+</html>

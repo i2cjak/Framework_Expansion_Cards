@@ -1,0 +1,80 @@
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "basis",
+    "nodeSpacing": 62,
+    "rankSpacing": 82,
+    "htmlLabels": true,
+    "padding": 18
+  },
+  "themeVariables": {
+    "background": "#050807",
+    "primaryColor": "#07120d",
+    "primaryTextColor": "#e8fff1",
+    "primaryBorderColor": "#39ff88",
+    "lineColor": "#39ff88",
+    "secondaryColor": "#0b1010",
+    "tertiaryColor": "#120d07",
+    "fontFamily": "IBM Plex Mono, Fira Mono, Consolas, monospace"
+  }
+}}%%
+flowchart TB
+  usbC["<b>USB-C Plug</b><br/>Framework I/O<br/><small>USB2 + VBUS 5V</small>"]
+  hub["<b>CH334P</b><br/>USB2 Hub<br/><small>Framework uplink fanout</small>"]
+  manager["<b>STM32H503</b><br/>System Manager<br/><small>USB CDC to UART<br/>reset / boot / mux control</small>"]
+  rv["<b>RV1106G2</b><br/>Linux SBC Payload<br/><small>UART console<br/>USB OTG<br/>SDMMC boot/storage</small>"]
+  gl3224["<b>GL3224-OIY04</b><br/>USB to microSD<br/><small>host-side flashing path</small>"]
+  sdMux["<b>SDIO Mux</b><br/>TS3A27518<br/><small>CMD CLK D0-D3</small>"]
+  sdSlot["<b>microSD Slot</b><br/>TF-109<br/><small>boot / rootfs</small>"]
+  usbMux["<b>USB2 Mux</b><br/>TS3USB221<br/><small>RV1106 OTG select</small>"]
+  usbOut["<b>USB Output</b><br/>External USB2<br/><small>outward-facing port</small>"]
+  pmic["<b>PMIC</b><br/>5V input<br/><small>3V3 / 1V8 / 0V9</small>"]
+  stemma["<b>STEMMA QT</b><br/>I2C Port<br/><small>3V3 + GND</small>"]
+  rails(("Power rails<br/><small>3V3 / 1V8 / 0V9</small>"))
+  controls(("Manager controls<br/><small>reset boot mux card-pwr</small>"))
+
+  usbC ==>|USB2 upstream| hub
+  usbC ==>|VBUS 5V| pmic
+
+  hub ==>|USB CDC| manager
+  hub ==>|USB SD reader| gl3224
+  hub ==>|USB2 hub port| usbMux
+
+  manager ==>|UART console| rv
+  manager <-->|I2C| stemma
+  manager -. policy GPIO .-> controls
+
+  controls -. reset / boot .-> rv
+  controls -. USB_SEL .-> usbMux
+  controls -. SD_SEL .-> sdMux
+  controls -. CARD_PWR .-> sdSlot
+  controls -. PMIC_EN .-> pmic
+
+  rv <-->|USB OTG D+/D-| usbMux
+  usbMux <-->|selected USB2| usbOut
+
+  rv <-->|SDMMC| sdMux
+  gl3224 <-->|SD bus| sdMux
+  sdMux <-->|card bus| sdSlot
+
+  pmic ==>|regulated outputs| rails
+  rails ==>|0V9 / 1V8 / 3V3| rv
+  rails ==>|3V3| hub
+  rails ==>|3V3| manager
+  rails ==>|3V3| gl3224
+  rails ==>|3V3 / card pwr| sdSlot
+  rails ==>|3V3| stemma
+
+  classDef framework fill:#0e0b12,stroke:#d48cff,color:#e8fff1,stroke-width:2px;
+  classDef usb fill:#07131a,stroke:#62c7ff,color:#e8fff1,stroke-width:2px;
+  classDef core fill:#07120d,stroke:#39ff88,color:#e8fff1,stroke-width:2px;
+  classDef power fill:#140f07,stroke:#ffcc66,color:#fff0c2,stroke-width:2px;
+  classDef storage fill:#0d1014,stroke:#39ff88,color:#e8fff1,stroke-width:2px;
+  classDef bus fill:#06100a,stroke:#8cffbd,color:#e8fff1,stroke-width:2px,stroke-dasharray: 6 4;
+
+  class usbC,usbOut,stemma framework;
+  class hub,gl3224,usbMux usb;
+  class manager,rv core;
+  class pmic,rails power;
+  class sdMux,sdSlot storage;
+  class controls bus;

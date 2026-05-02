@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#123021" stroke-width="1" opacity="0.35"/>
+    </pattern>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#39ff88"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffcc66"/>
+    </marker>
+    <style>
+      .bg { fill: #050807; }
+      .grid { fill: url(#grid); }
+      .frame { fill: none; stroke: #39ff88; stroke-width: 2; opacity: 0.9; }
+      .zone { fill: none; stroke: #1d6b47; stroke-width: 1.5; stroke-dasharray: 8 8; opacity: 0.75; }
+      .block { fill: #07120d; stroke: #39ff88; stroke-width: 2.2; rx: 8; }
+      .block-alt { fill: #0b1010; stroke: #62c7ff; stroke-width: 2.2; rx: 8; }
+      .block-pwr { fill: #120d07; stroke: #ffcc66; stroke-width: 2.2; rx: 8; }
+      .block-io { fill: #0e0b12; stroke: #d48cff; stroke-width: 2.2; rx: 8; }
+      .title { fill: #e8fff1; font: 700 27px "IBM Plex Mono", "Fira Mono", Consolas, monospace; letter-spacing: 1px; }
+      .sub { fill: #8cffbd; font: 12px "IBM Plex Mono", "Fira Mono", Consolas, monospace; letter-spacing: 1px; }
+      .label { fill: #e8fff1; font: 700 18px "IBM Plex Mono", "Fira Mono", Consolas, monospace; }
+      .small { fill: #b6ffd1; font: 12px "IBM Plex Mono", "Fira Mono", Consolas, monospace; }
+      .tiny { fill: #79b990; font: 10px "IBM Plex Mono", "Fira Mono", Consolas, monospace; }
+      .wire { fill: none; stroke: #39ff88; stroke-width: 3; marker-end: url(#arrow-green); }
+      .wire-bi { fill: none; stroke: #39ff88; stroke-width: 3; marker-start: url(#arrow-green); marker-end: url(#arrow-green); }
+      .wire-usb { fill: none; stroke: #62c7ff; stroke-width: 3; marker-end: url(#arrow-green); }
+      .wire-usb-bi { fill: none; stroke: #62c7ff; stroke-width: 3; marker-start: url(#arrow-green); marker-end: url(#arrow-green); }
+      .wire-pwr { fill: none; stroke: #ffcc66; stroke-width: 3; marker-end: url(#arrow-amber); }
+      .wire-ctrl { fill: none; stroke: #ffcc66; stroke-width: 2.2; stroke-dasharray: 8 7; marker-end: url(#arrow-amber); }
+      .wire-i2c { fill: none; stroke: #d48cff; stroke-width: 2.7; marker-start: url(#arrow-green); marker-end: url(#arrow-green); }
+      .netlabel { fill: #050807; stroke: #39ff88; stroke-width: 1.2; rx: 4; }
+      .netlabel-usb { fill: #050807; stroke: #62c7ff; stroke-width: 1.2; rx: 4; }
+      .netlabel-pwr { fill: #050807; stroke: #ffcc66; stroke-width: 1.2; rx: 4; }
+      .note { fill: #e8fff1; font: 11px "IBM Plex Mono", "Fira Mono", Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+  <rect class="grid" x="0" y="0" width="1600" height="1000"/>
+  <rect class="frame" x="28" y="28" width="1544" height="944" rx="10"/>
+  <rect class="zone" x="280" y="86" width="1250" height="820" rx="10"/>
+
+  <text class="title" x="55" y="70">CHUDCORE MICROGRAPHIC // FRAMEWORK RV1106 MODULE</text>
+  <text class="sub" x="58" y="94">SOLID: DATA/POWER BUS  //  DASHED AMBER: STM32H503 SYSTEM-MANAGER CONTROL</text>
+  <text class="tiny" x="1165" y="72">REV DRAFT / SVG SOURCE</text>
+
+  <!-- External and boundary IO -->
+  <rect class="block-io" x="58" y="130" width="190" height="118" rx="8"/>
+  <text class="label" x="82" y="166">USB-C PLUG</text>
+  <text class="small" x="82" y="190">Framework I/O</text>
+  <text class="small" x="82" y="214">VBUS + USB2</text>
+  <text class="tiny" x="82" y="232">module edge</text>
+
+  <rect class="block-io" x="1350" y="248" width="190" height="120" rx="8"/>
+  <text class="label" x="1374" y="286">USB OUTPUT</text>
+  <text class="small" x="1374" y="310">outward-facing</text>
+  <text class="small" x="1374" y="334">USB2 D+/D-</text>
+
+  <rect class="block-io" x="1088" y="824" width="230" height="100" rx="8"/>
+  <text class="label" x="1115" y="860">STEMMA QT</text>
+  <text class="small" x="1115" y="884">I2C + 3V3 + GND</text>
+  <text class="tiny" x="1115" y="906">external sensor/debug bus</text>
+
+  <!-- USB complex -->
+  <rect class="block-alt" x="340" y="136" width="250" height="144" rx="8"/>
+  <text class="label" x="370" y="174">CH334P</text>
+  <text class="small" x="370" y="198">USB2 hub</text>
+  <text class="small" x="370" y="222">upstream: Framework</text>
+  <text class="small" x="370" y="246">downstream: mgr / sd / rv</text>
+
+  <rect class="block-alt" x="1088" y="248" width="230" height="120" rx="8"/>
+  <text class="label" x="1112" y="286">USB2 MUX</text>
+  <text class="small" x="1112" y="310">TS3USB221</text>
+  <text class="small" x="1112" y="334">RV1106 OTG select</text>
+
+  <!-- System manager -->
+  <rect class="block" x="340" y="380" width="250" height="150" rx="8"/>
+  <text class="label" x="365" y="418">STM32H503</text>
+  <text class="small" x="365" y="442">system manager</text>
+  <text class="small" x="365" y="466">USB CDC + UART bridge</text>
+  <text class="small" x="365" y="490">reset / boot / mux ctl</text>
+  <text class="tiny" x="365" y="512">owns policy, sequencing</text>
+
+  <!-- Core SoC -->
+  <rect class="block" x="720" y="300" width="280" height="190" rx="8"/>
+  <text class="label" x="758" y="340">RV1106G2</text>
+  <text class="small" x="758" y="364">Linux SBC payload</text>
+  <text class="small" x="758" y="388">UART console to manager</text>
+  <text class="small" x="758" y="412">USB OTG through mux</text>
+  <text class="small" x="758" y="436">SDMMC through card mux</text>
+  <text class="tiny" x="758" y="462">camera/display/eth optional IO</text>
+
+  <!-- SD subsystem -->
+  <rect class="block-alt" x="340" y="664" width="250" height="126" rx="8"/>
+  <text class="label" x="365" y="702">GL3224-OIY04</text>
+  <text class="small" x="365" y="726">USB SD reader</text>
+  <text class="small" x="365" y="750">hub port to card bus</text>
+  <text class="tiny" x="365" y="772">laptop flashes microSD</text>
+
+  <rect class="block" x="720" y="664" width="230" height="126" rx="8"/>
+  <text class="label" x="752" y="702">SDIO MUX</text>
+  <text class="small" x="752" y="726">TS3A27518</text>
+  <text class="small" x="752" y="750">RV1106 or GL3224</text>
+  <text class="tiny" x="752" y="772">CMD/CLK/D0-D3</text>
+
+  <rect class="block-io" x="1088" y="664" width="230" height="126" rx="8"/>
+  <text class="label" x="1118" y="702">microSD SLOT</text>
+  <text class="small" x="1118" y="726">TF-109 low-profile</text>
+  <text class="small" x="1118" y="750">boot / rootfs / meme</text>
+
+  <!-- Power -->
+  <rect class="block-pwr" x="720" y="838" width="280" height="106" rx="8"/>
+  <text class="label" x="760" y="876">PMIC</text>
+  <text class="small" x="760" y="900">5V in, rails out</text>
+  <text class="small" x="760" y="924">3V3 / 1V8 / 0V9</text>
+
+  <!-- Primary buses -->
+  <path class="wire-usb" d="M 248 174 H 340"/>
+  <rect class="netlabel-usb" x="263" y="153" width="62" height="22" rx="4"/>
+  <text class="tiny" x="271" y="168">USB2</text>
+
+  <path class="wire-pwr" d="M 153 248 V 892 H 720"/>
+  <rect class="netlabel-pwr" x="83" y="572" width="74" height="22" rx="4"/>
+  <text class="tiny" x="92" y="587">VBUS 5V</text>
+
+  <path class="wire-usb" d="M 458 280 V 380"/>
+  <rect class="netlabel-usb" x="475" y="318" width="78" height="22" rx="4"/>
+  <text class="tiny" x="482" y="333">USB CDC</text>
+
+  <path class="wire-usb" d="M 382 280 V 664"/>
+  <rect class="netlabel-usb" x="397" y="555" width="84" height="22" rx="4"/>
+  <text class="tiny" x="405" y="570">USB SD</text>
+
+  <path class="wire-usb" d="M 590 206 H 1035 V 300 H 1088"/>
+  <rect class="netlabel-usb" x="778" y="185" width="100" height="22" rx="4"/>
+  <text class="tiny" x="786" y="200">hub port</text>
+
+  <path class="wire-usb-bi" d="M 1000 366 H 1088"/>
+  <rect class="netlabel-usb" x="1018" y="340" width="58" height="22" rx="4"/>
+  <text class="tiny" x="1026" y="355">OTG</text>
+
+  <path class="wire-usb-bi" d="M 1318 308 H 1350"/>
+
+  <path class="wire-bi" d="M 590 727 H 720"/>
+  <rect class="netlabel" x="616" y="702" width="78" height="22" rx="4"/>
+  <text class="tiny" x="624" y="717">SD bus</text>
+
+  <path class="wire-bi" d="M 950 727 H 1088"/>
+  <rect class="netlabel" x="982" y="702" width="80" height="22" rx="4"/>
+  <text class="tiny" x="990" y="717">card bus</text>
+
+  <path class="wire-bi" d="M 860 490 V 664"/>
+  <rect class="netlabel" x="878" y="570" width="78" height="22" rx="4"/>
+  <text class="tiny" x="886" y="585">SDMMC</text>
+
+  <path class="wire-bi" d="M 590 438 H 720"/>
+  <rect class="netlabel" x="623" y="415" width="70" height="22" rx="4"/>
+  <text class="tiny" x="631" y="430">UART</text>
+
+  <path class="wire-pwr" d="M 860 838 V 490"/>
+  <rect class="netlabel-pwr" x="878" y="612" width="110" height="22" rx="4"/>
+  <text class="tiny" x="886" y="627">0V9 1V8 3V3</text>
+
+  <path class="wire-pwr" d="M 720 892 H 590"/>
+  <rect class="netlabel-pwr" x="608" y="867" width="54" height="22" rx="4"/>
+  <text class="tiny" x="616" y="882">3V3</text>
+
+  <path class="wire-pwr" d="M 1000 892 H 1088"/>
+  <rect class="netlabel-pwr" x="1020" y="867" width="54" height="22" rx="4"/>
+  <text class="tiny" x="1028" y="882">3V3</text>
+
+  <path class="wire-i2c" d="M 590 486 H 660 V 874 H 1088"/>
+  <rect class="netlabel" x="684" y="851" width="62" height="22" rx="4"/>
+  <text class="tiny" x="694" y="866">I2C</text>
+
+  <!-- System-manager control overlay -->
+  <path class="wire-ctrl" d="M 590 410 H 680 V 336 H 720"/>
+  <rect class="netlabel-pwr" x="618" y="315" width="92" height="22" rx="4"/>
+  <text class="tiny" x="626" y="330">RST/BOOT</text>
+
+  <path class="wire-ctrl" d="M 590 466 H 1015 V 345 H 1088"/>
+  <rect class="netlabel-pwr" x="824" y="447" width="78" height="22" rx="4"/>
+  <text class="tiny" x="832" y="462">USB SEL</text>
+
+  <path class="wire-ctrl" d="M 590 506 H 690 V 695 H 720"/>
+  <rect class="netlabel-pwr" x="610" y="642" width="86" height="22" rx="4"/>
+  <text class="tiny" x="618" y="657">SD SEL</text>
+
+  <path class="wire-ctrl" d="M 465 530 V 624 H 1110 V 664"/>
+  <rect class="netlabel-pwr" x="994" y="610" width="100" height="22" rx="4"/>
+  <text class="tiny" x="1002" y="625">CARD PWR</text>
+
+  <path class="wire-ctrl" d="M 545 530 V 822 H 742 V 838"/>
+  <rect class="netlabel-pwr" x="574" y="804" width="94" height="22" rx="4"/>
+  <text class="tiny" x="582" y="819">PMIC EN</text>
+
+  <!-- In-card area annotation -->
+  <text class="tiny" x="294" y="112">INSIDE FRAMEWORK EXPANSION MODULE</text>
+  <text class="note" x="60" y="838">BOOT MODES</text>
+  <text class="tiny" x="60" y="862">normal: RV1106 owns microSD through SDIO mux</text>
+  <text class="tiny" x="60" y="882">flash: manager resets RV1106, muxes card to GL3224</text>
+  <text class="tiny" x="60" y="902">debug: manager exposes RV1106 UART as USB CDC</text>
+</svg>
