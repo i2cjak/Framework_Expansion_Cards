@@ -5567,7 +5567,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "amemb-Capacitor_SMD:amemb-C_0402_1005Metric_L"
 			(at 135.89 27.94 0)
 			(hide yes)
 			(show_name no)
@@ -5590,6 +5590,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 135.89 27.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C315248"
 			(at 135.89 27.94 0)
 			(hide yes)
 			(show_name no)
@@ -5725,7 +5736,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "amemb-Capacitor_SMD:amemb-C_0402_1005Metric_L"
 			(at 120.65 27.94 0)
 			(hide yes)
 			(show_name no)
@@ -5748,6 +5759,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 120.65 27.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C315248"
 			(at 120.65 27.94 0)
 			(hide yes)
 			(show_name no)
@@ -6224,7 +6246,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "amemb-Resistor_SMD:amemb-R_0201_0603Metric_L"
 			(at 57.15 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -6247,6 +6269,17 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 57.15 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C5356117"
 			(at 57.15 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -7383,7 +7416,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "amemb-Capacitor_SMD:amemb-C_0201_0603Metric_L"
 			(at 160.02 30.48 0)
 			(hide yes)
 			(show_name no)
@@ -7406,6 +7439,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 160.02 30.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C6119758"
 			(at 160.02 30.48 0)
 			(hide yes)
 			(show_name no)
@@ -7541,7 +7585,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "amemb-Capacitor_SMD:amemb-C_0402_1005Metric_L"
 			(at 110.49 27.94 0)
 			(hide yes)
 			(show_name no)
@@ -7564,6 +7608,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 110.49 27.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C315248"
 			(at 110.49 27.94 0)
 			(hide yes)
 			(show_name no)
