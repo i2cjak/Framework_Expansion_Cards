@@ -841,7 +841,7 @@
 		(in_pos_files yes)
 		(duplicate_pin_numbers_are_jumpers no)
 		(property "Reference" "U"
-			(at 0 19.05 0)
+			(at -10.16 20.32 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -851,7 +851,7 @@
 			)
 		)
 		(property "Value" "CH334P"
-			(at 0 -15.24 0)
+			(at -10.16 17.78 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -928,7 +928,7 @@
 		)
 		(symbol "CH334P_0_1"
 			(rectangle
-				(start -12.7 11.43)
+				(start -12.7 13.97)
 				(end 12.7 -13.97)
 				(stroke
 					(width 0)
@@ -938,8 +938,8 @@
 					(type background)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 7.62 0)
+			(pin passive line
+				(at -15.24 -6.35 0)
 				(length 2.54)
 				(name "XO"
 					(effects
@@ -956,8 +956,8 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 5.08 0)
+			(pin passive line
+				(at -15.24 -11.43 0)
 				(length 2.54)
 				(name "XI"
 					(effects
@@ -974,10 +974,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 2.54 0)
+			(pin bidirectional line
+				(at 15.24 -8.89 180)
 				(length 2.54)
-				(name "DM4"
+				(name "D4-"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -992,10 +992,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 0 0)
+			(pin bidirectional line
+				(at 15.24 -6.35 180)
 				(length 2.54)
-				(name "DP4"
+				(name "D4+"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1010,10 +1010,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 -2.54 0)
+			(pin bidirectional line
+				(at 15.24 -3.81 180)
 				(length 2.54)
-				(name "DM3"
+				(name "D3-"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1028,10 +1028,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 -5.08 0)
+			(pin bidirectional line
+				(at 15.24 -1.27 180)
 				(length 2.54)
-				(name "DP3"
+				(name "D3+"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1046,10 +1046,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 -7.62 0)
+			(pin bidirectional line
+				(at 15.24 1.27 180)
 				(length 2.54)
-				(name "DM2"
+				(name "D2-"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1064,10 +1064,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at -15.24 -10.16 0)
+			(pin bidirectional line
+				(at 15.24 3.81 180)
 				(length 2.54)
-				(name "DP2"
+				(name "D2+"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1082,10 +1082,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 15.24 -10.16 180)
+			(pin bidirectional line
+				(at 15.24 6.35 180)
 				(length 2.54)
-				(name "DM1"
+				(name "D1-"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1100,10 +1100,10 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 15.24 -7.62 180)
+			(pin bidirectional line
+				(at 15.24 8.89 180)
 				(length 2.54)
-				(name "DP1"
+				(name "D1+"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1118,62 +1118,8 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 15.24 -5.08 180)
-				(length 2.54)
-				(name "DMU"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "11"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 15.24 -2.54 180)
-				(length 2.54)
-				(name "DPU"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "12"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 15.24 0 180)
-				(length 2.54)
-				(name "~{RESET}/CDP"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "13"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 15.24 2.54 180)
+			(pin bidirectional line
+				(at -15.24 3.81 0)
 				(length 2.54)
 				(name "PGANG"
 					(effects
@@ -1190,8 +1136,8 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 15.24 5.08 180)
+			(pin power_in line
+				(at 0 16.51 270)
 				(length 2.54)
 				(name "V5"
 					(effects
@@ -1208,8 +1154,8 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 15.24 7.62 180)
+			(pin power_in line
+				(at 2.54 16.51 270)
 				(length 2.54)
 				(name "VDD33"
 					(effects
@@ -1226,8 +1172,8 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 0 13.97 270)
+			(pin power_in line
+				(at 0 -16.51 90)
 				(length 2.54)
 				(name "GND"
 					(effects
@@ -1243,6 +1189,63 @@
 						)
 					)
 				)
+			)
+		)
+		(symbol "CH334P_1_1"
+			(pin bidirectional line
+				(at -15.24 8.89 0)
+				(length 2.54)
+				(name "DU-"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "11"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at -15.24 11.43 0)
+				(length 2.54)
+				(name "DU+"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "12"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at -15.24 1.27 0)
+				(length 2.54)
+				(name "~{RESET}"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "13"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(alternate "CDP" bidirectional line)
 			)
 		)
 		(embedded_fonts no)
@@ -1941,19 +1944,8 @@
 					(type background)
 				)
 			)
-			(circle
-				(center -15.88 22.22)
-				(radius 0.38)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
 			(pin unspecified line
-				(at -19.05 17.78 0)
+				(at -19.05 11.43 0)
 				(length 2.54)
 				(name "TXN"
 					(effects
@@ -1971,7 +1963,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 15.24 0)
+				(at -19.05 13.97 0)
 				(length 2.54)
 				(name "TXP"
 					(effects
@@ -1989,7 +1981,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 12.7 0)
+				(at -8.89 44.45 0)
 				(length 2.54)
 				(name "AVDD12"
 					(effects
@@ -2007,7 +1999,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 10.16 0)
+				(at -19.05 6.35 0)
 				(length 2.54)
 				(name "RXN"
 					(effects
@@ -2025,7 +2017,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 7.62 0)
+				(at -19.05 8.89 0)
 				(length 2.54)
 				(name "RXP"
 					(effects
@@ -2043,7 +2035,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 5.08 0)
+				(at -34.29 34.29 0)
 				(length 2.54)
 				(name "X1"
 					(effects
@@ -2061,7 +2053,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 2.54 0)
+				(at -34.29 31.75 0)
 				(length 2.54)
 				(name "X2"
 					(effects
@@ -2079,7 +2071,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 0 0)
+				(at -8.89 31.75 0)
 				(length 2.54)
 				(name "AVDD33"
 					(effects
@@ -2097,7 +2089,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 -2.54 0)
+				(at 39.37 41.91 0)
 				(length 2.54)
 				(name "RTERM"
 					(effects
@@ -2187,7 +2179,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 -15.24 0)
+				(at 39.37 29.21 0)
 				(length 2.54)
 				(name "LED"
 					(effects
@@ -2205,7 +2197,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 -17.78 0)
+				(at -8.89 36.83 0)
 				(length 2.54)
 				(name "VBUS"
 					(effects
@@ -2223,7 +2215,7 @@
 				)
 			)
 			(pin unspecified line
-				(at -19.05 -20.32 0)
+				(at -8.89 29.21 0)
 				(length 2.54)
 				(name "DVDD33"
 					(effects
@@ -2385,7 +2377,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 0 180)
+				(at -8.89 26.67 0)
 				(length 2.54)
 				(name "DVDD33"
 					(effects
@@ -2421,7 +2413,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 5.08 180)
+				(at 43.18 -2.54 90)
 				(length 2.54)
 				(name "GND"
 					(effects
@@ -2475,7 +2467,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 12.7 180)
+				(at -8.89 34.29 0)
 				(length 2.54)
 				(name "AVDD33"
 					(effects
@@ -2493,7 +2485,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 15.24 180)
+				(at -19.05 17.78 0)
 				(length 2.54)
 				(name "DM"
 					(effects
@@ -2511,7 +2503,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 17.78 180)
+				(at -19.05 20.32 0)
 				(length 2.54)
 				(name "DP"
 					(effects
@@ -2529,7 +2521,7 @@
 				)
 			)
 			(pin unspecified line
-				(at 19.05 20.32 180)
+				(at 45.72 -2.54 90)
 				(length 2.54)
 				(name "EP"
 					(effects
@@ -2556,7 +2548,7 @@
 		(in_pos_files yes)
 		(duplicate_pin_numbers_are_jumpers no)
 		(property "Reference" "U"
-			(at 0 34.29 0)
+			(at 0 33.02 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2566,7 +2558,7 @@
 			)
 		)
 		(property "Value" "RV1106G2"
-			(at 0 -34.29 0)
+			(at 0 30.48 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2576,7 +2568,7 @@
 			)
 		)
 		(property "Footprint" "Framework_Shilling_Library:QFN-128_L12.3-W12.3-P0.35-TL-EP7.0-1"
-			(at 0 -36.83 0)
+			(at 0 -22.86 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2587,7 +2579,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.lcsc.com/datasheet/C5272606.pdf"
-			(at 0 -39.37 0)
+			(at 0 -25.4 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2598,7 +2590,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 -1.27 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2609,7 +2601,7 @@
 			)
 		)
 		(property "Manufacturer" "Rockchip(瑞芯微)"
-			(at 0 -41.91 0)
+			(at 0 -27.94 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2620,7 +2612,7 @@
 			)
 		)
 		(property "MPN" "RV1106G2"
-			(at 0 -44.45 0)
+			(at 0 -30.48 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2631,7 +2623,7 @@
 			)
 		)
 		(property "LCSC Part" "C5272606"
-			(at 0 -46.99 0)
+			(at 0 -33.02 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(hide yes)
@@ -2664,8 +2656,8 @@
 		)
 		(symbol "RV1106G2_1_1"
 			(rectangle
-				(start -30.48 30.48)
-				(end 30.48 -30.48)
+				(start -22.86 20.32)
+				(end 22.86 -20.32)
 				(stroke
 					(width 0)
 					(type default)
@@ -2675,9 +2667,9 @@
 				)
 			)
 			(pin power_in line
-				(at -33.02 20.32 0)
-				(length 2.54)
-				(name "DVDD_1"
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2692,10 +2684,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -7.62 0)
-				(length 2.54)
-				(name "RTC_AVDD3V3"
+			(pin passive line
+				(at -26.67 15.24 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD3V3"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2711,8 +2704,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 -3.81 180)
-				(length 2.54)
+				(at 26.67 -2.54 180)
+				(length 3.81)
 				(name "RTC_XOUT"
 					(effects
 						(font
@@ -2729,8 +2722,8 @@
 				)
 			)
 			(pin input line
-				(at -33.02 -27.94 0)
-				(length 2.54)
+				(at 26.67 2.54 180)
+				(length 3.81)
 				(name "RTC_XIN"
 					(effects
 						(font
@@ -2747,9 +2740,84 @@
 				)
 			)
 			(pin power_in line
-				(at -33.02 2.54 0)
-				(length 2.54)
-				(name "DDR_VDDQ_1"
+				(at -26.67 12.7 0)
+				(length 3.81)
+				(name "VDD1V8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "24"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -26.67 15.24 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD3V3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "28"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -26.67 12.7 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD1V8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "31"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -24.13 90)
+				(length 3.81)
+				(hide yes)
+				(name "VSS"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "37"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -26.67 10.16 0)
+				(length 3.81)
+				(name "DDR_VDDQ"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2764,10 +2832,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 0 0)
-				(length 2.54)
-				(name "DDR_VDDQ_2"
+			(pin passive line
+				(at -26.67 10.16 0)
+				(length 3.81)
+				(hide yes)
+				(name "DDR_VDDQ"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2782,10 +2851,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 17.78 0)
-				(length 2.54)
-				(name "DVDD_2D"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2801,8 +2871,8 @@
 				)
 			)
 			(pin passive line
-				(at -33.02 -20.32 0)
-				(length 2.54)
+				(at -26.67 -2.54 0)
+				(length 3.81)
 				(name "RAM_ZQ"
 					(effects
 						(font
@@ -2818,10 +2888,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -5.08 0)
-				(length 2.54)
-				(name "DDR_PLL_AVDD1V8"
+			(pin passive line
+				(at -26.67 12.7 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD1V8"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2836,10 +2907,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 15.24 0)
-				(length 2.54)
-				(name "DVDD_3"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2854,10 +2926,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 12.7 0)
-				(length 2.54)
-				(name "DVDD_4"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2872,10 +2945,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -2.54 0)
-				(length 2.54)
-				(name "DDR_VDDQ_3"
+			(pin passive line
+				(at -26.67 10.16 0)
+				(length 3.81)
+				(hide yes)
+				(name "DDR_VDDQ"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2890,11 +2964,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -15.24 0)
-				(length 2.54)
+			(pin passive line
+				(at 0 -24.13 90)
+				(length 3.81)
 				(hide yes)
-				(name "TVSS"
+				(name "VSS"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2910,9 +2984,9 @@
 				)
 			)
 			(pin power_in line
-				(at -33.02 22.86 0)
-				(length 2.54)
-				(name "PMU_VCC3V3"
+				(at -26.67 15.24 0)
+				(length 3.81)
+				(name "VDD3V3"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -2928,8 +3002,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 3.81 180)
-				(length 2.54)
+				(at 26.67 -17.78 180)
+				(length 3.81)
 				(name "PMIC_PWR_CTRL_M1"
 					(effects
 						(font
@@ -2947,8 +3021,8 @@
 				(alternate "GPIO0_A3_u" bidirectional line)
 			)
 			(pin output line
-				(at 33.02 1.27 180)
-				(length 2.54)
+				(at 26.67 -15.24 180)
+				(length 3.81)
 				(name "PMIC_PWR_CTRL_M0"
 					(effects
 						(font
@@ -2967,8 +3041,8 @@
 				(alternate "PWM1_M0" output line)
 			)
 			(pin input line
-				(at -33.02 -22.86 0)
-				(length 2.54)
+				(at -26.67 2.54 0)
+				(length 3.81)
 				(name "POR"
 					(effects
 						(font
@@ -2984,10 +3058,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 25.4 0)
-				(length 2.54)
-				(name "PMU_DVDD0V9"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3003,8 +3078,8 @@
 				)
 			)
 			(pin input line
-				(at -33.02 -25.4 0)
-				(length 2.54)
+				(at 26.67 15.24 180)
+				(length 3.81)
 				(name "OSC_XIN"
 					(effects
 						(font
@@ -3021,8 +3096,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 -1.27 180)
-				(length 2.54)
+				(at 26.67 10.16 180)
+				(length 3.81)
 				(name "OSC_XOUT"
 					(effects
 						(font
@@ -3038,10 +3113,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -10.16 0)
-				(length 2.54)
-				(name "OSC_AVDD1V8"
+			(pin passive line
+				(at -26.67 12.7 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD1V8"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3055,12 +3131,12 @@
 						)
 					)
 				)
-				(alternate "PLL_AVDD1V8" power_in line)
 			)
-			(pin power_in line
-				(at -33.02 -12.7 0)
-				(length 2.54)
-				(name "OSC_PLL_DVDD"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3075,10 +3151,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 10.16 0)
-				(length 2.54)
-				(name "DVDD_5"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3094,9 +3171,48 @@
 				)
 			)
 			(pin power_in line
-				(at -33.02 7.62 0)
-				(length 2.54)
-				(name "DVDD_6"
+				(at -26.67 12.7 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD1V8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "96"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -26.67 15.24 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD3V3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "101"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3111,10 +3227,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 27.94 0)
-				(length 2.54)
-				(name "CPU_DVDD"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3129,10 +3246,11 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 5.08 0)
-				(length 2.54)
-				(name "DVDD_7"
+			(pin passive line
+				(at -26.67 7.62 0)
+				(length 3.81)
+				(hide yes)
+				(name "VDD0V9"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3148,8 +3266,8 @@
 				)
 			)
 			(pin power_in line
-				(at -33.02 -17.78 0)
-				(length 2.54)
+				(at 0 -24.13 90)
+				(length 3.81)
 				(name "VSS"
 					(effects
 						(font
@@ -3168,8 +3286,8 @@
 		)
 		(symbol "RV1106G2_2_1"
 			(rectangle
-				(start -30.48 30.48)
-				(end 30.48 -30.48)
+				(start -22.86 20.32)
+				(end 22.86 -20.32)
 				(stroke
 					(width 0)
 					(type default)
@@ -3178,9 +3296,149 @@
 					(type background)
 				)
 			)
+			(polyline
+				(pts
+					(xy -11.43 5.08) (xy -6.35 5.08) (xy -6.35 2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -8.89 11.43) (xy -6.35 11.43)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -6.35 16.51) (xy -8.89 16.51)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -6.35 16.51) (xy -6.35 11.43)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -6.35 2.54) (xy -7.62 3.81)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -6.35 2.54) (xy -5.08 3.81)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -6.35 1.27) (xy -6.35 -17.78) (xy -8.89 -17.78)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 6.35 10.16) (xy 5.08 11.43)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 6.35 10.16) (xy 7.62 11.43)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 6.35 8.89) (xy 6.35 -17.78) (xy 8.89 -17.78)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 11.43 12.7) (xy 6.35 12.7) (xy 6.35 10.16)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(text "1V8"
+				(at -3.81 13.97 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
 			(pin input line
-				(at -33.02 7.62 0)
-				(length 2.54)
+				(at -26.67 0 0)
+				(length 3.81)
 				(name "SDMMC0_DET"
 					(effects
 						(font
@@ -3198,8 +3456,8 @@
 				(alternate "GPIO3_A1_u" bidirectional line)
 			)
 			(pin bidirectional line
-				(at -33.02 5.08 0)
-				(length 2.54)
+				(at -26.67 -5.08 0)
+				(length 3.81)
 				(name "SDMMC0_D1"
 					(effects
 						(font
@@ -3219,8 +3477,8 @@
 				(alternate "UART2_TX_M0" output line)
 			)
 			(pin power_in line
-				(at -33.02 12.7 0)
-				(length 2.54)
+				(at 26.67 12.7 180)
+				(length 3.81)
 				(name "GPIO4_VCC"
 					(effects
 						(font
@@ -3237,8 +3495,8 @@
 				)
 			)
 			(pin bidirectional line
-				(at -33.02 2.54 0)
-				(length 2.54)
+				(at -26.67 -2.54 0)
+				(length 3.81)
 				(name "SDMMC0_D0"
 					(effects
 						(font
@@ -3258,8 +3516,8 @@
 				(alternate "UART2_RX_M0" input line)
 			)
 			(pin output line
-				(at -33.02 0 0)
-				(length 2.54)
+				(at -26.67 -12.7 0)
+				(length 3.81)
 				(name "SDMMC0_CLK"
 					(effects
 						(font
@@ -3281,8 +3539,8 @@
 				(alternate "UART5_RTS_M0" output line)
 			)
 			(pin bidirectional line
-				(at -33.02 -2.54 0)
-				(length 2.54)
+				(at -26.67 -15.24 0)
+				(length 3.81)
 				(name "SDMMC0_CMD"
 					(effects
 						(font
@@ -3304,8 +3562,8 @@
 				(alternate "UART5_CTS_M0" input line)
 			)
 			(pin bidirectional line
-				(at -33.02 -5.08 0)
-				(length 2.54)
+				(at -26.67 -10.16 0)
+				(length 3.81)
 				(name "SDMMC0_D3"
 					(effects
 						(font
@@ -3326,8 +3584,8 @@
 				(alternate "UART5_TX_M0" output line)
 			)
 			(pin bidirectional line
-				(at -33.02 -7.62 0)
-				(length 2.54)
+				(at -26.67 -7.62 0)
+				(length 3.81)
 				(name "SDMMC0_D2"
 					(effects
 						(font
@@ -3348,8 +3606,8 @@
 				(alternate "UART5_RX_M0" input line)
 			)
 			(pin input line
-				(at -33.02 -10.16 0)
-				(length 2.54)
+				(at -26.67 15.24 0)
+				(length 3.81)
 				(name "SARADC_IN1"
 					(effects
 						(font
@@ -3368,8 +3626,8 @@
 				(alternate "PWM1_M1" output line)
 			)
 			(pin input line
-				(at -33.02 -12.7 0)
-				(length 2.54)
+				(at -26.67 12.7 0)
+				(length 3.81)
 				(name "SARADC_IN0"
 					(effects
 						(font
@@ -3387,8 +3645,8 @@
 				(alternate "GPI4_C0_z" input line)
 			)
 			(pin bidirectional line
-				(at 33.02 11.43 180)
-				(length 2.54)
+				(at 26.67 -5.08 180)
+				(length 3.81)
 				(name "EMMC_D5"
 					(effects
 						(font
@@ -3409,8 +3667,8 @@
 				(alternate "UART1_RX_M2" input line)
 			)
 			(pin bidirectional line
-				(at 33.02 8.89 180)
-				(length 2.54)
+				(at 26.67 0 180)
+				(length 3.81)
 				(name "EMMC_D3"
 					(effects
 						(font
@@ -3429,8 +3687,8 @@
 				(alternate "GPIO4_A6_u" bidirectional line)
 			)
 			(pin bidirectional line
-				(at 33.02 6.35 180)
-				(length 2.54)
+				(at 26.67 -2.54 180)
+				(length 3.81)
 				(name "EMMC_D4"
 					(effects
 						(font
@@ -3451,8 +3709,8 @@
 				(alternate "UART1_TX_M2" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 3.81 180)
-				(length 2.54)
+				(at 26.67 7.62 180)
+				(length 3.81)
 				(name "EMMC_D0"
 					(effects
 						(font
@@ -3471,8 +3729,8 @@
 				(alternate "GPIO4_A4_u" bidirectional line)
 			)
 			(pin bidirectional line
-				(at 33.02 1.27 180)
-				(length 2.54)
+				(at 26.67 5.08 180)
+				(length 3.81)
 				(name "EMMC_D1"
 					(effects
 						(font
@@ -3491,8 +3749,8 @@
 				(alternate "GPIO4_A3_u" bidirectional line)
 			)
 			(pin power_in line
-				(at -33.02 10.16 0)
-				(length 2.54)
+				(at -26.67 5.08 0)
+				(length 3.81)
 				(name "GPIO3_VCC"
 					(effects
 						(font
@@ -3509,8 +3767,8 @@
 				)
 			)
 			(pin bidirectional line
-				(at 33.02 -1.27 180)
-				(length 2.54)
+				(at 26.67 2.54 180)
+				(length 3.81)
 				(name "EMMC_D2"
 					(effects
 						(font
@@ -3529,8 +3787,8 @@
 				(alternate "GPIO4_A2_u" bidirectional line)
 			)
 			(pin bidirectional line
-				(at 33.02 -3.81 180)
-				(length 2.54)
+				(at 26.67 -7.62 180)
+				(length 3.81)
 				(name "EMMC_D6"
 					(effects
 						(font
@@ -3551,8 +3809,8 @@
 				(alternate "UART0_TX_M2" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 -6.35 180)
-				(length 2.54)
+				(at 26.67 -10.16 180)
+				(length 3.81)
 				(name "EMMC_D7"
 					(effects
 						(font
@@ -3573,8 +3831,8 @@
 				(alternate "UART0_RX_M2" input line)
 			)
 			(pin bidirectional line
-				(at 33.02 -8.89 180)
-				(length 2.54)
+				(at 26.67 -15.24 180)
+				(length 3.81)
 				(name "EMMC_CMD"
 					(effects
 						(font
@@ -3593,8 +3851,8 @@
 				(alternate "GPIO4_B0_u" bidirectional line)
 			)
 			(pin output line
-				(at 33.02 -11.43 180)
-				(length 2.54)
+				(at 26.67 -12.7 180)
+				(length 3.81)
 				(name "EMMC_CLK"
 					(effects
 						(font
@@ -3615,8 +3873,8 @@
 		)
 		(symbol "RV1106G2_3_1"
 			(rectangle
-				(start -30.48 30.48)
-				(end 30.48 -30.48)
+				(start -30.48 24.13)
+				(end 30.48 -24.13)
 				(stroke
 					(width 0)
 					(type default)
@@ -3625,9 +3883,149 @@
 					(type background)
 				)
 			)
+			(polyline
+				(pts
+					(xy -21.59 21.59) (xy -7.62 21.59) (xy -7.62 19.05)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -10.16 -22.86) (xy -7.62 -22.86)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -7.62 19.05) (xy -8.89 20.32)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -7.62 19.05) (xy -6.35 20.32)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -7.62 17.78) (xy -7.62 -6.35) (xy -10.16 -6.35)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -7.62 -10.16) (xy -10.16 -10.16)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -7.62 -10.16) (xy -7.62 -22.86)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 19.05) (xy 7.62 20.32)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 19.05) (xy 10.16 20.32)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 17.78) (xy 8.89 -11.43) (xy 11.43 -11.43)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 19.05 21.59) (xy 8.89 21.59) (xy 8.89 19.05)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(text "1V8"
+				(at -5.08 -16.51 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
 			(pin input line
-				(at -33.02 13.97 0)
-				(length 2.54)
+				(at -34.29 -11.43 0)
+				(length 3.81)
 				(name "UART0_RX_M0"
 					(effects
 						(font
@@ -3648,8 +4046,8 @@
 				(alternate "RTC_CLKO" output line)
 			)
 			(pin output line
-				(at -33.02 11.43 0)
-				(length 2.54)
+				(at -34.29 -13.97 0)
+				(length 3.81)
 				(name "UART0_TX_M0"
 					(effects
 						(font
@@ -3668,8 +4066,8 @@
 				(alternate "PWM2_M0" output line)
 			)
 			(pin output line
-				(at -33.02 8.89 0)
-				(length 2.54)
+				(at -34.29 -16.51 0)
+				(length 3.81)
 				(name "PWM3_IR_M0"
 					(effects
 						(font
@@ -3687,8 +4085,8 @@
 				(alternate "GPIO0_A2_d" bidirectional line)
 			)
 			(pin bidirectional line
-				(at -33.02 6.35 0)
-				(length 2.54)
+				(at -34.29 -19.05 0)
+				(length 3.81)
 				(name "I2C1_SCL_M0"
 					(effects
 						(font
@@ -3708,8 +4106,8 @@
 				(alternate "UART1_RTS_M0" output line)
 			)
 			(pin bidirectional line
-				(at -33.02 3.81 0)
-				(length 2.54)
+				(at -34.29 -21.59 0)
+				(length 3.81)
 				(name "I2C1_SDA_M0"
 					(effects
 						(font
@@ -3729,8 +4127,8 @@
 				(alternate "UART1_CTS_M0" input line)
 			)
 			(pin output line
-				(at -33.02 1.27 0)
-				(length 2.54)
+				(at -34.29 16.51 0)
+				(length 3.81)
 				(name "UART3_TX_M0"
 					(effects
 						(font
@@ -3750,8 +4148,8 @@
 				(alternate "PWM7_IR_M0" output line)
 			)
 			(pin input line
-				(at -33.02 -1.27 0)
-				(length 2.54)
+				(at -34.29 13.97 0)
+				(length 3.81)
 				(name "UART3_RX_M0"
 					(effects
 						(font
@@ -3771,8 +4169,8 @@
 				(alternate "PWM4_M0" output line)
 			)
 			(pin output line
-				(at -33.02 -3.81 0)
-				(length 2.54)
+				(at -34.29 11.43 0)
+				(length 3.81)
 				(name "PWM0_M0"
 					(effects
 						(font
@@ -3792,8 +4190,8 @@
 				(alternate "VI_CIF_D0_M1" input line)
 			)
 			(pin output line
-				(at -33.02 -6.35 0)
-				(length 2.54)
+				(at -34.29 8.89 0)
+				(length 3.81)
 				(name "UART1_TX_M0"
 					(effects
 						(font
@@ -3812,8 +4210,8 @@
 				(alternate "I2C0_SCL_M0" bidirectional line)
 			)
 			(pin input line
-				(at -33.02 -8.89 0)
-				(length 2.54)
+				(at -34.29 6.35 0)
+				(length 3.81)
 				(name "UART1_RX_M0"
 					(effects
 						(font
@@ -3832,8 +4230,8 @@
 				(alternate "I2C0_SDA_M0" bidirectional line)
 			)
 			(pin input line
-				(at -33.02 -11.43 0)
-				(length 2.54)
+				(at -34.29 3.81 0)
+				(length 3.81)
 				(name "UART4_RX_M0"
 					(effects
 						(font
@@ -3852,8 +4250,8 @@
 				(alternate "PWM3_IR_M1" output line)
 			)
 			(pin output line
-				(at -33.02 -13.97 0)
-				(length 2.54)
+				(at -34.29 1.27 0)
+				(length 3.81)
 				(name "UART4_TX_M0"
 					(effects
 						(font
@@ -3874,8 +4272,8 @@
 				(alternate "VI_CIF_D1_M1" input line)
 			)
 			(pin input line
-				(at -33.02 -16.51 0)
-				(length 2.54)
+				(at -34.29 -1.27 0)
+				(length 3.81)
 				(name "JTAG_CPU_TCK_M1"
 					(effects
 						(font
@@ -3896,8 +4294,8 @@
 				(alternate "UART2_TX_M1" output line)
 			)
 			(pin input line
-				(at -33.02 -19.05 0)
-				(length 2.54)
+				(at -34.29 -3.81 0)
+				(length 3.81)
 				(name "JTAG_CPU_TMS_M1"
 					(effects
 						(font
@@ -3918,9 +4316,9 @@
 				(alternate "UART2_RX_M1" input line)
 			)
 			(pin power_in line
-				(at -33.02 19.05 0)
-				(length 2.54)
-				(name "GPIO1_VCC3V3"
+				(at -34.29 21.59 0)
+				(length 3.81)
+				(name "VDD3V3"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -3936,8 +4334,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 11.43 180)
-				(length 2.54)
+				(at 34.29 -1.27 180)
+				(length 3.81)
 				(name "UART0_TX_M1"
 					(effects
 						(font
@@ -3958,8 +4356,8 @@
 				(alternate "VO_LCDC_D17" output line)
 			)
 			(pin input line
-				(at 33.02 8.89 180)
-				(length 2.54)
+				(at 34.29 -3.81 180)
+				(length 3.81)
 				(name "UART0_RX_M1"
 					(effects
 						(font
@@ -3980,8 +4378,8 @@
 				(alternate "VO_LCDC_D16" output line)
 			)
 			(pin input line
-				(at 33.02 6.35 180)
-				(length 2.54)
+				(at 34.29 -8.89 180)
+				(length 3.81)
 				(name "UART0_CTS_M1"
 					(effects
 						(font
@@ -4004,8 +4402,8 @@
 				(alternate "VO_LCDC_D15" output line)
 			)
 			(pin output line
-				(at 33.02 3.81 180)
-				(length 2.54)
+				(at 34.29 -6.35 180)
+				(length 3.81)
 				(name "UART0_RTS_M1"
 					(effects
 						(font
@@ -4028,8 +4426,8 @@
 				(alternate "VO_LCDC_D14" output line)
 			)
 			(pin power_in line
-				(at -33.02 16.51 0)
-				(length 2.54)
+				(at 34.29 21.59 180)
+				(length 3.81)
 				(name "GPIO5_VCC"
 					(effects
 						(font
@@ -4046,8 +4444,8 @@
 				)
 			)
 			(pin bidirectional line
-				(at 33.02 1.27 180)
-				(length 2.54)
+				(at 34.29 13.97 180)
+				(length 3.81)
 				(name "SDMMC1_D1_M0"
 					(effects
 						(font
@@ -4069,8 +4467,8 @@
 				(alternate "VO_LCDC_D8" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 -1.27 180)
-				(length 2.54)
+				(at 34.29 16.51 180)
+				(length 3.81)
 				(name "SDMMC_D0"
 					(effects
 						(font
@@ -4092,8 +4490,8 @@
 				(alternate "VO_LCDC_D9" output line)
 			)
 			(pin output line
-				(at 33.02 -3.81 180)
-				(length 2.54)
+				(at 34.29 6.35 180)
+				(length 3.81)
 				(name "SDMMC1_CLK_M0"
 					(effects
 						(font
@@ -4113,8 +4511,8 @@
 				(alternate "VO_LCDC_D10" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 -6.35 180)
-				(length 2.54)
+				(at 34.29 3.81 180)
+				(length 3.81)
 				(name "SDMMC1_CMD_M0"
 					(effects
 						(font
@@ -4134,8 +4532,8 @@
 				(alternate "VO_LCDC_D11" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 -8.89 180)
-				(length 2.54)
+				(at 34.29 8.89 180)
+				(length 3.81)
 				(name "SDMMC1_D3_M0"
 					(effects
 						(font
@@ -4156,8 +4554,8 @@
 				(alternate "VO_LCDC_D12" output line)
 			)
 			(pin bidirectional line
-				(at 33.02 -11.43 180)
-				(length 2.54)
+				(at 34.29 11.43 180)
+				(length 3.81)
 				(name "SDMMC1_D2_M0"
 					(effects
 						(font
@@ -4190,10 +4588,106 @@
 					(type background)
 				)
 			)
+			(polyline
+				(pts
+					(xy -12.7 26.67) (xy -2.54 26.67) (xy -2.54 24.13)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 24.13) (xy -3.81 25.4)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 24.13) (xy -1.27 25.4)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 22.86) (xy -2.54 -27.94) (xy -5.08 -27.94)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 24.13) (xy 7.62 25.4)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 24.13) (xy 10.16 25.4)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 8.89 22.86) (xy 8.89 -7.62) (xy 11.43 -7.62)
+				)
+				(stroke
+					(width 0)
+					(type dash)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 19.05 26.67) (xy 8.89 26.67) (xy 8.89 24.13)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 			(pin power_in line
-				(at -33.02 25.4 0)
-				(length 2.54)
-				(name "MIPI_AVDD1V8"
+				(at -34.29 26.67 0)
+				(length 3.81)
+				(name "GPIO7_VCC1V8"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -4207,11 +4701,11 @@
 						)
 					)
 				)
-				(alternate "GPIO7_VCC1V8" power_in line)
+				(alternate "MIPI_AVDD1V8" power_in line)
 			)
 			(pin output line
-				(at -33.02 22.86 0)
-				(length 2.54)
+				(at -34.29 -21.59 0)
+				(length 3.81)
 				(name "VI_CIF_CLKO_M0"
 					(effects
 						(font
@@ -4230,8 +4724,8 @@
 				(alternate "MIPI_CLK0_OUT" output line)
 			)
 			(pin input line
-				(at -33.02 15.24 0)
-				(length 2.54)
+				(at -34.29 -26.67 0)
+				(length 3.81)
 				(name "VI_CIF_VSYNC_M0"
 					(effects
 						(font
@@ -4249,8 +4743,8 @@
 				(alternate "GPIO3_C5_d" bidirectional line)
 			)
 			(pin input line
-				(at -33.02 -12.7 0)
-				(length 2.54)
+				(at -34.29 -3.81 0)
+				(length 3.81)
 				(name "VI_CIF_D10"
 					(effects
 						(font
@@ -4270,8 +4764,8 @@
 				(alternate "PWM7_IR_M2" output line)
 			)
 			(pin input line
-				(at -33.02 -15.24 0)
-				(length 2.54)
+				(at -34.29 -6.35 0)
+				(length 3.81)
 				(name "VI_CIF_D11"
 					(effects
 						(font
@@ -4291,8 +4785,8 @@
 				(alternate "UART5_TX_M2" output line)
 			)
 			(pin input line
-				(at -33.02 -20.32 0)
-				(length 2.54)
+				(at -34.29 -11.43 0)
+				(length 3.81)
 				(name "VI_CIF_D13"
 					(effects
 						(font
@@ -4312,8 +4806,8 @@
 				(alternate "UART5_RTS_M2" output line)
 			)
 			(pin input line
-				(at -33.02 -17.78 0)
-				(length 2.54)
+				(at -34.29 -8.89 0)
+				(length 3.81)
 				(name "VI_CIF_D12"
 					(effects
 						(font
@@ -4333,8 +4827,8 @@
 				(alternate "UART5_RX_M2" input line)
 			)
 			(pin input line
-				(at -33.02 -22.86 0)
-				(length 2.54)
+				(at -34.29 -13.97 0)
+				(length 3.81)
 				(name "VI_CIF_D14"
 					(effects
 						(font
@@ -4354,8 +4848,8 @@
 				(alternate "UART5_CTS_M2" input line)
 			)
 			(pin input line
-				(at -33.02 -25.4 0)
-				(length 2.54)
+				(at -34.29 -16.51 0)
+				(length 3.81)
 				(name "VI_CIF_D15"
 					(effects
 						(font
@@ -4374,8 +4868,8 @@
 				(alternate "PWM1_M2" output line)
 			)
 			(pin output line
-				(at 33.02 10.16 180)
-				(length 2.54)
+				(at 34.29 19.05 180)
+				(length 3.81)
 				(name "VO_LCDC_D1"
 					(effects
 						(font
@@ -4396,8 +4890,8 @@
 				(alternate "VI_CIF_D8_M1" input line)
 			)
 			(pin output line
-				(at 33.02 12.7 180)
-				(length 2.54)
+				(at 34.29 21.59 180)
+				(length 3.81)
 				(name "VO_LCDC_D0"
 					(effects
 						(font
@@ -4418,8 +4912,8 @@
 				(alternate "VI_CIF_D9_M1" input line)
 			)
 			(pin output line
-				(at 33.02 -7.62 180)
-				(length 2.54)
+				(at 34.29 1.27 180)
+				(length 3.81)
 				(name "VO_LCDC_CLK"
 					(effects
 						(font
@@ -4442,8 +4936,8 @@
 				(alternate "VI_CIF_CLKO_M1" output line)
 			)
 			(pin output line
-				(at 33.02 -10.16 180)
-				(length 2.54)
+				(at 34.29 -3.81 180)
+				(length 3.81)
 				(name "VO_LCDC_VSYNC"
 					(effects
 						(font
@@ -4467,8 +4961,8 @@
 				(alternate "VI_CIF_VSYNC_M1" input line)
 			)
 			(pin output line
-				(at 33.02 -12.7 180)
-				(length 2.54)
+				(at 34.29 -1.27 180)
+				(length 3.81)
 				(name "VO_LCDC_HSYNC"
 					(effects
 						(font
@@ -4490,8 +4984,8 @@
 				(alternate "VI_CIF_HREF_M1" input line)
 			)
 			(pin power_in line
-				(at 33.02 15.24 180)
-				(length 2.54)
+				(at 34.29 26.67 180)
+				(length 3.81)
 				(name "GPIO6_VCC"
 					(effects
 						(font
@@ -4508,8 +5002,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 -15.24 180)
-				(length 2.54)
+				(at 34.29 -6.35 180)
+				(length 3.81)
 				(name "VO_LCDC_DEN"
 					(effects
 						(font
@@ -4531,8 +5025,8 @@
 				(alternate "VI_CIF_CLKI_M1" input line)
 			)
 			(pin output line
-				(at 33.02 7.62 180)
-				(length 2.54)
+				(at 34.29 16.51 180)
+				(length 3.81)
 				(name "VO_LCDC_D2"
 					(effects
 						(font
@@ -4554,8 +5048,8 @@
 				(alternate "VI_CIF_D7_M1" input line)
 			)
 			(pin output line
-				(at 33.02 5.08 180)
-				(length 2.54)
+				(at 34.29 13.97 180)
+				(length 3.81)
 				(name "VO_LCDC_D3"
 					(effects
 						(font
@@ -4577,8 +5071,8 @@
 				(alternate "VI_CIF_D6_M1" input line)
 			)
 			(pin output line
-				(at 33.02 2.54 180)
-				(length 2.54)
+				(at 34.29 11.43 180)
+				(length 3.81)
 				(name "VO_LCDC_D4"
 					(effects
 						(font
@@ -4601,8 +5095,8 @@
 				(alternate "VI_CIF_D5_M1" input line)
 			)
 			(pin output line
-				(at 33.02 0 180)
-				(length 2.54)
+				(at 34.29 8.89 180)
+				(length 3.81)
 				(name "VO_LCDC_D5"
 					(effects
 						(font
@@ -4625,8 +5119,8 @@
 				(alternate "VI_CIF_D4_M1" input line)
 			)
 			(pin output line
-				(at 33.02 -2.54 180)
-				(length 2.54)
+				(at 34.29 6.35 180)
+				(length 3.81)
 				(name "VO_LCDC_D6"
 					(effects
 						(font
@@ -4648,8 +5142,8 @@
 				(alternate "VI_CIF_D3_M1" input line)
 			)
 			(pin output line
-				(at 33.02 -5.08 180)
-				(length 2.54)
+				(at 34.29 3.81 180)
+				(length 3.81)
 				(name "VO_LCDC_D7"
 					(effects
 						(font
@@ -4671,8 +5165,8 @@
 				(alternate "VI_CIF_D2_M1" input line)
 			)
 			(pin input line
-				(at -33.02 12.7 0)
-				(length 2.54)
+				(at -34.29 21.59 0)
+				(length 3.81)
 				(name "VI_CIF_D0_M0"
 					(effects
 						(font
@@ -4692,8 +5186,8 @@
 				(alternate "MIPI_CSI_RX_D3N" input line)
 			)
 			(pin input line
-				(at -33.02 10.16 0)
-				(length 2.54)
+				(at -34.29 19.05 0)
+				(length 3.81)
 				(name "VI_CIF_D1_M0"
 					(effects
 						(font
@@ -4713,8 +5207,8 @@
 				(alternate "MIPI_CSI_RX_D3P" input line)
 			)
 			(pin input line
-				(at -33.02 7.62 0)
-				(length 2.54)
+				(at -34.29 16.51 0)
+				(length 3.81)
 				(name "VI_CIF_D2_M0"
 					(effects
 						(font
@@ -4734,8 +5228,8 @@
 				(alternate "MIPI_CSI_RX_CK1N" input line)
 			)
 			(pin input line
-				(at -33.02 5.08 0)
-				(length 2.54)
+				(at -34.29 13.97 0)
+				(length 3.81)
 				(name "VI_CIF_D3_M0"
 					(effects
 						(font
@@ -4755,8 +5249,8 @@
 				(alternate "MIPI_CSI_RX_CK1P" input line)
 			)
 			(pin input line
-				(at -33.02 2.54 0)
-				(length 2.54)
+				(at -34.29 11.43 0)
+				(length 3.81)
 				(name "VI_CIF_D4_M0"
 					(effects
 						(font
@@ -4776,8 +5270,8 @@
 				(alternate "MIPI_CSI_RX_D2N" input line)
 			)
 			(pin input line
-				(at -33.02 0 0)
-				(length 2.54)
+				(at -34.29 8.89 0)
+				(length 3.81)
 				(name "VI_CIF_D5_M0"
 					(effects
 						(font
@@ -4797,8 +5291,8 @@
 				(alternate "MIPI_CSI_RX_D2P" input line)
 			)
 			(pin input line
-				(at -33.02 -2.54 0)
-				(length 2.54)
+				(at -34.29 6.35 0)
+				(length 3.81)
 				(name "VI_CIF_D6_M0"
 					(effects
 						(font
@@ -4818,8 +5312,8 @@
 				(alternate "MIPI_CSI_RX_D1N" input line)
 			)
 			(pin input line
-				(at -33.02 -5.08 0)
-				(length 2.54)
+				(at -34.29 3.81 0)
+				(length 3.81)
 				(name "VI_CIF_D7_M0"
 					(effects
 						(font
@@ -4839,8 +5333,8 @@
 				(alternate "MIPI_CSI_RX_D1P" input line)
 			)
 			(pin input line
-				(at -33.02 -7.62 0)
-				(length 2.54)
+				(at -34.29 1.27 0)
+				(length 3.81)
 				(name "VI_CIF_D8_M0"
 					(effects
 						(font
@@ -4860,8 +5354,8 @@
 				(alternate "MIPI_CSI_RX_CK0N" input line)
 			)
 			(pin input line
-				(at -33.02 -10.16 0)
-				(length 2.54)
+				(at -34.29 -1.27 0)
+				(length 3.81)
 				(name "VI_CIF_D9_M0"
 					(effects
 						(font
@@ -4881,8 +5375,8 @@
 				(alternate "MIPI_CSI_RX_CK0P" input line)
 			)
 			(pin input line
-				(at -33.02 20.32 0)
-				(length 2.54)
+				(at -34.29 -19.05 0)
+				(length 3.81)
 				(name "VI_CIF_CLKI_M0"
 					(effects
 						(font
@@ -4902,8 +5396,8 @@
 				(alternate "MIPI_CSI_RX_D0N" input line)
 			)
 			(pin input line
-				(at -33.02 17.78 0)
-				(length 2.54)
+				(at -34.29 -24.13 0)
+				(length 3.81)
 				(name "VI_CIF_HREF_M0"
 					(effects
 						(font
@@ -4925,8 +5419,8 @@
 		)
 		(symbol "RV1106G2_5_1"
 			(rectangle
-				(start -30.48 30.48)
-				(end 30.48 -30.48)
+				(start -15.24 19.05)
+				(end 15.24 -19.05)
 				(stroke
 					(width 0)
 					(type default)
@@ -4935,27 +5429,9 @@
 					(type background)
 				)
 			)
-			(pin power_in line
-				(at -33.02 11.43 0)
-				(length 2.54)
-				(name "SARADC_USB_AVDD1V8"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "24"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin input line
-				(at -33.02 -6.35 0)
-				(length 2.54)
+				(at -19.05 16.51 0)
+				(length 3.81)
 				(name "USB_VBUSDET"
 					(effects
 						(font
@@ -4972,8 +5448,8 @@
 				)
 			)
 			(pin bidirectional line
-				(at -33.02 -8.89 0)
-				(length 2.54)
+				(at -19.05 8.89 0)
+				(length 3.81)
 				(name "USB_DM"
 					(effects
 						(font
@@ -4990,8 +5466,8 @@
 				)
 			)
 			(pin bidirectional line
-				(at -33.02 -11.43 0)
-				(length 2.54)
+				(at -19.05 11.43 0)
+				(length 3.81)
 				(name "USB_DP"
 					(effects
 						(font
@@ -5007,27 +5483,9 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 8.89 0)
-				(length 2.54)
-				(name "USB_AVDD3V3"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "28"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin output line
-				(at 33.02 -2.54 180)
-				(length 2.54)
+				(at 19.05 6.35 180)
+				(length 3.81)
 				(name "CODEC_LINEOUT"
 					(effects
 						(font
@@ -5044,8 +5502,8 @@
 				)
 			)
 			(pin passive line
-				(at 33.02 0 180)
-				(length 2.54)
+				(at 19.05 3.81 180)
+				(length 3.81)
 				(name "CODEC_VCM"
 					(effects
 						(font
@@ -5061,27 +5519,9 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 6.35 0)
-				(length 2.54)
-				(name "CODEC_AVDD1V8"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "31"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin power_out line
-				(at 33.02 2.54 180)
-				(length 2.54)
+				(at 19.05 1.27 180)
+				(length 3.81)
 				(name "CODEC_MICBIAS"
 					(effects
 						(font
@@ -5098,8 +5538,8 @@
 				)
 			)
 			(pin input line
-				(at 33.02 12.7 180)
-				(length 2.54)
+				(at 19.05 13.97 180)
+				(length 3.81)
 				(name "CODEC_MIC0N"
 					(effects
 						(font
@@ -5116,8 +5556,8 @@
 				)
 			)
 			(pin input line
-				(at 33.02 10.16 180)
-				(length 2.54)
+				(at 19.05 16.51 180)
+				(length 3.81)
 				(name "CODEC_MIC0P"
 					(effects
 						(font
@@ -5134,8 +5574,8 @@
 				)
 			)
 			(pin input line
-				(at 33.02 7.62 180)
-				(length 2.54)
+				(at 19.05 8.89 180)
+				(length 3.81)
 				(name "CODEC_MIC1N"
 					(effects
 						(font
@@ -5152,8 +5592,8 @@
 				)
 			)
 			(pin input line
-				(at 33.02 5.08 180)
-				(length 2.54)
+				(at 19.05 11.43 180)
+				(length 3.81)
 				(name "CODEC_MIC1P"
 					(effects
 						(font
@@ -5169,47 +5609,9 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 3.81 0)
-				(length 2.54)
-				(name "CODEC_AVSS"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "37"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin power_in line
-				(at -33.02 1.27 0)
-				(length 2.54)
-				(name "OTP_AVDD1V8"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "96"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(alternate "ETH_AVDD1V8" power_in line)
-				(alternate "TSADC_AVDD1V8" power_in line)
-			)
 			(pin input line
-				(at 33.02 -5.08 180)
-				(length 2.54)
+				(at 19.05 -11.43 180)
+				(length 3.81)
 				(name "ETH_PHY_RXN"
 					(effects
 						(font
@@ -5226,8 +5628,8 @@
 				)
 			)
 			(pin input line
-				(at 33.02 -7.62 180)
-				(length 2.54)
+				(at 19.05 -8.89 180)
+				(length 3.81)
 				(name "ETH_PHY_RXP"
 					(effects
 						(font
@@ -5244,8 +5646,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 -10.16 180)
-				(length 2.54)
+				(at 19.05 -6.35 180)
+				(length 3.81)
 				(name "ETH_PHY_TXN"
 					(effects
 						(font
@@ -5262,8 +5664,8 @@
 				)
 			)
 			(pin output line
-				(at 33.02 -12.7 180)
-				(length 2.54)
+				(at 19.05 -3.81 180)
+				(length 3.81)
 				(name "ETH_PHY_TXP"
 					(effects
 						(font
@@ -5279,27 +5681,9 @@
 					)
 				)
 			)
-			(pin power_in line
-				(at -33.02 -1.27 0)
-				(length 2.54)
-				(name "ETH_AVDD3V3"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "101"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin passive line
-				(at -33.02 -3.81 0)
-				(length 2.54)
+				(at 19.05 -16.51 180)
+				(length 3.81)
 				(name "ETH_EXTR"
 					(effects
 						(font

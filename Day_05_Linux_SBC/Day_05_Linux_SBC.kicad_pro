@@ -866,6 +866,14 @@
         "SCL",
         "SDA"
       ],
+      "SDIO": [
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "CLK",
+        "CMD"
+      ],
       "SPI": [
         "~{CS}",
         "CLK",
@@ -931,13 +939,29 @@
         "uuid": "46ec7b9e-7ce4-471b-b2a3-117ade628de1"
       }
     ],
-    "used_designators": "J4-6,U4",
+    "used_designators": "J5,Y1-4,#PWR12,#PWR14,#PWR24,#PWR35-76,R13-16,L5-7,AE1,C20-66,U4,U9-10",
     "variants": []
   },
   "sheets": [
     [
       "46ec7b9e-7ce4-471b-b2a3-117ade628de1",
       "Day_05_Linux_SBC"
+    ],
+    [
+      "d9d98be6-64d6-4765-a541-c75f4be7167b",
+      "Power Supply"
+    ],
+    [
+      "79c2327c-f5ce-470a-a743-09e37bdc904a",
+      "RV1106G2"
+    ],
+    [
+      "727d6210-944f-4466-8dfb-395741ae15c0",
+      "STM32H5"
+    ],
+    [
+      "c99e4775-cef0-4af0-990c-bf5fa329ec20",
+      "ESP32-C6"
     ]
   ],
   "text_variables": {},
