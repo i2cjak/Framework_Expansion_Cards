@@ -78,6 +78,14 @@ Solid-State Dual-PIN Radiation Dosimeter, Pulse Spectrometer & Quantum Decay Har
   <img src="img/day9.png" alt="Day 9 Solid-State PIN Radiation Dosimeter and Quantum RNG Card" title="day9.png">
 </p>
 
+## [Day 10](./Day_10_SWD_Debugger_UART/)
+
+Autoleveling 1.65V–5.5V CMSIS-DAPv2 High-Speed SWD Debugger & 6 Mbps UART Console
+
+<p align="center">
+  <img src="img/day10.png" alt="Day 10 CMSIS-DAPv2 SWD Debugger and UART Card" title="day10.png">
+</p>
+
 
 
 
