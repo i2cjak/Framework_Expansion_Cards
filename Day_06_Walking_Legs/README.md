@@ -1,6 +1,6 @@
 # Day 06 — Walking Legs (Quadruped 2-DOF Expansion Card Set)
 
-Four identical USB Type-C Expansion Cards plug into the four expansion bays of a Framework Laptop 13, locking mechanically into the side T-rails and extending a gusseted MJF PA12 **under-chassis load shelf** beneath the aluminum bottom cover so the ~`1.3 kg` laptop stands `95 mm` off the desk and walks with static crawl and dynamic trot gaits.
+Four identical USB Type-C Expansion Cards plug flush into the four rear-set expansion bays (`Y = +36.0 mm` & `+76.6 mm`) of a Framework Laptop 13, anchoring a pair of reversible **12-gauge (`2.03 mm`) `5052-H32` aluminum Flank Stance-Extension Rails (`mech/leg_flank_bracket.step`)** that bolt across both bays per side and cantilever `93 mm` forward along/under the solid CNC aluminum bottom cover (`Y = -72.0 .. +94.0 mm`) to carry the front walking legs `81.0 mm` forward of the front ports (`Y = -45.0 mm` & `+67.0 mm`, `112.0 mm` balanced wheelbase) so the ~`1.3 kg` laptop stands walk-ready and executes static crawl and dynamic trot gaits.
 
 ---
 
@@ -35,19 +35,22 @@ Four identical USB Type-C Expansion Cards plug into the four expansion bays of a
 - `software/walk_controller.py` streams trajectory packets tagged with a target 11-bit `SOF` frame number `(FNR + 5) & 0x7FF`.
 - On each card, `USB_LP_CAN1_RX0_IRQHandler` phase-locks `TIM2`'s `200 Hz` (`5000 µs`, `1 µs` resolution) hardware PWM counter to `FNR % 5 == 0` and commits `HIP_PWM` (`PA0`) and `KNEE_PWM` (`PA1`) simultaneously on the target `SOF` edge—achieving deterministic 4-leg synchronization with zero external sync wires.
 
-### 4. Recessed-Bay Rigid Metal Outrigger & SendCutSend Sheet-Metal Fabrication
-- **Clearing the Recessed Underside Bay (`mech/leg_bay_outrigger.step`, `ALU-080` `2.03 mm` `12-gauge` `5052-H32`, `qty: 4`):** Real Framework Laptop expansion bays sit recessed `~7 mm` inward inside a `6.8 mm`-tall underside pocket beneath the beveled overhanging palmrest deck. Rather than cantilevering plastic out of that recessed slot, a **12-gauge (`2.03 mm`) CNC-bent `5052-H32` aluminum U-channel cantilever spine** bolts across the underside of the locked-in bay cartridge (`4× M2.5`), extends **`17.5 mm` inboard underneath the laptop's solid CNC aluminum bottom cover** (`Y = +26.5..+44.0 mm`, with a `10 × 7 mm` access window over the chassis release button) to react vertical loads and the `0.57 N·m` roll moment directly into the chassis floor (`> 6×` yield safety factor at dynamic trot), projects horizontally clear past the beveled chassis overhang, and rises into `18.5 mm` twin vertical cradle walls carrying the dual-servo turret `16.0 mm` further outboard (`34 pass · 0 fail · 0 warn` SendCutSend live DFM).
-- **`mech/leg_bay_housing.step` (MJF PA12 Nylon, `qty: 4`):** Low-profile `6.8 mm` recessed bay T-rail cartridge + `6.4 mm`-tall enclosed servo-harness neck clearing the overhanging palmrest rim + outboard dual-servo saddle bolted inside the `ALU-080` metal U-cradle (`4× M2.5`).
-- **SendCutSend `5052-H32` Aluminum Linkage (`0 fail · 0 warn` live DFM verified across all 5 sheet-metal parts):**
-  - `mech/leg_bay_outrigger.flat.dxf` (`ALU-080` `2.03 mm` CNC-bent 12-gauge bay-extension cantilever spine & under-chassis anchor plate, `qty: 4` — `34 pass · 0 fail · 0 warn`).
+### 4. Rear-Set Port Geometry, Reversible `ALU-080` Flank Stance-Extension Rail & SendCutSend DFM
+- **Why Direct Port Mounting Fails Fore-Aft Balance (`FW_MAIN_PCB_GENERIC_2` Port Coordinates):** On a Framework Laptop 13 (`228.9 mm` front-to-back, `Y = -114.45 .. +114.45 mm`), **both** physical Expansion Card bays on each flank sit in the **rear half** of the laptop (`Y = +36.0 mm` Front Port and `Y = +76.6 mm` Rear Port, `40.60 mm` center-to-center pitch with a `10.6 mm` aluminum divider), while the entire front `135.45 mm` (`Y = -114.45 .. +21.0 mm`, battery + palmrest) has zero expansion bays. Mounting legs directly at the ports would leave `150 mm` of unsupported front laptop mass ahead of the front legs.
+- **Reversible Flank Stance-Extension Rail (`mech/leg_flank_bracket.step`, `ALU-080` `2.03 mm` `12-gauge` `5052-H32`, `qty: 2`):** Each `166.0 × 57.0 × 12.5 mm` CNC-bent inverted U-channel rail (`I_xx ≈ 820 mm⁴` with twin `12.5 mm` `90°` downward stiffening girder flanges) bolts across **both** rear-set `leg_bay_housing` plugs on a flank (`8× M2.5` across the `40.6 mm` two-bay baseline, locking out yaw twist) and extends **`93 mm` forward** along the laptop flank and `28.5 mm` underneath the solid CNC aluminum bottom cover (`Y = -72.0 .. +94.0 mm`, clearing both the `|X| = 111.5 mm` card-release latch buttons and the `Y = ±103 mm` rubber foot strips). It carries the **Front `leg_servo_pod` at `Y = -45.0 mm`** (`81.0 mm` forward of the Front Port — reacting front-leg vertical loads straight upward into the solid aluminum bottom cover right above `Y = -45.0 mm` with zero port prying!) and the **Rear `leg_servo_pod` at `Y = +67.0 mm`** (`112.0 mm` balanced quadruped wheelbase). A mirror-symmetric 24-hole layout lets **one single reversible SKU (`qty: 2`)** fit both Left and Right flanks (`37 pass · 0 fail · 0 warn` SendCutSend live DFM).
+- **Modular Printed Plugs & Saddles (`MJF PA12 Nylon`):**
+  - `mech/leg_bay_housing.step` (`qty: 4`) — Flush `30 × 32 × 6.8 mm` Expansion Card bay cartridge housing the `Day_06` PCB at `Y = +36.0` & `+76.6 mm`, with a front 4-wire servo harness exit onto the rail deck (`4× M2.5` floor inserts).
+  - `mech/leg_servo_pod.step` (`qty: 4`) — Modular outboard dual-`MG90S` saddle bolted at `Y = -45.0` & `+67.0 mm` on the outboard deck of `leg_flank_bracket` (`4× M2.5` floor inserts + `4× M2.5` roof inserts for `leg_hip_bracket`).
+- **SendCutSend `5052-H32` Aluminum Sheet-Metal Set (`0 fail · 0 warn` live DFM verified across all 5 sheet-metal parts):**
+  - `mech/leg_flank_bracket.flat.dxf` (`ALU-080` `2.03 mm` CNC-bent `166.0 mm` reversible flank stance-extension U-channel rail, `qty: 2` — `37 pass · 0 fail · 0 warn`).
   - `mech/leg_hip_bracket.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent 90° overhead double-shear bearing outrigger, `qty: 4` — `25 pass · 0 fail · 0 warn`).
   - `mech/leg_femur_link.dxf` (`ALU-080` `2.03 mm` laser-cut `38.0 mm` sagittal femur link, `qty: 8` — `13 pass · 0 fail · 0 warn`).
   - `mech/leg_knee_pushrod.dxf` (`ALU-080` `2.03 mm` laser-cut `36.0 mm` knee actuation pushrod, `qty: 4` — `13 pass · 0 fail · 0 warn`).
   - `mech/leg_tibia_strut.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent `60.0 mm` sagittal bellcrank U-channel tibia strut, `qty: 4` — `34 pass · 0 fail · 0 warn`).
 - **`mech/leg_foot_pad.step` (FDM 95A TPU, `qty: 4`):** Ø`22 mm` compliant leaf-spring arch paw with through-arch suspension slot bolted inside the tibia clevis on an M3 cross-axle.
 - **Reference 3D Fit-Check Assemblies (`mech/`):**
-  - `mech/walking_leg_assembly.step` — Complete colored single-leg sagittal 2-DOF assembly.
-  - `mech/walking_laptop_assembly.step` — Full walk-ready **Framework Laptop 13** on all four 2-DOF sagittal legs (`FL`, `FR`, `RL`, `RR`).
+  - `mech/walking_leg_assembly.step` — Complete single-flank module (`1× leg_flank_bracket` + `2×` rear-set `leg_bay_housing` + `2×` `leg_servo_pod` & 2-DOF sagittal legs + routed servo harnesses).
+  - `mech/walking_laptop_assembly.step` — Full walk-ready **Framework Laptop 13** with authentic rear-set ports (`Y = +36.0` & `+76.6 mm`), `2×` `ALU-080` flank stance-extension brackets, and balanced 4-leg stance (`Y = -45.0` & `+67.0 mm`).
 
 ---
 

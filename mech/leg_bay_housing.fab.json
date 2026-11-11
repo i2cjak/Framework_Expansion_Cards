@@ -1,6 +1,6 @@
 {
   "kind": "3dp",
-  "name": "Leg Bay Structural Housing",
+  "name": "Leg Bay Flush Port Housing",
   "source": "leg_bay_housing.step",
   "qty": 4,
   "options": {
@@ -9,10 +9,10 @@
     "color": "black"
   },
   "features": {
-    "volume_cm3": 17.7,
-    "area_cm2": 147.77,
+    "volume_cm3": 3.06,
+    "area_cm2": 43.12,
     "size_x_mm": 32.0,
-    "size_y_mm": 73.0,
-    "size_z_mm": 33.1
+    "size_y_mm": 29.8,
+    "size_z_mm": 6.8
   }
 }

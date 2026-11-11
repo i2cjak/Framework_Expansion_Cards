@@ -1,18 +1,18 @@
 {
   "kind": "sheetmetal",
-  "name": "Leg Bay Extension Outrigger",
-  "source": "leg_bay_outrigger.step",
-  "qty": 4,
+  "name": "Leg Flank Stance-Extension Rail",
+  "source": "leg_flank_bracket.step",
+  "qty": 2,
   "options": {
     "material": "aluminum_5052",
     "thickness_mm": 2.03,
     "finish": "none"
   },
   "features": {
-    "flat_x_mm": 81.5,
-    "flat_y_mm": 66.77,
-    "cut_length_mm": 390.4,
-    "holes": 8,
+    "flat_x_mm": 166.0,
+    "flat_y_mm": 76.11,
+    "cut_length_mm": 731.1,
+    "holes": 24,
     "bends": 2,
     "countersinks": 0
   },
@@ -23,6 +23,7 @@
     "process": "Fiber Laser",
     "finish": null,
     "services": [
+      "deburring",
       "bending"
     ],
     "bend_angles": [
@@ -32,16 +33,16 @@
     "hardware": [],
     "taps": [],
     "countersinks": [],
-    "flat": "leg_bay_outrigger.flat.dxf",
+    "flat": "leg_flank_bracket.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T17:05:33Z",
-      "pass": 35,
+      "at": "2026-11-11T17:36:49Z",
+      "pass": 37,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "09f87115e25eee5c6eeb0bf5b6d51e98e2d1bd5989769bb98debb1ea3e5f860e",
-      "flat_sha256": "4cfb041371cb1b4efa5ae77a539d32499c29a554cc0ebc6eccec443a1e54c103",
+      "source_sha256": "dfb6f3605b75a11f45d9f402803679836408789d518e43a6998807477e4e5876",
+      "flat_sha256": "93bbaad9d17c99400541b4dfabadadac597098948a542d5d73f3bf87ed87710d",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }
