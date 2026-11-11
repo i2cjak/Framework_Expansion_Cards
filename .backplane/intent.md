@@ -12,6 +12,6 @@ Design a series of increasingly ambitious and wacky Framework Laptop expansion c
 - Single Walking Leg Assembly (`mech/walking_leg_assembly.step`): Reference 3D fit-check assembly (`mech/`), not ordered.
 
 # Notes
-- Follow existing repository conventions: `Day_NN_<name>/` folders on `main`, `26.0 x 30.0 mm` 4-layer 1.6 mm card outline with Amphenol `12401981E412A` USB-C plug, `build.py` outputs, card `README.md`, and showcase renders in `img/`.
+- Follow existing repository conventions: `Day_NN_<name>/` folders on `main`, `26.0 x 30.0 mm` 4-layer 0.8 mm card outline with Amphenol `12401981E412A` straddle-mount USB-C plug, `build.py` outputs, card `README.md`, and showcase renders in `img/`.
 - Prefer basic and preferred components from the fab's stock with an `MPN` on every BOM line and single-sided SMD placement where possible; sheet-metal leg parts target SendCutSend live DFM rules; printed parts use FreeCAD scripts in `mech/`.
 - Commit per card on `main`; do not push without asking Bub first; order nothing directly (keep `.fab.json` measured and current for Buy it).

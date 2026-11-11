@@ -38,3 +38,12 @@ Frameoscope
   <img src="img/day4.png" alt="Day 4 Oscilloscope" title="day4.png">
 </p>
 
+## [Day 5](./Day_05_Power_Bus_Probe/)
+
+USB-C I2C / Qwiic Bridge & 36V / 5A Power Telemetry Probe
+
+<p align="center">
+  <img src="img/day5.png" alt="Day 5 USB-C I2C and Power Probe" title="day5.png">
+</p>
+
+
