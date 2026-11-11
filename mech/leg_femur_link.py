@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-SendCutSend 6061-T6 Aluminum Upper Femur Link (`ALU6061-080`, 2.032 mm thick)
-for Day 06 Walking Legs (Framework Quadruped Expansion Card Set).
+SendCutSend 5052-H32 Aluminum Sagittal Upper Femur Link (`ALU-080`, 2.032 mm thick)
+for Day 06 Walking Legs (`mech/leg_femur_link.py`).
+
+Operates in paired double-shear (inboard plate driven directly by the HipServo horn +
+outboard plate supported by `leg_hip_bracket`), swinging in the X-Z sagittal walking plane.
 
 Coordinate convention: mm, Z up, front facing -Y.
 Exports:
@@ -16,13 +19,13 @@ import FreeCAD as App
 import Part
 
 # --- Named Mechanical Parameters (mm) ---
-THICKNESS_MM       = 2.032   # SendCutSend ALU6061-080 (0.080")
-PITCH_LEN_MM       = 36.0    # Hip-pitch to knee-pivot center-to-center distance
-END_RADIUS_MM      = 6.0     # Rounded link ends -> total width = 12.0 mm, length = 48.0 mm
+THICKNESS_MM       = 2.032   # SendCutSend ALU-080 (0.080" 5052-H32)
+PITCH_LEN_MM       = 38.0    # Hip-to-knee center-to-center distance
+END_RADIUS_MM      = 6.0     # Rounded link ends -> total width = 12.0 mm, length = 50.0 mm
 PIVOT_HOLE_DIA_MM  = 3.10    # M3 shoulder-screw / bearing clearance hole
 HORN_BOLT_RAD_MM   = 7.50    # Dual M2 servo-horn drive bolt pattern around hip pivot (x=0)
-HORN_HOLE_DIA_MM   = 2.20    # M2 clearance (> 0.018" = 0.46 mm min hole)
-SLOT_HALF_SPAN_MM  = 7.50    # Central weight-reduction stadium slot half-length
+HORN_HOLE_DIA_MM   = 2.20    # M2 clearance (> 0.014" min hole)
+SLOT_HALF_SPAN_MM  = 8.00    # Central weight-reduction stadium slot half-length
 SLOT_RADIUS_MM     = 2.20    # 4.40 mm wide lightening slot (leaves 3.80 mm wall bridges)
 ALU_COLOR          = (0.76, 0.79, 0.82)
 

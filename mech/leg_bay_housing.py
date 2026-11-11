@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """
-MJF PA12 Structural Expansion-Bay Housing with Under-Chassis Load Shelf (`mech/leg_bay_housing.py`)
-for Day 06 Walking Legs (Framework Quadruped Expansion Card Set).
+MJF PA12 Structural Expansion-Bay Housing with Dual Outboard Servo Saddle & Under-Chassis Load Shelf
+(`mech/leg_bay_housing.py`) for Day 06 Walking Legs (Framework Quadruped Expansion Card Set).
 
-Coordinate convention: mm, Z up, front (outward leg turret) facing -Y,
-bay insertion direction (USB-C plug + under-chassis shelf) facing +Y.
+Coordinate convention: mm, Z up, front (outboard leg turret & servo splines) facing -Y,
+bay insertion direction (USB-C plug + under-chassis load shelf) facing +Y,
+fore/aft walking axis along +/-X.
 
-Mechanical lock-in & load path:
+Mechanical architecture:
   1. Bay cartridge (`30.0 x 26.5 x 6.8 mm`) slides into the Framework Laptop side T-rails
-     (`32.0 mm` overall rail span) and engages the spring latch pocket on the bottom face.
-  2. Captures the `26.0 x 30.0 x 0.8 mm` Day 06 PCB on two M2 bosses spaced `22.60 mm` apart
+     (`32.0 mm` overall rail span) and engages the underside latch pocket.
+  2. Captures the `26.0 x 30.0 x 0.8 mm` Day 06 PCB on two M2 standoffs spaced `22.60 mm` apart
      (`H1`/`H2` at X = +/-11.30 mm), leaving the USB-C plug tongue protruding +Y.
   3. Extends an `18.0 mm` deep, `30.0 mm` wide, `3.2 mm` thick gusseted **under-chassis load shelf**
-     underneath the laptop's aluminum bottom cover (at Z = -3.2..0.0 mm) so vertical ground
-     reaction forces transfer directly into the laptop chassis rather than the USB-C connector!
-  4. Projects a `24.0 mm` outboard actuator saddle (-Y) housing two `23.0 x 12.2 mm` metal-gear
-     micro servos (hip + knee linkage) and bolting to `leg_hip_bracket` via 2x M2.5 bosses.
+     underneath the laptop's aluminum bottom cover (`Z = -3.2..0.0 mm`) so vertical ground reaction
+     loads transfer directly into the laptop chassis floor rather than the USB-C receptacle.
+  4. Houses **two horizontal metal-gear MG90S micro-servos side-by-side** (`X = -7.30 mm` & `+7.30 mm`)
+     with **both output splines pointing outboard (`-Y`)** so the femur and knee-pushrod linkage swing
+     in the `X-Z` sagittal walking plane, topped by a rigid roof canopy supporting `leg_hip_bracket`.
 
 Exports:
   - mech/leg_bay_housing.FCStd
@@ -30,28 +32,38 @@ import FreeCAD as App
 import Part
 
 # --- Named Parameters (mm) ---
-BAY_WIDTH_X_MM       = 30.0     # Standard Framework Expansion Card body width
-RAIL_SPAN_X_MM       = 32.0     # Side T-rail outer span (1.0 mm rail tongue per side)
-RAIL_HEIGHT_Z_MM     = 1.8      # T-rail tongue thickness
-BAY_HEIGHT_Z_MM      = 6.8      # Standard Framework Expansion Card height
-BAY_INSERT_LEN_Y_MM  = 26.5     # Inserted bay body length along +Y (Y = 0 .. +26.5)
+BAY_WIDTH_X_MM        = 30.0     # Standard Framework Expansion Card body width
+RAIL_SPAN_X_MM        = 32.0     # Side T-rail outer span (1.0 mm rail tongue per side)
+RAIL_HEIGHT_Z_MM      = 1.8      # T-rail tongue thickness
+BAY_HEIGHT_Z_MM       = 6.8      # Standard Framework Expansion Card height
+BAY_INSERT_LEN_Y_MM   = 26.5     # Inserted bay body length along +Y (Y = 0 .. +26.5)
 
-PCB_POCKET_W_X_MM    = 26.4     # Clears 26.0 mm PCB width
-PCB_POCKET_L_Y_MM    = 24.8     # Clears internal PCB length
-PCB_BOSS_SPAN_X_MM   = 22.60    # Exact H1..H2 spacing (159.8 - 137.2 = 22.60 mm!)
-PCB_BOSS_Y_MM        = 8.0      # Boss Y position inside bay pocket
+PCB_POCKET_W_X_MM     = 26.4     # Clears 26.0 mm PCB width
+PCB_POCKET_L_Y_MM     = 24.0     # Internal PCB pocket (Y = 2.0 .. 26.0)
+PCB_BOSS_SPAN_X_MM    = 22.60    # Exact H1..H2 spacing (22.60 mm)
+PCB_BOSS_Y_MM         = 9.0      # Boss Y position inside bay pocket
 
-SHELF_LEN_Y_MM       = 18.0     # Under-chassis load reaction lip extending +Y past bay mouth
-SHELF_THICK_Z_MM     = 3.2      # Stiff PA12 load shelf thickness under laptop bottom cover
+SHELF_LEN_Y_MM        = 18.0     # Under-chassis load reaction lip extending +Y past bay mouth (Y = 0..+18.0)
+SHELF_THICK_Z_MM      = 3.2      # Stiff PA12 load shelf thickness under laptop bottom cover
 
-TURRET_LEN_Y_MM      = 24.0     # Outboard (-Y) actuator & hip clevis mount block (Y = -24.0 .. 0)
-TURRET_WIDTH_X_MM    = 30.0     # Matches flush with expansion card bezel width
-TURRET_HEIGHT_Z_MM   = 15.0     # Houses micro-servo stack cleanly above hip bracket mount plane
-SERVO_SLOT_W_X_MM    = 23.4     # Clears standard 23.0 mm micro-servo body length
-SERVO_SLOT_D_Y_MM    = 12.6     # Clears standard 12.2 mm micro-servo body thickness
+TURRET_WIDTH_X_MM     = 31.6     # Dual-servo saddle width (matches 32.0 mm rail span)
+TURRET_LEN_Y_MM       = 21.5     # Outboard (-Y) turret front face at Y = -21.5 mm
+TURRET_BOT_Z_MM       = -9.5     # Lower turret floor below servo pockets
+TURRET_TOP_Z_MM       = 20.5     # Upper turret roof where `leg_hip_bracket` bolts on
 
-CLEVIS_MOUNT_Y_CENTER = -12.0   # Center of `leg_hip_bracket` on bottom of turret (Z = 0)
-CLEVIS_HOLE_OFFSET_Y  = 5.50    # Matches `leg_hip_bracket` +/- 5.50 mm M2.5 holes
+SERVO_CENTER_X_MM     = 7.30     # Symmetric left/right servo centerlines (+/- 7.30 mm)
+SERVO_POCKET_W_X_MM   = 12.6     # Clears 12.2 mm MG90S servo thickness
+SERVO_POCKET_H_Z_MM   = 23.2     # Clears 22.8 mm MG90S servo case length (Z = -7.6 .. +15.6)
+SERVO_POCKET_Z0_MM    = -7.6     # Bottom of horizontal servo pocket (output spline at Z = +9.50 mm)
+SERVO_POCKET_DEPTH_Y  = 22.5     # Pocket from Y = -21.5 (outboard face) to Y = +1.0
+
+CANOPY_OUT_Y_MM       = -30.5    # Roof overhang supporting `leg_hip_bracket` top flange
+CANOPY_WIDTH_X_MM     = 28.0     # Matches `leg_hip_bracket` 28.0 mm width
+CANOPY_THICK_Z_MM     = 3.8      # Stiff upper bridge floor (Z = 16.7 .. 20.5)
+BRACKET_BOLT_X_MM     = 9.0      # +/- 9.0 mm M2.5 mounting pattern
+BRACKET_BOLT_Y1_MM    = -26.0    # Outboard pair of M2.5 mounting holes
+BRACKET_BOLT_Y2_MM    = -18.0    # Inboard pair of M2.5 mounting holes
+
 PA12_COLOR            = (0.20, 0.21, 0.23)
 
 REPO_ROOT = Path("/home/h/Documents/i2cjak/Framework_Expansion_Cards")
@@ -79,40 +91,56 @@ def build():
         App.Vector(-RAIL_SPAN_X_MM * 0.5, 1.5, 2.4),
     )
 
-    # 2. Outboard (-Y) actuator turret & clevis mounting saddle: X = -15..+15, Y = -24..0, Z = 0..+15.0
+    # 2. Outboard (-Y) dual-servo actuator turret: X = -15.8..+15.8, Y = -21.5..0.0, Z = -9.5..+20.5
     turret = Part.makeBox(
         TURRET_WIDTH_X_MM,
         TURRET_LEN_Y_MM,
-        TURRET_HEIGHT_Z_MM,
-        App.Vector(-TURRET_WIDTH_X_MM * 0.5, -TURRET_LEN_Y_MM, 0.0),
+        TURRET_TOP_Z_MM - TURRET_BOT_Z_MM,
+        App.Vector(-TURRET_WIDTH_X_MM * 0.5, -TURRET_LEN_Y_MM, TURRET_BOT_Z_MM),
     )
 
-    # 3. Under-chassis load shelf + vertical drop step under bay bezel:
-    # Step collar at Y = -4.0 .. +2.5, Z = -SHELF_THICK_Z_MM .. 0.0 bridging turret into under-chassis shelf
-    under_collar = Part.makeBox(
+    # Upper roof canopy overhang (Y = -30.5 .. 0.0, Z = 16.7 .. 20.5) supporting `leg_hip_bracket`
+    canopy = Part.makeBox(
+        CANOPY_WIDTH_X_MM,
+        -CANOPY_OUT_Y_MM,
+        CANOPY_THICK_Z_MM,
+        App.Vector(-CANOPY_WIDTH_X_MM * 0.5, CANOPY_OUT_Y_MM, TURRET_TOP_Z_MM - CANOPY_THICK_Z_MM),
+    )
+
+    # 3. Under-chassis load shelf under laptop bottom cover (Y = 0 .. +18.0, Z = -3.2 .. 0.0)
+    #    plus transition collar tying into turret lower block (Y = -4.0 .. 0.0, Z = -9.5 .. 0.0)
+    under_shelf = Part.makeBox(
         BAY_WIDTH_X_MM,
-        6.5 + SHELF_LEN_Y_MM,
+        4.0 + SHELF_LEN_Y_MM,
         SHELF_THICK_Z_MM,
         App.Vector(-BAY_WIDTH_X_MM * 0.5, -4.0, -SHELF_THICK_Z_MM),
     )
-    # Two triangular/ribbed gussets on outer sides (-X/+X) tying turret (-Y) into under-chassis shelf
-    gusset_l = Part.makeBox(3.2, 12.0, SHELF_THICK_Z_MM, App.Vector(-BAY_WIDTH_X_MM * 0.5, -14.0, -SHELF_THICK_Z_MM))
-    gusset_r = Part.makeBox(3.2, 12.0, SHELF_THICK_Z_MM, App.Vector(BAY_WIDTH_X_MM * 0.5 - 3.2, -14.0, -SHELF_THICK_Z_MM))
+    # Gusset ribs under bay bezel (Y = 0 .. +6.0, Z = -6.0 .. -3.2) transferring bending moment into shelf
+    gusset_l = Part.makeBox(4.0, 6.0, 2.8, App.Vector(-BAY_WIDTH_X_MM * 0.5, 0.0, -6.0))
+    gusset_r = Part.makeBox(4.0, 6.0, 2.8, App.Vector(BAY_WIDTH_X_MM * 0.5 - 4.0, 0.0, -6.0))
 
-    solid = bay_body.fuse(rails).fuse(turret).fuse(under_collar).fuse(gusset_l).fuse(gusset_r).removeSplitter()
+    solid = (
+        bay_body.fuse(rails)
+        .fuse(turret)
+        .fuse(canopy)
+        .fuse(under_shelf)
+        .fuse(gusset_l)
+        .fuse(gusset_r)
+        .removeSplitter()
+    )
 
-    # 4. Carve internal PCB & component cavity inside bay_body (leaving 1.2 mm bottom floor & 1.2 mm top roof)
+    # 4. Carve internal PCB & component cavity inside bay_body (Y = 2.0 .. 26.0, Z = 1.2 .. 5.6)
     pcb_cavity = Part.makeBox(
         PCB_POCKET_W_X_MM,
         PCB_POCKET_L_Y_MM,
         4.4,
-        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 1.2, 1.2),
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 2.0, 1.2),
     )
-    # Rear (+Y) aperture for USB-C straddle plug tongue (10.5 mm wide x 3.6 mm tall)
+    # Rear (+Y) aperture for USB-C straddle plug tongue
     usbc_opening = Part.makeBox(10.5, 4.0, 3.6, App.Vector(-5.25, BAY_INSERT_LEN_Y_MM - 2.5, 1.6))
-    # Wire pass-through window from PCB front bezel (Y = 0..2) into outboard servo pocket (Y = -2..0)
-    harness_tunnel = Part.makeBox(20.0, 6.0, 4.0, App.Vector(-10.0, -2.5, 1.6))
-    # Framework bottom latch catch pocket on underside of bay cartridge (Y = 12..17, Z = 0..1.0)
+    # Wire harness channel from both servo pockets (Y = +1.0) into PCB front headers J2/J3 (Y = +2.0..+5.0)
+    harness_tunnel = Part.makeBox(22.0, 5.0, 4.0, App.Vector(-11.0, -0.5, 1.6))
+    # Framework bottom latch catch pocket on underside of bay cartridge (Y = 13.5..18.5, Z = 0..0.9)
     latch_pocket = Part.makeBox(8.0, 5.0, 0.9, App.Vector(-4.0, 13.5, 0.0))
 
     solid = solid.cut(pcb_cavity).cut(usbc_opening).cut(harness_tunnel).cut(latch_pocket)
@@ -125,19 +153,25 @@ def build():
         pilot = Part.makeCylinder(0.85, 3.0, App.Vector(bx, PCB_BOSS_Y_MM, 0.6), App.Vector(0, 0, 1))
         solid = solid.cut(pilot)
 
-    # 5. Carve micro-servo cradle pocket in top of outboard turret (X = -11.7..+11.7, Y = -18.3..-5.7, Z = 3.5..16)
-    servo_pocket = Part.makeBox(
-        SERVO_SLOT_W_X_MM,
-        SERVO_SLOT_D_Y_MM,
-        13.0,
-        App.Vector(-SERVO_SLOT_W_X_MM * 0.5, CLEVIS_MOUNT_Y_CENTER - SERVO_SLOT_D_Y_MM * 0.5, 3.2),
-    )
-    solid = solid.cut(servo_pocket)
+    # 5. Carve TWO horizontal MG90S servo pockets opening outboard (-Y) at X = -7.30 and X = +7.30 mm
+    for sx in (-SERVO_CENTER_X_MM, SERVO_CENTER_X_MM):
+        pocket = Part.makeBox(
+            SERVO_POCKET_W_X_MM,
+            SERVO_POCKET_DEPTH_Y + 0.5,
+            SERVO_POCKET_H_Z_MM,
+            App.Vector(sx - SERVO_POCKET_W_X_MM * 0.5, -TURRET_LEN_Y_MM - 0.5, SERVO_POCKET_Z0_MM),
+        )
+        solid = solid.cut(pocket)
+        # Servo mounting-ear screw pilot holes on front face (-Y) above & below each pocket
+        for sz in (SERVO_POCKET_Z0_MM - 1.0, SERVO_POCKET_Z0_MM + SERVO_POCKET_H_Z_MM + 1.0):
+            pilot_y = Part.makeCylinder(0.85, 6.0, App.Vector(sx, -TURRET_LEN_Y_MM - 0.5, sz), App.Vector(0, 1, 0))
+            solid = solid.cut(pilot_y)
 
-    # 6. Drill 2x M2.5 mounting holes through turret floor for `leg_hip_bracket` (X = 0, Y = -12 +/- 5.5)
-    for hy in (CLEVIS_MOUNT_Y_CENTER - CLEVIS_HOLE_OFFSET_Y, CLEVIS_MOUNT_Y_CENTER + CLEVIS_HOLE_OFFSET_Y):
-        mh = Part.makeCylinder(1.35, 10.0, App.Vector(0.0, hy, -5.0), App.Vector(0, 0, 1))
-        solid = solid.cut(mh)
+    # 6. Drill 4x M2.5 mounting holes in top roof canopy for `leg_hip_bracket`
+    for bx in (-BRACKET_BOLT_X_MM, BRACKET_BOLT_X_MM):
+        for by in (BRACKET_BOLT_Y1_MM, BRACKET_BOLT_Y2_MM):
+            mh = Part.makeCylinder(1.05, 5.0, App.Vector(bx, by, TURRET_TOP_Z_MM - 4.0), App.Vector(0, 0, 1))
+            solid = solid.cut(mh)
 
     solid = solid.removeSplitter()
     assert solid.isValid(), "leg_bay_housing shape is invalid!"

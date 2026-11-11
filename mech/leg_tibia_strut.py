@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """
-SendCutSend 5052-H32 Aluminum CNC-Bent Tibia Strut (`ALU-063`, 1.600 mm thick)
-for Day 06 Walking Legs (Framework Quadruped Expansion Card Set).
+SendCutSend 5052-H32 Aluminum CNC-Bent Sagittal Bellcrank Tibia Strut (`ALU-063`, 1.600 mm thick)
+for Day 06 Walking Legs (`mech/leg_tibia_strut.py`).
 
-Coordinate convention: mm, Z up (strut axis along Z from ankle Z=0 to knee Z=58.0 mm),
-front facing -Y (web at front -Y, two 90-deg stiffening/clevis ribs extending +Y).
+Coordinate convention: mm, Z up (strut axis along Z from Z=0 to Z=60.0 mm),
+front facing -Y (U-channel centered on Y=0 with `20.0 mm` outside width / `16.8 mm` inside gap,
+front web at `X = 0` facing forward `-X`, and two 90-deg side flanges extending `+X` in the
+sagittal `X-Z` plane!).
+The upper flanges feature an integral `12.0 mm` 90-deg bellcrank lobe (`X = 22.5 mm, Z = 53.0 mm`)
+driven by `leg_knee_pushrod`, while the lower shin tapers cleanly down to `15.5 mm` depth.
 
 Exports:
   - mech/leg_tibia_strut.FCStd
-  - mech/leg_tibia_strut.step     (3D bent U-channel solid)
+  - mech/leg_tibia_strut.step     (3D bent U-channel solid with tapered bellcrank lobe)
   - mech/leg_tibia_strut.flat.dxf (1:1 flat pattern with BEND lines on layer 'BEND')
 """
 import math
@@ -22,14 +26,19 @@ import Part
 THICKNESS_MM       = 1.6002   # 0.063" 5052-H32 Aluminum
 BEND_RADIUS_IN_MM  = 0.8890   # 0.035" effective inside bend radius
 K_FACTOR           = 0.42     # SendCutSend ALU-063 K-factor
-WEB_OUT_WIDTH_MM   = 22.0     # Outside U-channel width along X (inside gap = 18.8 mm)
-FLANGE_OUT_D_MM    = 15.5     # Outside flange depth along Y (> 7.70 mm min formed flange)
-STRUT_LEN_MM       = 58.0     # Vertical tibia height along Z (> 38.10 mm min flat length)
-PIVOT_HOLE_DIA_MM  = 3.10     # M3 knee & TPU-foot cross-axle holes
-PIVOT_FROM_TIP_MM  = 4.00     # 4.0 mm from flange rear edge (8.69 mm from bend > 6.45 mm!)
-KNEE_Z_MM          = 52.0     # Knee M3 axle height (6.0 mm below top edge)
-ANKLE_Z_MM         = 6.0      # TPU foot M3 cross-bolt height (6.0 mm above bottom edge)
-WEB_HOLE_DIA_MM    = 3.10     # 3x M3 linkage / weight-relief holes along web centerline X=0
+WEB_OUT_Y_MM       = 20.0     # Outside U-channel width across Y (inside gap = 16.80 mm)
+SHIN_FLANGE_X_MM   = 15.5     # Lower shin outside flange depth along +X (> 7.70 mm min flange)
+BELL_FLANGE_X_MM   = 26.5     # Upper bellcrank lobe outside flange depth along +X
+TAPER_Z0_MM        = 34.0     # Height where shin flange begins widening into bellcrank lobe
+TAPER_Z1_MM        = 45.0     # Height where full 26.5 mm bellcrank lobe depth is reached
+STRUT_LEN_MM       = 60.0     # Vertical tibia height along Z (> 38.10 mm min flat length)
+
+PIVOT_HOLE_DIA_MM  = 3.10     # M3 knee, bellcrank & ankle cross-axle holes (along Y)
+SHIN_PIVOT_X_MM    = 10.5     # Knee & ankle bore X (9.24 mm from bend centerline >> 7.55 mm min)
+BELL_PIVOT_X_MM    = 22.5     # Bellcrank pushrod bore X (12.0 mm lever arm behind knee!)
+KNEE_Z_MM          = 53.0     # Knee & bellcrank M3 axle height (7.0 mm below top edge)
+ANKLE_Z_MM         = 6.0      # TPU foot M3 cross-bolt height (6.0 mm above bottom edge -> 47.0 mm tibia)
+WEB_HOLE_DIA_MM    = 3.10     # 3x M3 weight-relief holes along front web centerline (Y=0)
 ALU_COLOR          = (0.74, 0.77, 0.81)
 
 REPO_ROOT = Path("/home/h/Documents/i2cjak/Framework_Expansion_Cards")
@@ -42,37 +51,37 @@ def build_bent_solid() -> Part.Shape:
     t = THICKNESS_MM
     r_in = BEND_RADIUS_IN_MM
     r_out = r_in + t
-    half_flat_web = WEB_OUT_WIDTH_MM * 0.5 - r_out
-
-    # Build XY U-channel cross-section at Z = 0, front web outer face at Y = -FLANGE_OUT_D_MM * 0.5
-    # and flanges extending +Y, then extrude +Z by STRUT_LEN_MM!
-    y_front = -FLANGE_OUT_D_MM * 0.5
-    y_bend_c = y_front + r_out
-    y_tip = y_front + FLANGE_OUT_D_MM
-    x_w = half_flat_web
-    x_out = WEB_OUT_WIDTH_MM * 0.5
-    x_in = x_out - t
+    half_flat_web = WEB_OUT_Y_MM * 0.5 - r_out
     s45 = math.sqrt(0.5)
 
+    # Build XY U-channel cross-section out to full BELL_FLANGE_X_MM, extrude +Z by STRUT_LEN_MM,
+    # then trim the lower shin rear edge (`X > SHIN_FLANGE_X_MM` below `TAPER_Z0_MM` with smooth ramp to `TAPER_Z1_MM`)!
+    x_front = 0.0
+    x_bend_c = r_out
+    x_tip = BELL_FLANGE_X_MM
+    y_w = half_flat_web
+    y_out = WEB_OUT_Y_MM * 0.5
+    y_in = y_out - t
+
     pts_outer = [
-        App.Vector(-x_out, y_tip, 0.0),
-        App.Vector(-x_out, y_bend_c, 0.0),
-        App.Vector(-x_w - r_out * s45, y_bend_c - r_out * s45, 0.0),
-        App.Vector(-x_w, y_front, 0.0),
-        App.Vector(x_w, y_front, 0.0),
-        App.Vector(x_w + r_out * s45, y_bend_c - r_out * s45, 0.0),
-        App.Vector(x_out, y_bend_c, 0.0),
-        App.Vector(x_out, y_tip, 0.0),
+        App.Vector(x_tip, -y_out, 0.0),
+        App.Vector(x_bend_c, -y_out, 0.0),
+        App.Vector(x_bend_c - r_out * s45, -y_w - r_out * s45, 0.0),
+        App.Vector(x_front, -y_w, 0.0),
+        App.Vector(x_front, y_w, 0.0),
+        App.Vector(x_bend_c - r_out * s45, y_w + r_out * s45, 0.0),
+        App.Vector(x_bend_c, y_out, 0.0),
+        App.Vector(x_tip, y_out, 0.0),
     ]
     pts_inner = [
-        App.Vector(x_in, y_tip, 0.0),
-        App.Vector(x_in, y_bend_c, 0.0),
-        App.Vector(x_w + r_in * s45, y_bend_c - r_in * s45, 0.0),
-        App.Vector(x_w, y_front + t, 0.0),
-        App.Vector(-x_w, y_front + t, 0.0),
-        App.Vector(-x_w - r_in * s45, y_bend_c - r_in * s45, 0.0),
-        App.Vector(-x_in, y_bend_c, 0.0),
-        App.Vector(-x_in, y_tip, 0.0),
+        App.Vector(x_tip, y_in, 0.0),
+        App.Vector(x_bend_c, y_in, 0.0),
+        App.Vector(x_bend_c - r_in * s45, y_w + r_in * s45, 0.0),
+        App.Vector(x_front + t, y_w, 0.0),
+        App.Vector(x_front + t, -y_w, 0.0),
+        App.Vector(x_bend_c - r_in * s45, -y_w - r_in * s45, 0.0),
+        App.Vector(x_bend_c, -y_in, 0.0),
+        App.Vector(x_tip, -y_in, 0.0),
     ]
 
     edges = [
@@ -92,72 +101,98 @@ def build_bent_solid() -> Part.Shape:
     face = Part.Face(Part.Wire(edges))
     solid = face.extrude(App.Vector(0.0, 0.0, STRUT_LEN_MM))
 
-    # Cut coaxial knee (Z=52) & ankle/foot (Z=6) M3 holes through both side flanges (along X)
-    y_piv = y_tip - PIVOT_FROM_TIP_MM
-    for hz in (ANKLE_Z_MM, KNEE_Z_MM):
+    # Trim lower shin profile in X-Z (extruded across all Y) so shin is 15.5 mm deep below Z=34
+    # and widens smoothly along a straight ramp to 26.5 mm at Z=45.
+    cut_pts = [
+        App.Vector(SHIN_FLANGE_X_MM, -WEB_OUT_Y_MM, -1.0),
+        App.Vector(BELL_FLANGE_X_MM + 5.0, -WEB_OUT_Y_MM, -1.0),
+        App.Vector(BELL_FLANGE_X_MM + 5.0, -WEB_OUT_Y_MM, TAPER_Z1_MM),
+        App.Vector(BELL_FLANGE_X_MM, -WEB_OUT_Y_MM, TAPER_Z1_MM),
+        App.Vector(SHIN_FLANGE_X_MM, -WEB_OUT_Y_MM, TAPER_Z0_MM),
+    ]
+    cut_wire = Part.makePolygon(cut_pts + [cut_pts[0]])
+    taper_cut = Part.Face(cut_wire).extrude(App.Vector(0.0, WEB_OUT_Y_MM * 2.0, 0.0))
+    solid = solid.cut(taper_cut)
+
+    # Cut coaxial Ankle (10.5, 6.0), Knee (10.5, 53.0), & Bellcrank (22.5, 53.0) M3 bores along Y
+    for hx, hz in (
+        (SHIN_PIVOT_X_MM, ANKLE_Z_MM),
+        (SHIN_PIVOT_X_MM, KNEE_Z_MM),
+        (BELL_PIVOT_X_MM, KNEE_Z_MM),
+    ):
         cyl = Part.makeCylinder(
             PIVOT_HOLE_DIA_MM * 0.5,
-            WEB_OUT_WIDTH_MM * 2.0,
-            App.Vector(-WEB_OUT_WIDTH_MM, y_piv, hz),
-            App.Vector(1, 0, 0),
+            WEB_OUT_Y_MM * 2.0,
+            App.Vector(hx, -WEB_OUT_Y_MM, hz),
+            App.Vector(0, 1, 0),
         )
         solid = solid.cut(cyl)
 
-    # Cut 3x centerline M3 harness/mount holes through front web (X = 0, Z = 17, 29, 41 mm)
-    for wz in (17.0, 29.0, 41.0):
+    # Cut 3x centerline M3 weight-relief holes through front web (along X at Y=0)
+    for wz in (18.0, 30.0, 42.0):
         wcyl = Part.makeCylinder(
             WEB_HOLE_DIA_MM * 0.5,
             t * 4.0,
-            App.Vector(0.0, y_front - t, wz),
-            App.Vector(0, 1, 0),
+            App.Vector(-t, 0.0, wz),
+            App.Vector(1, 0, 0),
         )
         solid = solid.cut(wcyl)
 
-    return solid
+    return solid.removeSplitter()
 
 
 def write_flat_dxf(path: Path) -> None:
     t = THICKNESS_MM
     r_in = BEND_RADIUS_IN_MM
     r_out = r_in + t
-    half_flat_web = WEB_OUT_WIDTH_MM * 0.5 - r_out
-    straight_ear  = FLANGE_OUT_D_MM - r_out
+    half_flat_web = WEB_OUT_Y_MM * 0.5 - r_out
     ba = (math.pi * 0.5) * (r_in + K_FACTOR * t)
 
-    half_w = half_flat_web + ba + straight_ear
+    straight_shin = SHIN_FLANGE_X_MM - r_out
+    straight_bell = BELL_FLANGE_X_MM - r_out
+
+    half_w_shin = half_flat_web + ba + straight_shin
+    half_w_bell = half_flat_web + ba + straight_bell
     bend_x = half_flat_web + ba * 0.5
-    piv_x  = half_w - PIVOT_FROM_TIP_MM
-    cr     = 1.5
+
+    shin_piv_x = half_flat_web + ba + (SHIN_PIVOT_X_MM - r_out)
+    bell_piv_x = half_flat_web + ba + (BELL_PIVOT_X_MM - r_out)
 
     ents = []
 
     def dxf_line(x1, y1, x2, y2, layer="0"):
         ents.append(f"0\nLINE\n8\n{layer}\n10\n{x1:.6f}\n20\n{y1:.6f}\n30\n0.0\n11\n{x2:.6f}\n21\n{y2:.6f}\n31\n0.0\n")
 
-    def dxf_arc(cx, cy, r, a0, a1, layer="0"):
-        ents.append(f"0\nARC\n8\n{layer}\n10\n{cx:.6f}\n20\n{cy:.6f}\n30\n0.0\n40\n{r:.6f}\n50\n{a0:.6f}\n51\n{a1:.6f}\n")
-
     def dxf_circle(cx, cy, r, layer="0"):
         ents.append(f"0\nCIRCLE\n8\n{layer}\n10\n{cx:.6f}\n20\n{cy:.6f}\n30\n0.0\n40\n{r:.6f}\n")
 
-    # Closed rounded rectangle (-half_w..+half_w in X, 0..STRUT_LEN_MM in Y)
-    dxf_line(-half_w + cr, 0.0, half_w - cr, 0.0)
-    dxf_arc(half_w - cr, cr, cr, -90.0, 0.0)
-    dxf_line(half_w, cr, half_w, STRUT_LEN_MM - cr)
-    dxf_arc(half_w - cr, STRUT_LEN_MM - cr, cr, 0.0, 90.0)
-    dxf_line(half_w - cr, STRUT_LEN_MM, -half_w + cr, STRUT_LEN_MM)
-    dxf_arc(-half_w + cr, STRUT_LEN_MM - cr, cr, 90.0, 180.0)
-    dxf_line(-half_w, STRUT_LEN_MM - cr, -half_w, cr)
-    dxf_arc(-half_w + cr, cr, cr, 180.0, 270.0)
+    # Closed symmetric polygon outer contour (stepped/tapered bellcrank ears at top, slim shin at bottom)
+    contour = [
+        (-half_w_shin, 0.0),
+        (half_w_shin, 0.0),
+        (half_w_shin, TAPER_Z0_MM),
+        (half_w_bell, TAPER_Z1_MM),
+        (half_w_bell, STRUT_LEN_MM),
+        (-half_w_bell, STRUT_LEN_MM),
+        (-half_w_bell, TAPER_Z1_MM),
+        (-half_w_shin, TAPER_Z0_MM),
+    ]
+    for i in range(len(contour)):
+        x1, y1 = contour[i]
+        x2, y2 = contour[(i + 1) % len(contour)]
+        dxf_line(x1, y1, x2, y2)
 
-    # 4x flange pivot holes + 3x web centerline holes
+    # 6x flange M3 pivot holes (Ankle, Knee, Bellcrank on left & right flanges) + 3x web holes
     for hz in (ANKLE_Z_MM, KNEE_Z_MM):
-        dxf_circle(-piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
-        dxf_circle(piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
-    for wz in (17.0, 29.0, 41.0):
+        dxf_circle(-shin_piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
+        dxf_circle(shin_piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
+    dxf_circle(-bell_piv_x, KNEE_Z_MM, PIVOT_HOLE_DIA_MM * 0.5)
+    dxf_circle(bell_piv_x, KNEE_Z_MM, PIVOT_HOLE_DIA_MM * 0.5)
+
+    for wz in (18.0, 30.0, 42.0):
         dxf_circle(0.0, wz, WEB_HOLE_DIA_MM * 0.5)
 
-    # Bend lines on layer 'BEND'
+    # Bend centerlines on layer 'BEND'
     dxf_line(-bend_x, 0.0, -bend_x, STRUT_LEN_MM, layer="BEND")
     dxf_line(bend_x, 0.0, bend_x, STRUT_LEN_MM, layer="BEND")
 

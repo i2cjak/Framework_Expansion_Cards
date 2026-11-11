@@ -1,6 +1,6 @@
 {
   "kind": "sheetmetal",
-  "name": "Leg Hip Clevis Bracket",
+  "name": "Leg Hip Outrigger Bracket",
   "source": "leg_hip_bracket.step",
   "qty": 4,
   "options": {
@@ -9,11 +9,11 @@
     "finish": "none"
   },
   "features": {
-    "flat_x_mm": 59.95,
-    "flat_y_mm": 20.0,
-    "cut_length_mm": 193.7,
-    "holes": 4,
-    "bends": 2,
+    "flat_x_mm": 47.07,
+    "flat_y_mm": 28.0,
+    "cut_length_mm": 201.0,
+    "holes": 6,
+    "bends": 1,
     "countersinks": 0
   },
   "sendcutsend": {
@@ -26,7 +26,6 @@
       "bending"
     ],
     "bend_angles": [
-      90.0,
       90.0
     ],
     "hardware": [],
@@ -35,13 +34,13 @@
     "flat": "leg_hip_bracket.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T07:48:32Z",
-      "pass": 34,
+      "at": "2026-11-11T15:26:48Z",
+      "pass": 25,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "71daf3cb4d51f7cb52df9199ed565f464045ba3837927b51feed9600445c589e",
-      "flat_sha256": "017aa53cdd7b605b2a4dfd8a9d7eb45390d8de0a70a38b8fcf886778774c3cb6",
+      "source_sha256": "648384db2ce65247a8e357a8a69a9d5ff3b2a6af394469978cd47b2f3b3f6fa3",
+      "flat_sha256": "3d40985a90312114371c63756aa5c6c3a08d66d8ba3ab4a5838a0d55a4b54b61",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }

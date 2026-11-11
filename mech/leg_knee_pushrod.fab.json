@@ -1,0 +1,44 @@
+{
+  "kind": "sheetmetal",
+  "name": "Leg Knee Pushrod",
+  "source": "leg_knee_pushrod.dxf",
+  "qty": 4,
+  "options": {
+    "material": "aluminum_5052",
+    "thickness_mm": 2.03,
+    "finish": "none"
+  },
+  "features": {
+    "flat_x_mm": 45.0,
+    "flat_y_mm": 9.0,
+    "cut_length_mm": 163.2,
+    "holes": 2,
+    "bends": 0,
+    "countersinks": 0
+  },
+  "sendcutsend": {
+    "sku": "ALU-080",
+    "material": "5052 H32 Aluminum",
+    "thickness_in": 0.08,
+    "process": "Fiber Laser",
+    "finish": null,
+    "services": [],
+    "bend_angles": [],
+    "hardware": [],
+    "taps": [],
+    "countersinks": [],
+    "flat": null,
+    "unmapped": [],
+    "dfm": {
+      "at": "2026-11-11T15:26:49Z",
+      "pass": 13,
+      "fail": 0,
+      "warn": 0,
+      "failed": [],
+      "source_sha256": "85b8e8b997233ccc4478191d4e464672f2feb4ee33827fdd09fd532e13d978b4",
+      "flat_sha256": null,
+      "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
+      "specs_generated_at": "2026-11-05T21:51:55.112063Z"
+    }
+  }
+}

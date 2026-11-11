@@ -12,12 +12,14 @@ Four identical USB Type-C Expansion Cards plug into the four expansion bays of a
   - Standing on 4 legs: $F_{z,\text{4-leg}} = 3.83\text{ N}$.
   - Static 3-leg crawl stance (worst-case CoM shift): $F_{z,\text{crawl}} \approx 6.2\text{ N}$.
   - Dynamic diagonal trot peak ($1.5\times$ impact factor across 2 diagonal legs): $F_{z,\text{trot}} \approx 11.5\text{ N}$.
-- **Linkage Geometry:**
-  - Upper femur link (`mech/leg_femur_link.step`): $L_1 = 36.0\text{ mm}$ (`2.03 mm` 5052-H32 aluminum).
-  - Lower tibia U-channel strut (`mech/leg_tibia_strut.step`): $L_2 = 46.0\text{ mm}$ axle-to-ankle + $17.0\text{ mm}$ compliant TPU foot dome = $63.0\text{ mm}$ effective lower segment (`1.60 mm` CNC-bent 5052-H32 aluminum).
-  - At neutral standing posture ($\theta_{\text{hip}} = 30^\circ$, horizontal moment arm $r_\perp = L_1 \cos 30^\circ = 31.2\text{ mm}$):
-    - Static crawl hip torque: $\tau_{\text{crawl}} = 6.2\text{ N} \times 0.0312\text{ m} = \mathbf{0.193\text{ N}\cdot\text{m}}$ ($1.97\text{ kg}\cdot\text{cm}$).
-    - Dynamic trot peak torque: $\tau_{\text{trot}} = 11.5\text{ N} \times 0.0312\text{ m} = \mathbf{0.359\text{ N}\cdot\text{m}}$ ($3.66\text{ kg}\cdot\text{cm}$), comfortably within the $\mathbf{0.44\text{ N}\cdot\text{m}}$ ($4.5\text{ kg}\cdot\text{cm}$ at $6.0\text{ V}$) stall rating of metal-gear MG90S / Emax ES08MDII digital micro-servos.
+- **Sagittal 2-DOF Linkage & Bellcrank Pushrod Geometry (`mech/`):**
+  - **Both MG90S metal-gear micro-servos** mount horizontally side-by-side (`X = ±7.30 mm, Z = +9.50 mm`) with **both brass output splines pointing outboard (`-Y`)**, so all pivots act in the **`X–Z` sagittal walking plane** (stepping fore-and-aft along the laptop sides).
+  - **Paired Upper Femur Links (`mech/leg_femur_link.step`, `qty: 8`):** $L_1 = 38.0\text{ mm}$ (`2.03 mm` `5052-H32` aluminum) driven directly by the Hip servo horn (`J2`) in symmetric double shear, supported outboard by `mech/leg_hip_bracket.step` (`ALU-063` overhead outrigger bridge) so radial ground loads bypass the servo shafts.
+  - **Non-Crossing 4-Bar Knee Drive (`mech/leg_knee_pushrod.step`, `qty: 4` + `mech/leg_tibia_strut.step`, `qty: 4`):** The Knee servo (`J3`) drives a $12.0\text{ mm}$ aluminum crank arm coupled via a $36.0\text{ mm}$ `5052-H32` pushrod ($\approx 97^\circ$ transmission angle) to an integral $12.0\text{ mm}$ $90^\circ$ bellcrank lobe on the CNC-bent $47.0\text{ mm}$ sagittal U-channel tibia strut—giving active, determinate 2-DOF positioning at both Hip and Knee with zero dead-center singularity.
+  - **Series-Elastic Compliant Arch Foot (`mech/leg_foot_pad.step`, `qty: 4`):** Printed in `95A` TPU with a through-arch oval suspension window flanked by twin $3.2\text{ mm}$ elastomeric leaf-spring ribs ($\approx 2.5\text{–}3.5\text{ mm}$ progressive shock travel on foot strike) to cushion desk impacts and protect the servo gear trains.
+  - At neutral standing posture ($r_\perp = L_1 \sin 30^\circ = 19.0\text{ mm}$ at hip, $84.7\text{ mm}$ ground clearance under laptop floor):
+    - Static crawl peak joint torque: $\tau_{\text{crawl}} \approx \mathbf{0.18\text{ N}\cdot\text{m}}$ ($1.84\text{ kg}\cdot\text{cm}$).
+    - Dynamic trot peak joint torque: $\tau_{\text{trot}} \approx \mathbf{0.34\text{ N}\cdot\text{m}}$ ($3.47\text{ kg}\cdot\text{cm}$), comfortably within the $\mathbf{0.44\text{ N}\cdot\text{m}}$ ($4.5\text{ kg}\cdot\text{cm}$ at $6.0\text{ V}$) stall rating of metal-gear MG90S / Emax ES08MDII digital micro-servos.
 
 ### 2. Per-Bay USB Type-C Power Budget (`5.0 V @ 1.5 A = 7.5 W`)
 - **Zero-Renegotiation Enumeration:** `R1` (`5.1 kΩ` on `CC1`) requests standard USB Type-C `5.0 V @ 1.5 A` (`7.5 W` per bay, **`30.0 W` total** across all four bays) without USB-PD contract resets when multiple legs plug in or cycle load.
@@ -33,12 +35,16 @@ Four identical USB Type-C Expansion Cards plug into the four expansion bays of a
 - On each card, `USB_LP_CAN1_RX0_IRQHandler` phase-locks `TIM2`'s `200 Hz` (`5000 µs`, `1 µs` resolution) hardware PWM counter to `FNR % 5 == 0` and commits `HIP_PWM` (`PA0`) and `KNEE_PWM` (`PA1`) simultaneously on the target `SOF` edge—achieving deterministic 4-leg synchronization with zero external sync wires.
 
 ### 4. Mechanical Lock-In & SendCutSend Sheet-Metal Fabrication
-- **`mech/leg_bay_housing.step` (MJF PA12 Nylon, `qty: 4`):** Slides into the Framework expansion bay T-rails (`32.0 mm` span), captures the bottom spring latch, mounts the `0.8 mm` 4-layer PCB on `22.60 mm` M2 bosses, and extends an **`18.0 mm × 30.0 mm × 3.2 mm` gusseted under-chassis load shelf** beneath the laptop bottom cover so vertical ground reaction loads bypass the straddle-mount USB-C plug completely.
-- **SendCutSend `5052-H32` Aluminum Linkage (`0 fail · 0 warn` DFM verified):**
-  - `mech/leg_hip_bracket.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent U-clevis, `qty: 4`).
-  - `mech/leg_femur_link.dxf` (`ALU-080` `2.03 mm` laser-cut upper femur link, `qty: 8`).
-  - `mech/leg_tibia_strut.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent `58 mm` U-channel tibia strut, `qty: 4`).
-- **`mech/leg_foot_pad.step` (FDM 95A TPU, `qty: 4`):** Ø`22 mm` compliant hemispherical foot pad bolted inside the tibia clevis on an M3 cross-axle.
+- **`mech/leg_bay_housing.step` (MJF PA12 Nylon, `qty: 4`):** Slides into the Framework expansion bay T-rails (`32.0 mm` span), captures the bottom spring latch, mounts the `0.8 mm` 4-layer PCB on `22.60 mm` M2 bosses, houses **two horizontal outboard-facing MG90S servos**, and extends an **`18.0 mm × 30.0 mm × 3.2 mm` gusseted under-chassis load shelf** beneath the laptop bottom cover so vertical ground reaction loads bypass the straddle-mount USB-C plug completely.
+- **SendCutSend `5052-H32` Aluminum Linkage (`0 fail · 0 warn` live DFM verified across all 4 parts):**
+  - `mech/leg_hip_bracket.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent 90° overhead double-shear bearing outrigger, `qty: 4` — `25 pass · 0 fail · 0 warn`).
+  - `mech/leg_femur_link.dxf` (`ALU-080` `2.03 mm` laser-cut `38.0 mm` sagittal femur link, `qty: 8` — `13 pass · 0 fail · 0 warn`).
+  - `mech/leg_knee_pushrod.dxf` (`ALU-080` `2.03 mm` laser-cut `36.0 mm` knee actuation pushrod, `qty: 4` — `13 pass · 0 fail · 0 warn`).
+  - `mech/leg_tibia_strut.flat.dxf` (`ALU-063` `1.60 mm` CNC-bent `60.0 mm` sagittal bellcrank U-channel tibia strut, `qty: 4` — `34 pass · 0 fail · 0 warn`).
+- **`mech/leg_foot_pad.step` (FDM 95A TPU, `qty: 4`):** Ø`22 mm` compliant leaf-spring arch paw with through-arch suspension slot bolted inside the tibia clevis on an M3 cross-axle.
+- **Reference 3D Fit-Check Assemblies (`mech/`):**
+  - `mech/walking_leg_assembly.step` — Complete colored single-leg sagittal 2-DOF assembly.
+  - `mech/walking_laptop_assembly.step` — Full walk-ready **Framework Laptop 13** on all four 2-DOF sagittal legs (`FL`, `FR`, `RL`, `RR`).
 
 ---
 

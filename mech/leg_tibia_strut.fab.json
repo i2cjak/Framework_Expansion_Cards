@@ -1,6 +1,6 @@
 {
   "kind": "sheetmetal",
-  "name": "Leg Tibia Strut",
+  "name": "Leg Bellcrank Tibia Strut",
   "source": "leg_tibia_strut.step",
   "qty": 4,
   "options": {
@@ -9,10 +9,10 @@
     "finish": "none"
   },
   "features": {
-    "flat_x_mm": 58.0,
-    "flat_y_mm": 47.95,
-    "cut_length_mm": 277.5,
-    "holes": 7,
+    "flat_x_mm": 67.95,
+    "flat_y_mm": 60.0,
+    "cut_length_mm": 330.6,
+    "holes": 9,
     "bends": 2,
     "countersinks": 0
   },
@@ -35,13 +35,13 @@
     "flat": "leg_tibia_strut.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T07:50:41Z",
+      "at": "2026-11-11T15:26:50Z",
       "pass": 34,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "9df2d5339de4feead388949ea6898eb5237914bb935ea5c1935735a8689f54c6",
-      "flat_sha256": "7d00f306b377bdf334c1c8c67c7ce3cd9698364eb226b0c548246d0674d03647",
+      "source_sha256": "03110add08dba281eb6380aece202b92f32085b061ebcba59912d9ff90d1cd9b",
+      "flat_sha256": "abcfc33718e8445e58776c0d6545df05dcd2b5dc82bb6d4a7c545ceda1b77780",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }

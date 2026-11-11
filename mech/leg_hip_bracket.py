@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
-SendCutSend 5052-H32 Aluminum CNC-Bent Hip Clevis Bracket (`ALU-063`, 1.600 mm thick)
-for Day 06 Walking Legs (Framework Quadruped Expansion Card Set).
+SendCutSend 5052-H32 Aluminum CNC-Bent Outboard Double-Shear Bearing Outrigger (`ALU-063`, 1.600 mm thick)
+for Day 06 Walking Legs (`mech/leg_hip_bracket.py`).
 
-Coordinate convention: mm, Z up, front facing -Y.
-Forms an inverted U-clevis (top web + two downward -Z side flanges, or upward +Z clevis ears)
-bolting to `leg_bay_housing` with dual M2.5 fasteners and supporting the M3 hip pitch axle.
+Coordinate convention: mm, Z up, front/outboard facing -Y.
+Forms a rigid 90-deg overhead outrigger bridge:
+  - Horizontal top flange (`28.0 x 30.0 mm`) bolts to the top roof canopy of `leg_bay_housing`
+    with 4x M2.5 fasteners (`X = +/-9.0 mm`, `Y_local = +19.6` & `+27.6 mm` from outboard face),
+    leaving `-X` (forward), `+X` (aft), and `-Z` (downward) 100% unobstructed for +/-75 deg sagittal swing.
+  - Vertical outboard bearing plate (`28.0 x 19.6 mm` at `Y_local = 0..+1.6 mm`) supports **both**
+    outboard M3 servo axle pins (`X = -7.30 mm` Hip & `X = +7.30 mm` Knee, `12.60 mm` below top face)
+    in double shear so radial/ground loads bypass the servo output splines into the chassis shelf.
 
 Exports:
   - mech/leg_hip_bracket.FCStd
-  - mech/leg_hip_bracket.step     (3D bent solid with R=0.889mm inside bend radii)
-  - mech/leg_hip_bracket.flat.dxf (1:1 flat pattern with BEND lines on layer 'BEND')
+  - mech/leg_hip_bracket.step     (3D bent solid with R=0.889mm inside bend radius)
+  - mech/leg_hip_bracket.flat.dxf (1:1 flat pattern with BEND line on layer 'BEND')
 """
 import math
 import os
@@ -23,13 +28,19 @@ import Part
 THICKNESS_MM       = 1.6002   # 0.063" 5052-H32 Aluminum
 BEND_RADIUS_IN_MM  = 0.8890   # 0.035" effective inside bend radius
 K_FACTOR           = 0.42     # SendCutSend ALU-063 K-factor
-WEB_OUT_WIDTH_MM   = 28.0     # Outside width across clevis
-FLANGE_OUT_H_MM    = 18.5     # Outside height of each 90-deg ear (> 7.70 mm min flange)
-BRACKET_DEPTH_MM   = 20.0     # Fore-aft depth along Y (> 9.53 mm min flat width)
-MOUNT_HOLE_DIA_MM  = 2.70     # M2.5 housing attachment holes on center web
-MOUNT_HOLE_Y_MM    = 5.50     # +/- 5.50 mm along Y on X=0 centerline (11.5 mm from bend!)
-PIVOT_HOLE_DIA_MM  = 3.10     # M3 hip pitch axle clearance holes on both ears
-PIVOT_FROM_TIP_MM  = 5.00     # 5.0 mm from ear tip (11.0 mm from bend tangent > die_width/2!)
+WIDTH_X_MM         = 28.0     # Bracket width along X (> 9.53 mm min flat width)
+FLANGE_Y_OUT_MM    = 30.0     # Top mounting flange outside length along +Y (Y_local = 0 .. +30.0)
+FLANGE_Z_OUT_MM    = 19.6     # Vertical outboard bearing plate outside height (Z_local = -19.6 .. 0.0)
+
+MOUNT_HOLE_DIA_MM  = 2.70     # 4x M2.5 clearance holes on top flange
+MOUNT_HOLE_X_MM    = 9.00     # +/- 9.00 mm in X
+MOUNT_HOLE_Y1_MM   = 19.60    # Matches bay housing Y = -26.0 when outboard face is at Y = -45.6
+MOUNT_HOLE_Y2_MM   = 27.60    # Matches bay housing Y = -18.0 when outboard face is at Y = -45.6
+
+AXLE_HOLE_DIA_MM   = 3.10     # 2x M3 coaxial outboard bearing support holes
+AXLE_HOLE_X_MM     = 7.30     # Matches +/- 7.30 mm Hip & Knee servo axes
+AXLE_HOLE_Z_MM     = -12.60   # Matches Z_assy = +9.50 when top outer face Z_local=0 is at Z_assy = +22.10
+
 ALU_COLOR          = (0.72, 0.75, 0.79)
 
 REPO_ROOT = Path("/home/h/Documents/i2cjak/Framework_Expansion_Cards")
@@ -42,74 +53,63 @@ def build_bent_solid() -> Part.Shape:
     t = THICKNESS_MM
     r_in = BEND_RADIUS_IN_MM
     r_out = r_in + t
-    half_flat_web = WEB_OUT_WIDTH_MM * 0.5 - r_out          # 14.0 - 2.4892 = 11.5108 mm
-    straight_ear  = FLANGE_OUT_H_MM - r_out                 # 18.5 - 2.4892 = 16.0108 mm
-
-    # Build XZ cross-section profile (at Y = -BRACKET_DEPTH_MM/2) and extrude +Y by BRACKET_DEPTH_MM!
-    # Web top at Z = 0, inner face at Z = -t; ears bend DOWNWARD (-Z) so clevis straddles hip link below housing!
-    y0 = -BRACKET_DEPTH_MM * 0.5
-    x_w = half_flat_web
-    x_out = WEB_OUT_WIDTH_MM * 0.5
-    x_in  = x_out - t
-    z_bend_c = -r_out
-    z_tip = -FLANGE_OUT_H_MM
-
     s45 = math.sqrt(0.5)
 
-    pts_outer = [
-        App.Vector(-x_out, y0, z_tip),
-        App.Vector(-x_out, y0, z_bend_c),
-        # Left outer 90-deg arc centered at (-x_w, y0, z_bend_c) with radius r_out
-        App.Vector(-x_w - r_out * s45, y0, z_bend_c + r_out * s45),
-        App.Vector(-x_w, y0, 0.0),
-        App.Vector(x_w, y0, 0.0),
-        # Right outer 90-deg arc centered at (+x_w, y0, z_bend_c) with radius r_out
-        App.Vector(x_w + r_out * s45, y0, z_bend_c + r_out * s45),
-        App.Vector(x_out, y0, z_bend_c),
-        App.Vector(x_out, y0, z_tip),
-    ]
-    pts_inner = [
-        App.Vector(x_in, y0, z_tip),
-        App.Vector(x_in, y0, z_bend_c),
-        App.Vector(x_w + r_in * s45, y0, z_bend_c + r_in * s45),
-        App.Vector(x_w, y0, -t),
-        App.Vector(-x_w, y0, -t),
-        App.Vector(-x_w - r_in * s45, y0, z_bend_c + r_in * s45),
-        App.Vector(-x_in, y0, z_bend_c),
-        App.Vector(-x_in, y0, z_tip),
-    ]
+    # Build YZ profile at X = -WIDTH_X_MM/2 and extrude +X by WIDTH_X_MM.
+    # Outer corner at (Y=0, Z=0):
+    #   - Top flange outer face: Z = 0, Y = r_out .. FLANGE_Y_OUT_MM
+    #   - Vertical bearing flange outer face: Y = 0, Z = -FLANGE_Z_OUT_MM .. -r_out
+    #   - 90-deg bend center at (Y = r_out, Z = -r_out)
+    x0 = -WIDTH_X_MM * 0.5
+    yc = r_out
+    zc = -r_out
+
+    p_o0 = App.Vector(x0, 0.0, -FLANGE_Z_OUT_MM)
+    p_o1 = App.Vector(x0, 0.0, zc)
+    p_om = App.Vector(x0, yc - r_out * s45, zc + r_out * s45)
+    p_o2 = App.Vector(x0, yc, 0.0)
+    p_o3 = App.Vector(x0, FLANGE_Y_OUT_MM, 0.0)
+
+    p_i3 = App.Vector(x0, FLANGE_Y_OUT_MM, -t)
+    p_i2 = App.Vector(x0, yc, -t)
+    p_im = App.Vector(x0, yc - r_in * s45, zc + r_in * s45)
+    p_i1 = App.Vector(x0, t, zc)
+    p_i0 = App.Vector(x0, t, -FLANGE_Z_OUT_MM)
 
     edges = [
-        Part.LineSegment(pts_outer[0], pts_outer[1]).toShape(),
-        Part.Arc(pts_outer[1], pts_outer[2], pts_outer[3]).toShape(),
-        Part.LineSegment(pts_outer[3], pts_outer[4]).toShape(),
-        Part.Arc(pts_outer[4], pts_outer[5], pts_outer[6]).toShape(),
-        Part.LineSegment(pts_outer[6], pts_outer[7]).toShape(),
-        Part.LineSegment(pts_outer[7], pts_inner[0]).toShape(),
-        Part.LineSegment(pts_inner[0], pts_inner[1]).toShape(),
-        Part.Arc(pts_inner[1], pts_inner[2], pts_inner[3]).toShape(),
-        Part.LineSegment(pts_inner[3], pts_inner[4]).toShape(),
-        Part.Arc(pts_inner[4], pts_inner[5], pts_inner[6]).toShape(),
-        Part.LineSegment(pts_inner[6], pts_inner[7]).toShape(),
-        Part.LineSegment(pts_inner[7], pts_outer[0]).toShape(),
+        Part.LineSegment(p_o0, p_o1).toShape(),
+        Part.Arc(p_o1, p_om, p_o2).toShape(),
+        Part.LineSegment(p_o2, p_o3).toShape(),
+        Part.LineSegment(p_o3, p_i3).toShape(),
+        Part.LineSegment(p_i3, p_i2).toShape(),
+        Part.Arc(p_i2, p_im, p_i1).toShape(),
+        Part.LineSegment(p_i1, p_i0).toShape(),
+        Part.LineSegment(p_i0, p_o0).toShape(),
     ]
     face = Part.Face(Part.Wire(edges))
-    solid = face.extrude(App.Vector(0, BRACKET_DEPTH_MM, 0))
+    solid = face.extrude(App.Vector(WIDTH_X_MM, 0.0, 0.0))
 
-    # Cut 2x M2.5 mounting holes through top web (along Z)
-    for hy in (-MOUNT_HOLE_Y_MM, MOUNT_HOLE_Y_MM):
-        cyl = Part.makeCylinder(MOUNT_HOLE_DIA_MM * 0.5, t * 4.0, App.Vector(0.0, hy, -t * 2.0), App.Vector(0, 0, 1))
-        solid = solid.cut(cyl)
+    # Cut 4x M2.5 mounting holes through top flange (along Z)
+    for hx in (-MOUNT_HOLE_X_MM, MOUNT_HOLE_X_MM):
+        for hy in (MOUNT_HOLE_Y1_MM, MOUNT_HOLE_Y2_MM):
+            cyl = Part.makeCylinder(
+                MOUNT_HOLE_DIA_MM * 0.5,
+                t * 4.0,
+                App.Vector(hx, hy, -t * 2.5),
+                App.Vector(0, 0, 1),
+            )
+            solid = solid.cut(cyl)
 
-    # Cut coaxial M3 hip axle holes through both side ears (along X at Z = z_tip + PIVOT_FROM_TIP_MM, Y = 0)
-    z_piv = z_tip + PIVOT_FROM_TIP_MM
-    axle_cyl = Part.makeCylinder(
-        PIVOT_HOLE_DIA_MM * 0.5,
-        WEB_OUT_WIDTH_MM * 2.0,
-        App.Vector(-WEB_OUT_WIDTH_MM, 0.0, z_piv),
-        App.Vector(1, 0, 0),
-    )
-    solid = solid.cut(axle_cyl)
+    # Cut 2x M3 coaxial outboard support bearing holes through vertical flange (along Y)
+    for ax in (-AXLE_HOLE_X_MM, AXLE_HOLE_X_MM):
+        acyl = Part.makeCylinder(
+            AXLE_HOLE_DIA_MM * 0.5,
+            t * 4.0,
+            App.Vector(ax, -t, AXLE_HOLE_Z_MM),
+            App.Vector(0, 1, 0),
+        )
+        solid = solid.cut(acyl)
+
     return solid
 
 
@@ -117,15 +117,22 @@ def write_flat_dxf(path: Path) -> None:
     t = THICKNESS_MM
     r_in = BEND_RADIUS_IN_MM
     r_out = r_in + t
-    half_flat_web = WEB_OUT_WIDTH_MM * 0.5 - r_out
-    straight_ear  = FLANGE_OUT_H_MM - r_out
+    flat_z = FLANGE_Z_OUT_MM - r_out
+    flat_y = FLANGE_Y_OUT_MM - r_out
     ba = (math.pi * 0.5) * (r_in + K_FACTOR * t)
 
-    half_len = half_flat_web + ba + straight_ear
-    half_y   = BRACKET_DEPTH_MM * 0.5
-    bend_x   = half_flat_web + ba * 0.5
-    piv_x    = half_len - PIVOT_FROM_TIP_MM
-    cr       = 1.5  # 1.5 mm corner fillets on outer corners
+    # Unfold along Y_flat: 0 .. total_len, X_flat: -WIDTH_X_MM/2 .. +WIDTH_X_MM/2
+    # Segment 1 (vertical bearing flange): Y_flat = 0 .. flat_z (tip at 0)
+    # Bend zone: Y_flat = flat_z .. flat_z + ba (centerline at flat_z + 0.5*ba)
+    # Segment 2 (top roof flange): Y_flat = flat_z + ba .. total_len (tip at total_len)
+    total_len = flat_z + ba + flat_y
+    bend_y = flat_z + 0.5 * ba
+    half_x = WIDTH_X_MM * 0.5
+    cr = 1.5
+
+    axle_tip_dist = FLANGE_Z_OUT_MM + AXLE_HOLE_Z_MM  # 19.6 - 12.6 = 7.0 mm from vertical tip
+    y1_tip_dist = FLANGE_Y_OUT_MM - MOUNT_HOLE_Y1_MM  # 30.0 - 19.6 = 10.4 mm from roof tip
+    y2_tip_dist = FLANGE_Y_OUT_MM - MOUNT_HOLE_Y2_MM  # 30.0 - 27.6 = 2.4 mm from roof tip
 
     ents = []
 
@@ -138,25 +145,27 @@ def write_flat_dxf(path: Path) -> None:
     def dxf_circle(cx, cy, r, layer="0"):
         ents.append(f"0\nCIRCLE\n8\n{layer}\n10\n{cx:.6f}\n20\n{cy:.6f}\n30\n0.0\n40\n{r:.6f}\n")
 
-    # Closed rounded rectangle outer contour (-half_len..+half_len, -half_y..+half_y)
-    dxf_line(-half_len + cr, -half_y, half_len - cr, -half_y)
-    dxf_arc(half_len - cr, -half_y + cr, cr, -90.0, 0.0)
-    dxf_line(half_len, -half_y + cr, half_len, half_y - cr)
-    dxf_arc(half_len - cr, half_y - cr, cr, 0.0, 90.0)
-    dxf_line(half_len - cr, half_y, -half_len + cr, half_y)
-    dxf_arc(-half_len + cr, half_y - cr, cr, 90.0, 180.0)
-    dxf_line(-half_len, half_y - cr, -half_len, -half_y + cr)
-    dxf_arc(-half_len + cr, -half_y + cr, cr, 180.0, 270.0)
+    # Closed rounded rectangle (-half_x..+half_x, 0..total_len)
+    dxf_line(-half_x + cr, 0.0, half_x - cr, 0.0)
+    dxf_arc(half_x - cr, cr, cr, -90.0, 0.0)
+    dxf_line(half_x, cr, half_x, total_len - cr)
+    dxf_arc(half_x - cr, total_len - cr, cr, 0.0, 90.0)
+    dxf_line(half_x - cr, total_len, -half_x + cr, total_len)
+    dxf_arc(-half_x + cr, total_len - cr, cr, 90.0, 180.0)
+    dxf_line(-half_x, total_len - cr, -half_x, cr)
+    dxf_arc(-half_x + cr, cr, cr, 180.0, 270.0)
 
-    # Interior holes (2x web M2.5, 2x ear M3)
-    dxf_circle(0.0, -MOUNT_HOLE_Y_MM, MOUNT_HOLE_DIA_MM * 0.5)
-    dxf_circle(0.0, MOUNT_HOLE_Y_MM, MOUNT_HOLE_DIA_MM * 0.5)
-    dxf_circle(-piv_x, 0.0, PIVOT_HOLE_DIA_MM * 0.5)
-    dxf_circle(piv_x, 0.0, PIVOT_HOLE_DIA_MM * 0.5)
+    # 2x M3 axle support holes
+    for ax in (-AXLE_HOLE_X_MM, AXLE_HOLE_X_MM):
+        dxf_circle(ax, axle_tip_dist, AXLE_HOLE_DIA_MM * 0.5)
 
-    # Bend centerlines on non-cutting layer 'BEND'
-    dxf_line(-bend_x, -half_y, -bend_x, half_y, layer="BEND")
-    dxf_line(bend_x, -half_y, bend_x, half_y, layer="BEND")
+    # 4x M2.5 roof mounting holes
+    for hx in (-MOUNT_HOLE_X_MM, MOUNT_HOLE_X_MM):
+        dxf_circle(hx, total_len - y1_tip_dist, MOUNT_HOLE_DIA_MM * 0.5)
+        dxf_circle(hx, total_len - y2_tip_dist, MOUNT_HOLE_DIA_MM * 0.5)
+
+    # Single 90-deg bend centerline on layer 'BEND'
+    dxf_line(-half_x, bend_y, half_x, bend_y, layer="BEND")
 
     dxf = (
         "0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n4\n0\nENDSEC\n"

@@ -4,12 +4,14 @@ Design a series of increasingly ambitious and wacky Framework Laptop expansion c
 # Parts
 - Day 05 Power & Bus Probe PCB (`Day_05_Power_Bus_Probe/`): 4-layer assembled expansion card with USB-C I2C/Qwiic bridge and 36V/5A rail monitor, to be ordered from the fab.
 - Day 06 Walking Leg Controller PCB (`Day_06_Walking_Legs/`): 4-layer assembled dual-servo gait & current-telemetry expansion card (qty 4 for a full laptop), to be ordered from the fab.
-- Leg Bay Structural Housing (`mech/leg_bay_housing.step`): MJF PA12 3D-printed expansion-bay lock housing with under-chassis load lip, to be ordered.
-- Leg Hip Clevis Bracket (`mech/leg_hip_bracket.step`): SendCutSend bent 5052-H32 aluminum sheet-metal hip mount, to be ordered from SendCutSend.
-- Leg Femur Link (`mech/leg_femur_link.step`): SendCutSend laser-cut 5052-H32 aluminum sheet-metal upper link, to be ordered from SendCutSend.
-- Leg Tibia Strut (`mech/leg_tibia_strut.step`): SendCutSend bent 5052-H32 aluminum sheet-metal lower leg strut, to be ordered from SendCutSend.
-- Leg Foot Pad (`mech/leg_foot_pad.step`): TPU 3D-printed high-friction compliant foot tip, to be ordered.
-- Single Walking Leg Assembly (`mech/walking_leg_assembly.step`): Reference 3D fit-check assembly (`mech/`), not ordered.
+- Leg Bay Structural Housing (`mech/leg_bay_housing.step`): MJF PA12 3D-printed expansion-bay lock housing with dual outboard horizontal servo pockets and under-chassis load lip, to be ordered.
+- Leg Hip Outrigger Bracket (`mech/leg_hip_bracket.step`): SendCutSend bent 5052-H32 aluminum sheet-metal outboard double-shear bearing outrigger, to be ordered from SendCutSend.
+- Leg Femur Link (`mech/leg_femur_link.step`): SendCutSend laser-cut 5052-H32 aluminum sheet-metal sagittal upper femur link (qty 8), to be ordered from SendCutSend.
+- Leg Knee Pushrod (`mech/leg_knee_pushrod.step`): SendCutSend laser-cut 5052-H32 aluminum sheet-metal sagittal 4-bar knee actuation pushrod (qty 4), to be ordered from SendCutSend.
+- Leg Bellcrank Tibia Strut (`mech/leg_tibia_strut.step`): SendCutSend bent 5052-H32 aluminum sheet-metal sagittal U-channel lower leg strut with integral 90-deg bellcrank lobe, to be ordered from SendCutSend.
+- Leg Compliant TPU Foot Pad (`mech/leg_foot_pad.step`): 95A TPU 3D-printed leaf-spring arch suspension foot tip, to be ordered.
+- Single Walking Leg Assembly (`mech/walking_leg_assembly.step`): Reference 3D single-leg sagittal fit-check assembly (`mech/`), not ordered.
+- Full Walking Laptop Assembly (`mech/walking_laptop_assembly.step`): Reference 3D walk-ready Framework Laptop 13 four-leg quadruped assembly (`mech/`), not ordered.
 - Day 07 Chiptune FM Synth & MIDI Card PCB (`Day_07_Chiptune_Synth_MIDI/`): 4-layer assembled crystal-less USB-MIDI polyphonic FM/chiptune synthesizer card with `PCM5102APWR` 32-bit I2S DAC, `3.5 mm` stereo headphone/line-out jack, and locking Type-A hardware MIDI Out port, to be ordered from the fab.
 
 # Notes
