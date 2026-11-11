@@ -4,7 +4,8 @@ Design a series of increasingly ambitious and wacky Framework Laptop expansion c
 # Parts
 - Day 05 Power & Bus Probe PCB (`Day_05_Power_Bus_Probe/`): 4-layer assembled expansion card with USB-C I2C/Qwiic bridge and 36V/5A rail monitor, to be ordered from the fab.
 - Day 06 Walking Leg Controller PCB (`Day_06_Walking_Legs/`): 4-layer assembled dual-servo gait & current-telemetry expansion card (qty 4 for a full laptop), to be ordered from the fab.
-- Leg Bay Structural Housing (`mech/leg_bay_housing.step`): MJF PA12 3D-printed expansion-bay lock housing with dual outboard horizontal servo pockets and under-chassis load lip, to be ordered.
+- Leg Bay Extension Outrigger (`mech/leg_bay_outrigger.step`): SendCutSend CNC-bent 12-gauge (`ALU-080`, `2.03 mm`) 5052-H32 aluminum cantilever spine anchoring under the laptop's solid aluminum bottom cover and extending the servo cradle clear outboard of the recessed expansion bay & beveled chassis rim (qty 4), to be ordered from SendCutSend.
+- Leg Bay Structural Housing (`mech/leg_bay_housing.step`): MJF PA12 3D-printed low-profile recessed bay cartridge, overhanging-lip wiring neck, and outboard horizontal dual-servo saddle bolted inside `leg_bay_outrigger` (qty 4), to be ordered.
 - Leg Hip Outrigger Bracket (`mech/leg_hip_bracket.step`): SendCutSend bent 5052-H32 aluminum sheet-metal outboard double-shear bearing outrigger, to be ordered from SendCutSend.
 - Leg Femur Link (`mech/leg_femur_link.step`): SendCutSend laser-cut 5052-H32 aluminum sheet-metal sagittal upper femur link (qty 8), to be ordered from SendCutSend.
 - Leg Knee Pushrod (`mech/leg_knee_pushrod.step`): SendCutSend laser-cut 5052-H32 aluminum sheet-metal sagittal 4-bar knee actuation pushrod (qty 4), to be ordered from SendCutSend.
