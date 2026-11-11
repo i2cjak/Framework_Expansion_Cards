@@ -102,6 +102,14 @@ Programmable 1.0V–15.0V (4W) SEPIC Micro Bench Power Supply, 140µs E-Fuse & 4
   <img src="img/day12.png" alt="Day 12 Programmable 1.0V-15.0V SEPIC Micro Bench Supply Card" title="day12.png">
 </p>
 
+## [Day 13](./Day_13_LoRa_Spectrum_Sweeper/)
+
++22 dBm Sub-GHz LoRa Mesh Radio (`SX1262`) & 150–960 MHz ISM Spectrum Sweeper w/ Edge SMA
+
+<p align="center">
+  <img src="img/day13.png" alt="Day 13 Sub-GHz LoRa Mesh Radio and ISM Spectrum Sweeper Card" title="day13.png">
+</p>
+
 
 
 
