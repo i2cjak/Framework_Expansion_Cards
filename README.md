@@ -94,6 +94,14 @@ Dual 4m Laser Time-of-Flight Stereo Gesture Deck & Universal 940nm Phased-Arc IR
   <img src="img/day11.png" alt="Day 11 Dual ToF Gesture Deck and Universal IR Blaster Card" title="day11.png">
 </p>
 
+## [Day 12](./Day_12_Bench_Power_Supply/)
+
+Programmable 1.0V–15.0V (4W) SEPIC Micro Bench Power Supply, 140µs E-Fuse & 4-Wire Kelvin Port
+
+<p align="center">
+  <img src="img/day12.png" alt="Day 12 Programmable 1.0V-15.0V SEPIC Micro Bench Supply Card" title="day12.png">
+</p>
+
 
 
 
