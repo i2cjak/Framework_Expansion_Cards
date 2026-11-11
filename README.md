@@ -54,5 +54,14 @@ USB SOF-Synced 2-DOF Walking Leg Controller & Mechanical Bay Linkage (`mech/`)
   <img src="img/day6.png" alt="Day 6 Walking Leg Expansion Card" title="day6.png">
 </p>
 
+## [Day 7](./Day_07_Chiptune_Synth_MIDI/)
+
+Polyphonic FM / Chiptune 32-Bit I2S Synthesizer & Type-A MIDI Out
+
+<p align="center">
+  <img src="img/day7.png" alt="Day 7 Chiptune Synth and MIDI Card" title="day7.png">
+</p>
+
+
 
 

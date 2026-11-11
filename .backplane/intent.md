@@ -10,6 +10,7 @@ Design a series of increasingly ambitious and wacky Framework Laptop expansion c
 - Leg Tibia Strut (`mech/leg_tibia_strut.step`): SendCutSend bent 5052-H32 aluminum sheet-metal lower leg strut, to be ordered from SendCutSend.
 - Leg Foot Pad (`mech/leg_foot_pad.step`): TPU 3D-printed high-friction compliant foot tip, to be ordered.
 - Single Walking Leg Assembly (`mech/walking_leg_assembly.step`): Reference 3D fit-check assembly (`mech/`), not ordered.
+- Day 07 Chiptune FM Synth & MIDI Card PCB (`Day_07_Chiptune_Synth_MIDI/`): 4-layer assembled crystal-less USB-MIDI polyphonic FM/chiptune synthesizer card with `PCM5102APWR` 32-bit I2S DAC, `3.5 mm` stereo headphone/line-out jack, and locking Type-A hardware MIDI Out port, to be ordered from the fab.
 
 # Notes
 - Follow existing repository conventions: `Day_NN_<name>/` folders on `main`, `26.0 x 30.0 mm` 4-layer 0.8 mm card outline with Amphenol `12401981E412A` straddle-mount USB-C plug, `build.py` outputs, card `README.md`, and showcase renders in `img/`.
