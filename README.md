@@ -70,6 +70,14 @@ Polyphonic FM / Chiptune 32-Bit I2S Synthesizer & Type-A MIDI Out
   <img src="img/day8.png" alt="Day 8 CAN 2.0B Bus Analyzer Card" title="day8.png">
 </p>
 
+## [Day 9](./Day_09_Radiation_Dosimeter_RNG/)
+
+Solid-State Dual-PIN Radiation Dosimeter, Pulse Spectrometer & Quantum Decay Hardware RNG
+
+<p align="center">
+  <img src="img/day9.png" alt="Day 9 Solid-State PIN Radiation Dosimeter and Quantum RNG Card" title="day9.png">
+</p>
+
 
 
 

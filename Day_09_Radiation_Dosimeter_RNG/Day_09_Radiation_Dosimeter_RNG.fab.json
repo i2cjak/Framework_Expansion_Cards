@@ -1,0 +1,18 @@
+{
+  "kind": "pcb",
+  "name": "Day 09 Solid-State PIN Radiation Dosimeter & Quantum RNG PCB",
+  "source": "Day_09_Radiation_Dosimeter_RNG.kicad_pcb",
+  "qty": 5,
+  "options": {
+    "layers": 4,
+    "thickness_mm": 0.8,
+    "color": "purple",
+    "finish": "enig",
+    "copper_oz": 1
+  },
+  "features": {
+    "width_mm": 26.0,
+    "height_mm": 30.0,
+    "min_drill_mm": 0.3
+  }
+}
