@@ -1,0 +1,18 @@
+{
+  "kind": "3dp",
+  "name": "Leg Compliant TPU Foot Pad",
+  "source": "leg_foot_pad.step",
+  "qty": 4,
+  "options": {
+    "process": "fdm",
+    "material": "tpu",
+    "color": "black"
+  },
+  "features": {
+    "volume_cm3": 6.05,
+    "area_cm2": 21.62,
+    "size_x_mm": 22.0,
+    "size_y_mm": 21.96,
+    "size_z_mm": 23.96
+  }
+}

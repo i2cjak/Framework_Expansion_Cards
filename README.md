@@ -46,4 +46,13 @@ USB-C I2C / Qwiic Bridge & 36V / 5A Power Telemetry Probe
   <img src="img/day5.png" alt="Day 5 USB-C I2C and Power Probe" title="day5.png">
 </p>
 
+## [Day 6](./Day_06_Walking_Legs/)
+
+USB SOF-Synced 2-DOF Walking Leg Controller & Mechanical Bay Linkage (`mech/`)
+
+<p align="center">
+  <img src="img/day6.png" alt="Day 6 Walking Leg Expansion Card" title="day6.png">
+</p>
+
+
 

@@ -1,0 +1,18 @@
+{
+  "kind": "3dp",
+  "name": "Leg Bay Structural Housing",
+  "source": "leg_bay_housing.step",
+  "qty": 4,
+  "options": {
+    "process": "mjf",
+    "material": "pa12",
+    "color": "black"
+  },
+  "features": {
+    "volume_cm3": 12.13,
+    "area_cm2": 85.04,
+    "size_x_mm": 32.0,
+    "size_y_mm": 50.5,
+    "size_z_mm": 18.2
+  }
+}

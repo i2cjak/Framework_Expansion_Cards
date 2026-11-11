@@ -1,0 +1,49 @@
+{
+  "kind": "sheetmetal",
+  "name": "Leg Tibia Strut",
+  "source": "leg_tibia_strut.step",
+  "qty": 4,
+  "options": {
+    "material": "aluminum_5052",
+    "thickness_mm": 1.6,
+    "finish": "none"
+  },
+  "features": {
+    "flat_x_mm": 58.0,
+    "flat_y_mm": 47.95,
+    "cut_length_mm": 277.5,
+    "holes": 7,
+    "bends": 2,
+    "countersinks": 0
+  },
+  "sendcutsend": {
+    "sku": "ALU-063",
+    "material": "5052 H32 Aluminum",
+    "thickness_in": 0.063,
+    "process": "Fiber Laser",
+    "finish": null,
+    "services": [
+      "bending"
+    ],
+    "bend_angles": [
+      90.0,
+      90.0
+    ],
+    "hardware": [],
+    "taps": [],
+    "countersinks": [],
+    "flat": "leg_tibia_strut.flat.dxf",
+    "unmapped": [],
+    "dfm": {
+      "at": "2026-11-11T07:50:41Z",
+      "pass": 34,
+      "fail": 0,
+      "warn": 0,
+      "failed": [],
+      "source_sha256": "9df2d5339de4feead388949ea6898eb5237914bb935ea5c1935735a8689f54c6",
+      "flat_sha256": "7d00f306b377bdf334c1c8c67c7ce3cd9698364eb226b0c548246d0674d03647",
+      "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
+      "specs_generated_at": "2026-11-05T21:51:55.112063Z"
+    }
+  }
+}

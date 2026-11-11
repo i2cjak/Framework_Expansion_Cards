@@ -1,0 +1,49 @@
+{
+  "kind": "sheetmetal",
+  "name": "Leg Hip Clevis Bracket",
+  "source": "leg_hip_bracket.step",
+  "qty": 4,
+  "options": {
+    "material": "aluminum_5052",
+    "thickness_mm": 1.6,
+    "finish": "none"
+  },
+  "features": {
+    "flat_x_mm": 59.95,
+    "flat_y_mm": 20.0,
+    "cut_length_mm": 193.7,
+    "holes": 4,
+    "bends": 2,
+    "countersinks": 0
+  },
+  "sendcutsend": {
+    "sku": "ALU-063",
+    "material": "5052 H32 Aluminum",
+    "thickness_in": 0.063,
+    "process": "Fiber Laser",
+    "finish": null,
+    "services": [
+      "bending"
+    ],
+    "bend_angles": [
+      90.0,
+      90.0
+    ],
+    "hardware": [],
+    "taps": [],
+    "countersinks": [],
+    "flat": "leg_hip_bracket.flat.dxf",
+    "unmapped": [],
+    "dfm": {
+      "at": "2026-11-11T07:48:32Z",
+      "pass": 34,
+      "fail": 0,
+      "warn": 0,
+      "failed": [],
+      "source_sha256": "71daf3cb4d51f7cb52df9199ed565f464045ba3837927b51feed9600445c589e",
+      "flat_sha256": "017aa53cdd7b605b2a4dfd8a9d7eb45390d8de0a70a38b8fcf886778774c3cb6",
+      "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
+      "specs_generated_at": "2026-11-05T21:51:55.112063Z"
+    }
+  }
+}
