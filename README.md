@@ -62,6 +62,14 @@ Polyphonic FM / Chiptune 32-Bit I2S Synthesizer & Type-A MIDI Out
   <img src="img/day7.png" alt="Day 7 Chiptune Synth and MIDI Card" title="day7.png">
 </p>
 
+## [Day 8](./Day_08_CAN_Bus_Analyzer/)
+
+1 Mbps ISO-11898 CAN 2.0B Bus Analyzer (`gs_usb` SocketCAN) & PhotoMOS 120R Termination
+
+<p align="center">
+  <img src="img/day8.png" alt="Day 8 CAN 2.0B Bus Analyzer Card" title="day8.png">
+</p>
+
 
 
 

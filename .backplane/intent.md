@@ -13,6 +13,7 @@ Design a series of increasingly ambitious and wacky Framework Laptop expansion c
 - Single Walking Leg Assembly (`mech/walking_leg_assembly.step`): Reference 3D single-leg sagittal fit-check assembly (`mech/`), not ordered.
 - Full Walking Laptop Assembly (`mech/walking_laptop_assembly.step`): Reference 3D walk-ready Framework Laptop 13 four-leg quadruped assembly (`mech/`), not ordered.
 - Day 07 Chiptune FM Synth & MIDI Card PCB (`Day_07_Chiptune_Synth_MIDI/`): 4-layer assembled crystal-less USB-MIDI polyphonic FM/chiptune synthesizer card with `PCM5102APWR` 32-bit I2S DAC, `3.5 mm` stereo headphone/line-out jack, and locking Type-A hardware MIDI Out port, to be ordered from the fab.
+- Day 08 CAN 2.0B Bus Analyzer PCB (`Day_08_CAN_Bus_Analyzer/`): 4-layer assembled 1 Mbps ISO-11898 CAN 2.0B / DroneCAN analyzer card (`STM32F072CBT6` simultaneous USB + `bxCAN`, `8.000 MHz` quartz crystal, `SN65HVD230DR` transceiver with listen-only mode, `TLP172AM` PhotoMOS `120 Ohm` software termination, `PESD2CAN` surge clamp, and `0–36 V` `V_CAN` sense), to be ordered from the fab.
 
 # Notes
 - Follow existing repository conventions: `Day_NN_<name>/` folders on `main`, `26.0 x 30.0 mm` 4-layer 0.8 mm card outline with Amphenol `12401981E412A` straddle-mount USB-C plug, `build.py` outputs, card `README.md`, and showcase renders in `img/`.
