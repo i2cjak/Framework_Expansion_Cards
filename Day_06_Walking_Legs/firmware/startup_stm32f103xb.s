@@ -28,6 +28,10 @@ g_pfnVectors:
   .word Default_Handler
   .endr
   .word USB_LP_CAN1_RX0_IRQHandler
+  .rept 19
+  .word Default_Handler
+  .endr
+  .word EXTI15_10_IRQHandler
 
   .section .text.Reset_Handler
   .weak Reset_Handler
@@ -68,3 +72,6 @@ Default_Handler:
 
   .weak USB_LP_CAN1_RX0_IRQHandler
   .thumb_set USB_LP_CAN1_RX0_IRQHandler, Default_Handler
+
+  .weak EXTI15_10_IRQHandler
+  .thumb_set EXTI15_10_IRQHandler, Default_Handler

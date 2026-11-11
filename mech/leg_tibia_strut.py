@@ -29,16 +29,18 @@ K_FACTOR           = 0.42     # SendCutSend ALU-063 K-factor
 WEB_OUT_Y_MM       = 20.0     # Outside U-channel width across Y (inside gap = 16.80 mm)
 SHIN_FLANGE_X_MM   = 15.5     # Lower shin outside flange depth along +X (> 7.70 mm min flange)
 BELL_FLANGE_X_MM   = 26.5     # Upper bellcrank lobe outside flange depth along +X
-TAPER_Z0_MM        = 34.0     # Height where shin flange begins widening into bellcrank lobe
-TAPER_Z1_MM        = 45.0     # Height where full 26.5 mm bellcrank lobe depth is reached
-STRUT_LEN_MM       = 60.0     # Vertical tibia height along Z (> 38.10 mm min flat length)
+WEB_TOP_Z_MM       = 39.5     # Front closed U-channel web top (> 38.10 mm min bend; open clevis above!)
+CLEVIS_RELIEF_X_MM = 3.80     # Front clevis throat cut X above WEB_TOP_Z_MM (clears bend zone cleanly)
+TAPER_Z0_MM        = 35.5     # Height where shin flange begins widening into bellcrank lobe
+TAPER_Z1_MM        = 46.5     # Height where full 26.5 mm bellcrank lobe depth is reached
+STRUT_LEN_MM       = 61.5     # Vertical tibia height along Z (> 38.10 mm min flat length)
 
 PIVOT_HOLE_DIA_MM  = 3.10     # M3 knee, bellcrank & ankle cross-axle holes (along Y)
 SHIN_PIVOT_X_MM    = 10.5     # Knee & ankle bore X (9.24 mm from bend centerline >> 7.55 mm min)
 BELL_PIVOT_X_MM    = 22.5     # Bellcrank pushrod bore X (12.0 mm lever arm behind knee!)
-KNEE_Z_MM          = 53.0     # Knee & bellcrank M3 axle height (7.0 mm below top edge)
-ANKLE_Z_MM         = 6.0      # TPU foot M3 cross-bolt height (6.0 mm above bottom edge -> 47.0 mm tibia)
-WEB_HOLE_DIA_MM    = 3.10     # 3x M3 weight-relief holes along front web centerline (Y=0)
+KNEE_Z_MM          = 54.5     # Knee & bellcrank M3 axle height (15.0 mm open clevis throat above web!)
+ANKLE_Z_MM         = 7.5      # TPU foot M3 cross-bolt height (7.5 mm above bottom -> exact 47.0 mm tibia)
+WEB_HOLE_DIA_MM    = 3.10     # 2x M3 weight-relief holes along front web centerline (Y=0)
 ALU_COLOR          = (0.74, 0.77, 0.81)
 
 REPO_ROOT = Path("/home/h/Documents/i2cjak/Framework_Expansion_Cards")
@@ -114,7 +116,17 @@ def build_bent_solid() -> Part.Shape:
     taper_cut = Part.Face(cut_wire).extrude(App.Vector(0.0, WEB_OUT_Y_MM * 2.0, 0.0))
     solid = solid.cut(taper_cut)
 
-    # Cut coaxial Ankle (10.5, 6.0), Knee (10.5, 53.0), & Bellcrank (22.5, 53.0) M3 bores along Y
+    # Open upper knee clevis throat (`Z = WEB_TOP_Z_MM .. STRUT_LEN_MM`, `X < CLEVIS_RELIEF_X_MM`)
+    # so `FemurIn` and `FemurOut` swing +/-80 deg with zero front-web collision!
+    clevis_throat = Part.makeBox(
+        CLEVIS_RELIEF_X_MM + 2.0,
+        WEB_OUT_Y_MM * 2.0,
+        STRUT_LEN_MM - WEB_TOP_Z_MM + 2.0,
+        App.Vector(-2.0, -WEB_OUT_Y_MM, WEB_TOP_Z_MM),
+    )
+    solid = solid.cut(clevis_throat)
+
+    # Cut coaxial Ankle (10.5, 7.5), Knee (10.5, 54.5), & Bellcrank (22.5, 54.5) M3 bores along Y
     for hx, hz in (
         (SHIN_PIVOT_X_MM, ANKLE_Z_MM),
         (SHIN_PIVOT_X_MM, KNEE_Z_MM),
@@ -128,8 +140,8 @@ def build_bent_solid() -> Part.Shape:
         )
         solid = solid.cut(cyl)
 
-    # Cut 3x centerline M3 weight-relief holes through front web (along X at Y=0)
-    for wz in (18.0, 30.0, 42.0):
+    # Cut 2x centerline M3 weight-relief holes through lower closed front web (along X at Y=0)
+    for wz in (18.0, 30.0):
         wcyl = Part.makeCylinder(
             WEB_HOLE_DIA_MM * 0.5,
             t * 4.0,
@@ -166,13 +178,18 @@ def write_flat_dxf(path: Path) -> None:
     def dxf_circle(cx, cy, r, layer="0"):
         ents.append(f"0\nCIRCLE\n8\n{layer}\n10\n{cx:.6f}\n20\n{cy:.6f}\n30\n0.0\n40\n{r:.6f}\n")
 
-    # Closed symmetric polygon outer contour (stepped/tapered bellcrank ears at top, slim shin at bottom)
+    # Closed symmetric polygon outer contour with open upper knee clevis throat (`Z = 39.5 .. 61.5 mm`)
+    clevis_inner_x = half_flat_web + ba + (CLEVIS_RELIEF_X_MM - r_out)
     contour = [
         (-half_w_shin, 0.0),
         (half_w_shin, 0.0),
         (half_w_shin, TAPER_Z0_MM),
         (half_w_bell, TAPER_Z1_MM),
         (half_w_bell, STRUT_LEN_MM),
+        (clevis_inner_x, STRUT_LEN_MM),
+        (clevis_inner_x, WEB_TOP_Z_MM),
+        (-clevis_inner_x, WEB_TOP_Z_MM),
+        (-clevis_inner_x, STRUT_LEN_MM),
         (-half_w_bell, STRUT_LEN_MM),
         (-half_w_bell, TAPER_Z1_MM),
         (-half_w_shin, TAPER_Z0_MM),
@@ -182,19 +199,19 @@ def write_flat_dxf(path: Path) -> None:
         x2, y2 = contour[(i + 1) % len(contour)]
         dxf_line(x1, y1, x2, y2)
 
-    # 6x flange M3 pivot holes (Ankle, Knee, Bellcrank on left & right flanges) + 3x web holes
+    # 6x flange M3 pivot holes (Ankle, Knee, Bellcrank on left & right flanges) + 2x web holes
     for hz in (ANKLE_Z_MM, KNEE_Z_MM):
         dxf_circle(-shin_piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
         dxf_circle(shin_piv_x, hz, PIVOT_HOLE_DIA_MM * 0.5)
     dxf_circle(-bell_piv_x, KNEE_Z_MM, PIVOT_HOLE_DIA_MM * 0.5)
     dxf_circle(bell_piv_x, KNEE_Z_MM, PIVOT_HOLE_DIA_MM * 0.5)
 
-    for wz in (18.0, 30.0, 42.0):
+    for wz in (18.0, 30.0):
         dxf_circle(0.0, wz, WEB_HOLE_DIA_MM * 0.5)
 
-    # Bend centerlines on layer 'BEND'
-    dxf_line(-bend_x, 0.0, -bend_x, STRUT_LEN_MM, layer="BEND")
-    dxf_line(bend_x, 0.0, bend_x, STRUT_LEN_MM, layer="BEND")
+    # Bend centerlines on layer 'BEND' along the 39.5 mm closed U-channel web
+    dxf_line(-bend_x, 0.0, -bend_x, WEB_TOP_Z_MM, layer="BEND")
+    dxf_line(bend_x, 0.0, bend_x, WEB_TOP_Z_MM, layer="BEND")
 
     dxf = (
         "0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n4\n0\nENDSEC\n"

@@ -55,20 +55,24 @@ LEG_REAR_Y_MM       = +67.00   # Balanced 112.00 mm wheelbase centered at +11.00
 RAIL_SEAT_Z_MM      = 0.00     # Top of `leg_flank_bracket` bears flush against Z = 0.00 mm bottom cover
 
 # --- Shared Leg Kinematic Constants (matching `walking_leg_assembly.py` & `leg_servo_pod.py`) ---
-SERVO_X_OFFSET_MM   = 7.30
-SERVO_AXIS_Z_MM     = 22.10
-TURRET_FRONT_Y_MM   = -25.40
-BRACKET_OUT_Y_MM    = -49.50
-BRACKET_TOP_Z_MM    = 34.7002
-TIBIA_MID_Y_MM      = -37.40
-INBOARD_LINK_Y0_MM  = -29.20
-OUTBOARD_LINK_Y0_MM = -43.568
-FEMUR_LEN_MM        = 38.0
-TIBIA_LEN_MM        = 47.0
-HORN_CRANK_MM       = 12.0
-PUSHROD_LEN_MM      = 36.0
-FOOT_BOLT_Z_MM      = 19.0
-ANKLE_LEG_Z_MM      = -56.33   # Ground plane in laptop coords = -56.33 - 19.0 = -75.33 mm!
+SERVO_X_OFFSET_MM     = 9.00
+SERVO_AXIS_Z_MM       = 22.10
+TURRET_FRONT_Y_MM     = -23.50
+BRACKET_OUT_Y_MM      = -56.20
+BRACKET_TOP_Z_MM      = 45.1002
+TIBIA_MID_Y_MM        = -44.20
+KNEE_HORN_Y0_MM       = -28.60
+PUSHROD_Y0_MM         = -31.20
+INBOARD_FEMUR_Y0_MM   = -36.40
+HIP_HORN_Y0_MM        = -38.55
+OUTBOARD_FEMUR_Y0_MM  = -49.968
+FEMUR_LEN_MM          = 38.0
+TIBIA_LEN_MM          = 47.0
+TIBIA_KNEE_Z_MM       = 54.5
+HORN_CRANK_MM         = 12.0
+PUSHROD_LEN_MM        = 36.0
+FOOT_BOLT_Z_MM        = 22.5
+ANKLE_LEG_Z_MM        = -52.83   # Ground plane in laptop coords = -52.83 - 22.5 = -75.33 mm!
 
 # Colors
 CHASSIS_ALU_COLOR   = (0.79, 0.81, 0.84)
@@ -110,23 +114,28 @@ def sagittal_link_placement(p1x: float, p1z: float, p2x: float, p2z: float, y_st
     return App.Placement(App.Vector(p1x, y_start, p1z), rot)
 
 
-def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float) -> Part.Shape:
+def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float, bore_r: float = 1.55, hub_bore_r: float | None = None) -> Part.Shape:
     c1 = Part.makeCylinder(r1, thick, App.Vector(x1, y_front, z1), App.Vector(0, -1, 0))
     c2 = Part.makeCylinder(r2, thick, App.Vector(x2, y_front, z2), App.Vector(0, -1, 0))
     dx, dz = x2 - x1, z2 - z1
     dist = math.hypot(dx, dz)
     if dist < 1e-3:
-        return c1
-    nx, nz = -dz / dist, dx / dist
-    rmid = min(r1, r2)
-    pts = [
-        App.Vector(x1 + nx * rmid, y_front, z1 + nz * rmid),
-        App.Vector(x2 + nx * rmid, y_front, z2 + nz * rmid),
-        App.Vector(x2 - nx * rmid, y_front, z2 - nz * rmid),
-        App.Vector(x1 - nx * rmid, y_front, z1 - nz * rmid),
-    ]
-    web = Part.Face(Part.makePolygon(pts + [pts[0]])).extrude(App.Vector(0, -thick, 0))
-    return c1.fuse(c2).fuse(web).removeSplitter()
+        solid = c1
+    else:
+        nx, nz = -dz / dist, dx / dist
+        rmid = min(r1, r2)
+        pts = [
+            App.Vector(x1 + nx * rmid, y_front, z1 + nz * rmid),
+            App.Vector(x2 + nx * rmid, y_front, z2 + nz * rmid),
+            App.Vector(x2 - nx * rmid, y_front, z2 - nz * rmid),
+            App.Vector(x1 - nx * rmid, y_front, z1 - nz * rmid),
+        ]
+        web = Part.Face(Part.makePolygon(pts + [pts[0]])).extrude(App.Vector(0, -thick, 0))
+        solid = c1.fuse(c2).fuse(web)
+    rb1 = bore_r if hub_bore_r is None else hub_bore_r
+    b1 = Part.makeCylinder(rb1, thick + 1.0, App.Vector(x1, y_front + 0.5, z1), App.Vector(0, -1, 0))
+    b2 = Part.makeCylinder(bore_r, thick + 1.0, App.Vector(x2, y_front + 0.5, z2), App.Vector(0, -1, 0))
+    return solid.cut(b1).cut(b2).removeSplitter()
 
 
 def solve_leg_kinematics(ankle_x: float, ankle_z: float, s_dir: float) -> dict[str, float]:
@@ -204,15 +213,18 @@ def build_framework_laptop(doc, colored_objs: list) -> None:
             if bx_sign < 0:
                 x0 = -hw - 1.0
                 w_cut = 30.20 + 1.0
+                x_usbc = -hw + 29.00
             else:
                 x0 = hw - 30.20
                 w_cut = 30.20 + 1.0
+                x_usbc = hw - 34.00
             bay_pocket = Part.makeBox(w_cut, 30.40, SKIRT_H_Z_MM + 0.40, App.Vector(x0, by_center - 15.20, -0.40))
             rail_groove = Part.makeBox(
                 28.50, 32.40, 2.20,
                 App.Vector(-hw + 1.50 if bx_sign < 0 else hw - 30.00, by_center - 16.20, 2.20),
             )
-            base = base.cut(bay_pocket).cut(rail_groove)
+            usbc_well = Part.makeBox(5.00, 25.00, 2.40, App.Vector(x_usbc, by_center - 12.50, 2.60))
+            base = base.cut(bay_pocket).cut(rail_groove).cut(usbc_well)
 
     kb_well = Part.makeBox(262.0, 102.0, 1.4, App.Vector(-131.0, -8.0, BASE_H_Z_MM - 1.3))
     base = base.cut(kb_well).removeSplitter()
@@ -222,8 +234,8 @@ def build_framework_laptop(doc, colored_objs: list) -> None:
     colored_objs.append((base_obj, CHASSIS_ALU_COLOR))
 
     # 2. Underside Rubber Foot Strips (`Y = -103` & `+103 mm`) + 4x Card-Release Latch Buttons (`|X| = 111.5 mm`)
-    front_foot = make_rounded_rect_prism(232.0, 6.0, 1.8, 2.8, -116.0, -106.0, -1.8)
-    rear_foot  = make_rounded_rect_prism(232.0, 6.0, 2.2, 2.8, -116.0, +100.0, -2.2)
+    front_foot = make_rounded_rect_prism(232.0, 6.0, 1.8, 2.8, -116.0, -106.0, -1.82)
+    rear_foot  = make_rounded_rect_prism(232.0, 6.0, 2.2, 2.8, -116.0, +100.0, -2.22)
     feet_obj = doc.addObject("Part::Feature", "Framework13_UndersideRubberFeet")
     feet_obj.Shape = front_foot.fuse(rear_foot)
     colored_objs.append((feet_obj, RUBBER_FOOT_COLOR))
@@ -232,25 +244,25 @@ def build_framework_laptop(doc, colored_objs: list) -> None:
     for bx_sign in (-1.0, 1.0):
         for by_center in (BAY_FRONT_Y_MM, BAY_REAR_Y_MM):
             latch_btns.append(
-                make_rounded_rect_prism(5.0, 12.0, 0.8, 1.5, bx_sign * 111.5 - 2.5, by_center - 6.0, -0.6)
+                make_rounded_rect_prism(5.0, 12.0, 0.7, 1.5, bx_sign * 111.5 - 2.5, by_center - 6.0, -0.72)
             )
     latch_obj = doc.addObject("Part::Feature", "Framework13_BayReleaseButtons")
     latch_obj.Shape = latch_btns[0].fuse(latch_btns[1:])
     colored_objs.append((latch_obj, ACCENT_ORANGE_COLOR))
 
-    # 3. Keyboard Matrix + Hinge + Touchpad
-    kb_plate = Part.makeBox(258.0, 98.0, 1.3, App.Vector(-129.0, -6.0, BASE_H_Z_MM - 1.1))
-    hinge_barrel = Part.makeCylinder(4.8, 236.0, App.Vector(-118.0, hd - 6.0, BASE_H_Z_MM - 1.0), App.Vector(1, 0, 0))
+    # 3. Keyboard Matrix + Hinge + Touchpad (non-interfering pockets/clearances)
+    kb_plate = Part.makeBox(258.0, 96.0, 1.15, App.Vector(-129.0, -6.0, BASE_H_Z_MM - 1.20))
+    hinge_barrel = Part.makeCylinder(2.6, 236.0, App.Vector(-118.0, hd - 5.5, BASE_H_Z_MM + 2.8), App.Vector(1, 0, 0))
     kb_obj = doc.addObject("Part::Feature", "Framework13_KeyboardAndHinge")
     kb_obj.Shape = kb_plate.fuse(hinge_barrel)
     colored_objs.append((kb_obj, BEZEL_DARK_COLOR))
 
     tp_obj = doc.addObject("Part::Feature", "Framework13_Touchpad")
-    tp_obj.Shape = Part.makeBox(115.0, 76.0, 0.4, App.Vector(-57.5, -96.0, BASE_H_Z_MM - 0.2))
+    tp_obj.Shape = Part.makeBox(115.0, 76.0, 0.25, App.Vector(-57.5, -96.0, BASE_H_Z_MM + 0.02))
     colored_objs.append((tp_obj, TRACKPAD_COLOR))
 
     # 4. Open 13.5" 3:2 Display Lid
-    hinge_pt = App.Vector(0.0, hd - 6.0, BASE_H_Z_MM + 1.0)
+    hinge_pt = App.Vector(0.0, hd - 5.5, BASE_H_Z_MM + 5.6)
     lid_rot = App.Rotation(App.Vector(1, 0, 0), -LID_OPEN_DEG)
     lid_pl = App.Placement(hinge_pt, lid_rot)
 
@@ -260,19 +272,22 @@ def build_framework_laptop(doc, colored_objs: list) -> None:
     lid_obj.Placement = lid_pl
     colored_objs.append((lid_obj, CHASSIS_ALU_COLOR))
 
-    bezel = Part.makeBox(LAPTOP_W_X_MM - 4.0, LAPTOP_D_Y_MM - 8.0, 0.5, App.Vector(-(hw - 2.0), -(LAPTOP_D_Y_MM - 6.0), -0.4))
+    bezel = Part.makeBox(LAPTOP_W_X_MM - 4.0, LAPTOP_D_Y_MM - 8.0, 0.35, App.Vector(-(hw - 2.0), -(LAPTOP_D_Y_MM - 6.0), -0.38))
+    screen_cut = Part.makeBox(280.4, 188.4, 1.0, App.Vector(-140.2, -(LAPTOP_D_Y_MM - 19.8), -0.8))
+    cam_cut = Part.makeBox(8.4, 3.0, 1.0, App.Vector(-4.2, -(LAPTOP_D_Y_MM - 9.0) - 0.25, -0.8))
+    bezel = bezel.cut(screen_cut).cut(cam_cut)
     bezel_obj = doc.addObject("Part::Feature", "Framework13_DisplayBezel")
     bezel_obj.Shape = bezel
     bezel_obj.Placement = lid_pl
     colored_objs.append((bezel_obj, BEZEL_DARK_COLOR))
 
-    screen = Part.makeBox(280.0, 188.0, 0.6, App.Vector(-140.0, -(LAPTOP_D_Y_MM - 20.0), -0.55))
+    screen = Part.makeBox(280.0, 188.0, 0.35, App.Vector(-140.0, -(LAPTOP_D_Y_MM - 20.0), -0.38))
     screen_obj = doc.addObject("Part::Feature", "Framework13_ScreenPanel")
     screen_obj.Shape = screen
     screen_obj.Placement = lid_pl
     colored_objs.append((screen_obj, SCREEN_GLOW_COLOR))
 
-    cam_accent = Part.makeBox(8.0, 2.5, 0.7, App.Vector(-4.0, -(LAPTOP_D_Y_MM - 9.0), -0.6))
+    cam_accent = Part.makeBox(8.0, 2.5, 0.35, App.Vector(-4.0, -(LAPTOP_D_Y_MM - 9.0), -0.38))
     accent_obj = doc.addObject("Part::Feature", "Framework13_CameraAccent")
     accent_obj.Shape = cam_accent
     accent_obj.Placement = lid_pl
@@ -314,34 +329,30 @@ def build():
         if rz_deg > 0:
             bay_xs = (+25.00, +65.60)
             pod_xs = (-56.00, +56.00)
-            h_f = Part.makeBox(81.0, 4.8, 1.6, App.Vector(-56.0, -3.6, 0.05)).fuse([
-                Part.makeBox(4.8, 6.5, 1.6, App.Vector(25.0 - 2.4, -3.6, 0.05)),
-                Part.makeBox(4.8, 2.2, 5.8, App.Vector(-56.0, -3.6, 0.05)),
-                Part.makeBox(12.0, 4.8, 1.6, App.Vector(56.0, -3.6, 0.05)),
-                Part.makeBox(4.8, 6.5, 1.6, App.Vector(65.6 - 2.4, -3.6, 0.05)),
-                Part.makeBox(4.8, 2.2, 5.8, App.Vector(56.0, -3.6, 0.05)),
+            h_f = Part.makeBox(81.0, 3.6, 1.6, App.Vector(-56.0, -1.0, 0.05)).fuse([
+                Part.makeBox(4.8, 4.2, 1.6, App.Vector(25.0 - 2.4, -1.0, 0.05)),
+                Part.makeBox(12.0, 3.6, 1.6, App.Vector(56.0, -1.0, 0.05)),
+                Part.makeBox(4.8, 4.2, 1.6, App.Vector(65.6 - 2.4, -1.0, 0.05)),
             ]).removeSplitter()
         else:
             bay_xs = (-25.00, -65.60)
             pod_xs = (+56.00, -56.00)
-            h_f = Part.makeBox(81.0, 4.8, 1.6, App.Vector(-25.0, -3.6, 0.05)).fuse([
-                Part.makeBox(4.8, 6.5, 1.6, App.Vector(-25.0 - 2.4, -3.6, 0.05)),
-                Part.makeBox(4.8, 2.2, 5.8, App.Vector(+56.0 - 4.8, -3.6, 0.05)),
-                Part.makeBox(12.0, 4.8, 1.6, App.Vector(-65.6, -3.6, 0.05)),
-                Part.makeBox(4.8, 6.5, 1.6, App.Vector(-65.6 - 2.4, -3.6, 0.05)),
-                Part.makeBox(4.8, 2.2, 5.8, App.Vector(-56.0 - 4.8, -3.6, 0.05)),
+            h_f = Part.makeBox(81.0, 3.6, 1.6, App.Vector(-25.0, -1.0, 0.05)).fuse([
+                Part.makeBox(4.8, 4.2, 1.6, App.Vector(-25.0 - 2.4, -1.0, 0.05)),
+                Part.makeBox(12.0, 3.6, 1.6, App.Vector(-65.6, -1.0, 0.05)),
+                Part.makeBox(4.8, 4.2, 1.6, App.Vector(-65.6 - 2.4, -1.0, 0.05)),
             ]).removeSplitter()
         add_placed(f"{ftag}_ServoHarnesses", h_f, rail_pl, App.Placement(), HARNESS_COLOR)
 
         bolts = []
         for cx in bay_xs:
             for dx in (-7.0, 7.0):
-                for hy in (8.0, 17.0):
-                    bolts.append(Part.makeCylinder(2.2, 1.4, App.Vector(cx + dx, hy, -2.032), App.Vector(0, 0, -1)))
+                for hy in (8.5, 14.5):
+                    bolts.append(Part.makeCylinder(2.2, 1.4, App.Vector(cx + dx, hy, -2.06), App.Vector(0, 0, -1)))
         for cx in pod_xs:
             for dx in (-7.0, 7.0):
-                for hy in (-8.0, -17.0):
-                    bolts.append(Part.makeCylinder(2.2, 1.4, App.Vector(cx + dx, hy, -2.032), App.Vector(0, 0, -1)))
+                for hy in (-8.5, -14.5):
+                    bolts.append(Part.makeCylinder(2.2, 1.4, App.Vector(cx + dx, hy, -2.06), App.Vector(0, 0, -1)))
         add_placed(f"{ftag}_RailFasteners", bolts[0].fuse(bolts[1:]), rail_pl, App.Placement(), STEEL_PIN_COLOR)
 
     # 2. Insert the 4 Flush `leg_bay_housing` Expansion Card Plugs at the REAR-SET Physical Ports (`Y = +36.0 & +76.6 mm`)
@@ -357,7 +368,7 @@ def build():
         if shp_pcb is not None:
             bb = shp_pcb.BoundBox
             pcb_pl = App.Placement(
-                App.Vector(-0.5 * (bb.XMin + bb.XMax), 16.0 - 0.5 * (bb.YMin + bb.YMax), 2.80 - bb.ZMin),
+                App.Vector(-0.5 * (bb.XMin + bb.XMax), 17.8 - 0.5 * (bb.YMin + bb.YMax), 3.22 - bb.ZMin),
                 App.Rotation(),
             )
             add_placed(f"{ptag}_Day06PCB", shp_pcb, port_pl, pcb_pl, PCB_COLOR)
@@ -389,30 +400,33 @@ def build():
 
         s_list, sp_list = [], []
         for sx in (-SERVO_X_OFFSET_MM, SERVO_X_OFFSET_MM):
-            body = Part.makeBox(12.2, 20.8, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM, 5.20))
-            ears = Part.makeBox(12.2, 2.2, 32.0, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM + 2.8, 0.60))
-            boss = Part.makeCylinder(5.5, 2.0, App.Vector(sx, TURRET_FRONT_Y_MM, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
-            s_list.append(body.fuse(ears).fuse(boss).removeSplitter())
-            sp_list.append(Part.makeCylinder(2.4, 3.8, App.Vector(sx, TURRET_FRONT_Y_MM - 2.0, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0)))
+            rear_case  = Part.makeBox(12.2, 19.0, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM + 0.10, 5.20))
+            ears       = Part.makeBox(12.2, 2.2, 31.2, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 2.25, 1.00))
+            front_case = Part.makeBox(12.2, 2.2, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 4.45, 5.20))
+            boss       = Part.makeCylinder(5.5, 0.6, App.Vector(sx, TURRET_FRONT_Y_MM - 4.45, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
+            srv_bore   = Part.makeCylinder(1.55, 10.0, App.Vector(sx, TURRET_FRONT_Y_MM - 2.0, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
+            s_list.append(rear_case.fuse([ears, front_case, boss]).cut(srv_bore).removeSplitter())
+            sp_cyl     = Part.makeCylinder(2.5, 2.4, App.Vector(sx, TURRET_FRONT_Y_MM - 5.05, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
+            sp_bore    = Part.makeCylinder(1.55, 4.0, App.Vector(sx, TURRET_FRONT_Y_MM - 4.5, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
+            sp_list.append(sp_cyl.cut(sp_bore).removeSplitter())
 
         add_placed(f"{tag}_Servos", s_list[0].fuse(s_list[1]), pod_pl, App.Placement(), SERVO_BODY_COLOR)
         add_placed(f"{tag}_Splines", sp_list[0].fuse(sp_list[1]), pod_pl, App.Placement(), SERVO_CAP_COLOR)
 
-        horn_y = TURRET_FRONT_Y_MM - 1.60
         hip_end_x = kin["hx"] + 7.5 * (kin["kx"] - kin["hx"]) / FEMUR_LEN_MM
         hip_end_z = kin["hz"] + 7.5 * (kin["kz"] - kin["hz"]) / FEMUR_LEN_MM
-        h1 = make_horn_solid(kin["hx"], kin["hz"], hip_end_x, hip_end_z, horn_y, 2.2, 5.2, 4.2)
-        h2 = make_horn_solid(kin["sx"], kin["sz"], kin["crx"], kin["crz"], horn_y, 2.2, 5.2, 3.8)
+        h1 = make_horn_solid(kin["hx"], kin["hz"], hip_end_x, hip_end_z, HIP_HORN_Y0_MM, 2.0, 5.2, 4.2, hub_bore_r=1.55)
+        h2 = make_horn_solid(kin["sx"], kin["sz"], kin["crx"], kin["crz"], KNEE_HORN_Y0_MM, 2.0, 5.2, 3.8, hub_bore_r=2.52)
         add_placed(f"{tag}_Horns", h1.fuse(h2), pod_pl, App.Placement(), HORN_COLOR)
 
         br_pl = App.Placement(App.Vector(0.0, BRACKET_OUT_Y_MM, BRACKET_TOP_Z_MM), App.Rotation())
         add_placed(f"{tag}_HipBracket", shp_bracket, pod_pl, br_pl, ALU_LINK_COLOR)
 
-        for idx, y0 in enumerate((INBOARD_LINK_Y0_MM, OUTBOARD_LINK_Y0_MM)):
+        for idx, y0 in enumerate((INBOARD_FEMUR_Y0_MM, OUTBOARD_FEMUR_Y0_MM)):
             f_pl = sagittal_link_placement(kin["hx"], kin["hz"], kin["kx"], kin["kz"], y0)
             add_placed(f"{tag}_Femur_{idx+1}", shp_femur, pod_pl, f_pl, ALU_LINK_COLOR)
 
-        pr_pl = sagittal_link_placement(kin["crx"], kin["crz"], kin["bx"], kin["bz"], INBOARD_LINK_Y0_MM)
+        pr_pl = sagittal_link_placement(kin["crx"], kin["crz"], kin["bx"], kin["bz"], PUSHROD_Y0_MM)
         add_placed(f"{tag}_Pushrod", shp_pushrod, pod_pl, pr_pl, PUSHROD_COLOR)
 
         tibia_rot = rot_from_cols(
@@ -420,18 +434,18 @@ def build():
             (0.0, kin["s_dir"], 0.0),
             (kin["uz_x"], 0.0, kin["uz_z"]),
         )
-        tibia_pos = App.Vector(kin["kx"], TIBIA_MID_Y_MM, kin["kz"]) - tibia_rot.multVec(App.Vector(10.5, 0.0, 53.0))
+        tibia_pos = App.Vector(kin["kx"], TIBIA_MID_Y_MM, kin["kz"]) - tibia_rot.multVec(App.Vector(10.5, 0.0, TIBIA_KNEE_Z_MM))
         add_placed(f"{tag}_Tibia", shp_tibia, pod_pl, App.Placement(tibia_pos, tibia_rot), ALU_LINK_COLOR)
 
         foot_pl = App.Placement(App.Vector(kin["ax"], TIBIA_MID_Y_MM, kin["az"] - FOOT_BOLT_Z_MM), App.Rotation())
         add_placed(f"{tag}_FootPad", shp_foot, pod_pl, foot_pl, TPU_COLOR)
 
-        p_hip = Part.makeCylinder(1.5, 23.5, App.Vector(kin["hx"], -26.9, kin["hz"]), App.Vector(0, -1, 0))
-        p_srv = Part.makeCylinder(1.5, 23.5, App.Vector(kin["sx"], -26.9, kin["sz"]), App.Vector(0, -1, 0))
-        p_crk = Part.makeCylinder(1.5, 5.5, App.Vector(kin["crx"], -26.7, kin["crz"]), App.Vector(0, -1, 0))
-        p_kne = Part.makeCylinder(1.5, 21.6, App.Vector(kin["kx"], -26.6, kin["kz"]), App.Vector(0, -1, 0))
-        p_bel = Part.makeCylinder(1.5, 21.6, App.Vector(kin["bx"], -26.6, kin["bz"]), App.Vector(0, -1, 0))
-        p_ank = Part.makeCylinder(1.5, 21.6, App.Vector(kin["ax"], -26.6, kin["az"]), App.Vector(0, -1, 0))
+        p_hip = Part.makeCylinder(1.48, 28.9, App.Vector(kin["hx"], -27.5, kin["hz"]), App.Vector(0, -1, 0))
+        p_srv = Part.makeCylinder(1.48, 3.25, App.Vector(kin["sx"], -27.5, kin["sz"]), App.Vector(0, -1, 0))
+        p_crk = Part.makeCylinder(1.48, 4.90, App.Vector(kin["crx"], -28.5, kin["crz"]), App.Vector(0, -1, 0))
+        p_kne = Part.makeCylinder(1.48, 20.4, App.Vector(kin["kx"], -34.0, kin["kz"]), App.Vector(0, -1, 0))
+        p_bel = Part.makeCylinder(1.48, 23.4, App.Vector(kin["bx"], -31.0, kin["bz"]), App.Vector(0, -1, 0))
+        p_ank = Part.makeCylinder(1.48, 20.4, App.Vector(kin["ax"], -34.0, kin["az"]), App.Vector(0, -1, 0))
         add_placed(f"{tag}_Pins", p_hip.fuse([p_srv, p_crk, p_kne, p_bel, p_ank]), pod_pl, App.Placement(), STEEL_PIN_COLOR)
 
     doc.recompute()

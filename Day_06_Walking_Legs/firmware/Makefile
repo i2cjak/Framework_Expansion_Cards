@@ -5,7 +5,7 @@ CC       := arm-none-eabi-gcc
 OBJCOPY  := arm-none-eabi-objcopy
 SIZE     := arm-none-eabi-size
 
-CFLAGS   := -mcpu=cortex-m3 -mthumb -Os -Wall -Wextra -ffunction-sections -fdata-sections -std=c11
+CFLAGS   := -mcpu=cortex-m3 -mthumb -Os -Wall -Wextra -Werror -ffunction-sections -fdata-sections -std=c11
 LDFLAGS  := -mcpu=cortex-m3 -mthumb -T stm32f103xb.ld -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BUILD)/$(TARGET).map
 
 OBJS     := $(BUILD)/startup_stm32f103xb.o $(BUILD)/main.o

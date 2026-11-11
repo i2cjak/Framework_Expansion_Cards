@@ -9,9 +9,9 @@
     "finish": "none"
   },
   "features": {
-    "flat_x_mm": 47.07,
-    "flat_y_mm": 28.0,
-    "cut_length_mm": 201.0,
+    "flat_x_mm": 64.17,
+    "flat_y_mm": 30.0,
+    "cut_length_mm": 239.2,
     "holes": 6,
     "bends": 1,
     "countersinks": 0
@@ -34,13 +34,13 @@
     "flat": "leg_hip_bracket.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T15:26:48Z",
+      "at": "2026-11-11T18:59:55Z",
       "pass": 25,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "648384db2ce65247a8e357a8a69a9d5ff3b2a6af394469978cd47b2f3b3f6fa3",
-      "flat_sha256": "3d40985a90312114371c63756aa5c6c3a08d66d8ba3ab4a5838a0d55a4b54b61",
+      "source_sha256": "5013b6a4bfec5e51afc592bd875f4c927228a84da4d27731d8567cddd563c459",
+      "flat_sha256": "fd69723e25ebeef7b324c29a753406c6a9946a2e3cc0aed21455e1360ddc2315",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }

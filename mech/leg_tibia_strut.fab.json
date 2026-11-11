@@ -10,9 +10,9 @@
   },
   "features": {
     "flat_x_mm": 67.95,
-    "flat_y_mm": 60.0,
-    "cut_length_mm": 330.6,
-    "holes": 9,
+    "flat_y_mm": 61.5,
+    "cut_length_mm": 367.9,
+    "holes": 8,
     "bends": 2,
     "countersinks": 0
   },
@@ -35,13 +35,13 @@
     "flat": "leg_tibia_strut.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T15:26:50Z",
+      "at": "2026-11-11T18:59:56Z",
       "pass": 34,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "03110add08dba281eb6380aece202b92f32085b061ebcba59912d9ff90d1cd9b",
-      "flat_sha256": "abcfc33718e8445e58776c0d6545df05dcd2b5dc82bb6d4a7c545ceda1b77780",
+      "source_sha256": "fa1c530b3d0b6163cc3668130760f6e78477d39e5b680f4c2d13bc896d7c2caa",
+      "flat_sha256": "891ab898ee74caf0d87fa2a41c4fac67d866df4aa67cf63305cf66e64a8fecf9",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }

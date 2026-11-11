@@ -48,7 +48,7 @@ PCB_BOSS_SPAN_X_MM    = 22.60    # Exact H1..H2 spacing (22.60 mm)
 PCB_BOSS_Y_MM         = 11.50    # M2 boss Y position inside bay pocket
 
 RAIL_BOLT_X_MM        = 7.00     # +/- 7.00 mm fore-aft bolt spacing matching `leg_flank_bracket`
-RAIL_BOLT_Y_LIST      = (8.00, 17.00)  # Exact match to `leg_flank_bracket` INBOARD_BOLT_Y_MM
+RAIL_BOLT_Y_LIST      = (8.50, 14.50)  # Exact match to `leg_flank_bracket` INBOARD_BOLT_Y_MM
 
 PA12_COLOR            = (0.20, 0.21, 0.23)
 
@@ -83,28 +83,34 @@ def build():
 
     solid = bay_body.fuse(rails).removeSplitter()
 
-    # 3. Internal PCB & component cavity (Y = 3.40 .. 28.60, Z = 2.00 .. 5.80; 2.0 mm floor for M2.5 inserts)
+    # 3. Internal PCB & component cavity (Y = 3.60 .. 29.50, Z = 2.00 .. 5.80 + upper PCB lip Y = 2.60 .. 3.80, Z = 3.15 .. 5.80)
     pcb_cavity = Part.makeBox(
         PCB_POCKET_W_X_MM,
-        PCB_POCKET_Y1_MM - PCB_POCKET_Y0_MM,
+        29.50 - 3.60,
         3.80,
-        App.Vector(-PCB_POCKET_W_X_MM * 0.5, PCB_POCKET_Y0_MM, 2.00),
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 3.60, 2.00),
     )
-    # Rear USB-C tongue opening (Y = 27.5 .. 30.5, Z = 2.0 .. 5.6)
-    usbc_opening = Part.makeBox(10.50, 3.50, 3.60, App.Vector(-5.25, 27.50, 2.00))
+    pcb_front_lip = Part.makeBox(
+        PCB_POCKET_W_X_MM,
+        1.40,
+        2.65,
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 2.60, 3.15),
+    )
+    # Rear USB-C & inboard card shoulder opening (Y = 27.5 .. 30.5, Z = 2.0 .. 5.6, 26.2 mm wide)
+    usbc_opening = Part.makeBox(26.20, 3.50, 3.60, App.Vector(-13.10, 27.50, 2.00))
     # Outboard (-Y) low-profile servo harness exit port (10.0 x 2.8 mm, Z = 2.10 .. 4.90)
     harness_exit = Part.makeBox(10.00, 5.00, 2.80, App.Vector(-5.00, -0.50, 2.10))
-    # Underside latch catch pocket at inboard end (Y = 21.5 .. 25.0, Z = 0.0 .. 0.8, clear of Y=8,17 bolts!)
+    # Underside latch catch pocket at inboard end (Y = 21.5 .. 25.0, Z = 0.0 .. 0.8, clear of Y=8.5,14.5 bolts!)
     latch_pocket = Part.makeBox(8.00, 3.50, 0.80, App.Vector(-4.00, 21.50, 0.00))
 
-    solid = solid.cut(pcb_cavity).cut(usbc_opening).cut(harness_exit).cut(latch_pocket)
+    solid = solid.cut(pcb_cavity).cut(pcb_front_lip).cut(usbc_opening).cut(harness_exit).cut(latch_pocket)
 
-    # 4. Internal M2 PCB standoffs (X = +/-11.30 mm, Y = 11.50 mm) + 4x internal M2.5 floor bosses
+    # 4. Internal M2 PCB standoffs up to Z = 3.20 mm (X = +/-11.30 mm, Y = 11.50 mm)
     for bx in (-PCB_BOSS_SPAN_X_MM * 0.5, PCB_BOSS_SPAN_X_MM * 0.5):
-        boss = Part.makeCylinder(2.10, 0.80, App.Vector(bx, PCB_BOSS_Y_MM, 2.00), App.Vector(0, 0, 1))
+        boss = Part.makeCylinder(2.10, 1.20, App.Vector(bx, PCB_BOSS_Y_MM, 2.00), App.Vector(0, 0, 1))
         solid = solid.fuse(boss)
     for bx in (-PCB_BOSS_SPAN_X_MM * 0.5, PCB_BOSS_SPAN_X_MM * 0.5):
-        pilot = Part.makeCylinder(0.85, 2.00, App.Vector(bx, PCB_BOSS_Y_MM, 1.00), App.Vector(0, 0, 1))
+        pilot = Part.makeCylinder(0.85, 2.50, App.Vector(bx, PCB_BOSS_Y_MM, 1.00), App.Vector(0, 0, 1))
         solid = solid.cut(pilot)
 
     # 5. 4x M2.5 bottom mounting holes matching `leg_flank_bracket` (`X = +/-7.00, Y = +8.00 & +17.00`)

@@ -48,14 +48,14 @@ BEND_RADIUS_IN_MM  = 0.9652   # 0.038" effective inside bend radius
 K_FACTOR           = 0.48     # SendCutSend ALU-080 K-factor
 
 RAIL_LEN_X_MM      = 166.00   # Spans X = -83.0 .. +83.0 mm (Y_laptop = -72.0 .. +94.0 mm when centered at +11.0 mm)
-CHAN_OUT_W_Y_MM    = 57.00    # Outside channel width: Y = -28.50 (outboard) .. +28.50 (inboard under bottom cover)
-CHAN_IN_W_Y_MM     = CHAN_OUT_W_Y_MM - 2.0 * THICKNESS_MM  # 52.936 mm inside channel width
+CHAN_OUT_W_Y_MM    = 49.00    # Outside channel width: Y = -24.50 (outboard) .. +24.50 (inboard under bottom cover)
+CHAN_IN_W_Y_MM     = CHAN_OUT_W_Y_MM - 2.0 * THICKNESS_MM  # 44.936 mm inside channel width
 FLANGE_OUT_H_Z_MM  = 12.50    # Downward 90-deg stiffening girder flanges: Z = -12.50 .. 0.00 mm (> 7.95 mm min!)
 
 HOLE_DIA_M25_MM    = 2.70     # M2.5 clearance holes
 BOLT_DX_MM         = 7.00     # +/- 7.00 mm fore-aft bolt pair spacing per module/pod
-INBOARD_BOLT_Y_MM  = (8.00, 17.00)    # Matches `leg_bay_housing` floor inserts (> 7.1 mm clear of +25.50 mm bend!)
-OUTBOARD_BOLT_Y_MM = (-8.00, -17.00)  # Matches `leg_servo_pod` floor inserts (> 7.1 mm clear of -25.50 mm bend!)
+INBOARD_BOLT_Y_MM  = (8.50, 14.50)    # Matches `leg_bay_housing` floor inserts (> 7.1 mm clear of +21.50 mm bend!)
+OUTBOARD_BOLT_Y_MM = (-8.50, -14.50)  # Matches `leg_servo_pod` floor inserts (> 7.1 mm clear of -21.50 mm bend!)
 
 # Symmetric X centers so one SKU (`qty: 2`) works on both Left (`RotZ(-90)`) & Right (`RotZ(+90)`) flanks:
 #   Centered at Y_laptop = +11.0 mm:

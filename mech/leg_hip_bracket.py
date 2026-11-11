@@ -28,18 +28,18 @@ import Part
 THICKNESS_MM       = 1.6002   # 0.063" 5052-H32 Aluminum
 BEND_RADIUS_IN_MM  = 0.8890   # 0.035" effective inside bend radius
 K_FACTOR           = 0.42     # SendCutSend ALU-063 K-factor
-WIDTH_X_MM         = 28.0     # Bracket width along X (> 9.53 mm min flat width)
-FLANGE_Y_OUT_MM    = 30.0     # Top mounting flange outside length along +Y (Y_local = 0 .. +30.0)
-FLANGE_Z_OUT_MM    = 19.6     # Vertical outboard bearing plate outside height (Z_local = -19.6 .. 0.0)
+WIDTH_X_MM         = 30.0     # Bracket width along X (> 9.53 mm min flat width)
+FLANGE_Y_OUT_MM    = 37.2     # Top mounting flange outside length along +Y (Y_local = 0 .. +37.2)
+FLANGE_Z_OUT_MM    = 29.5     # Vertical outboard bearing plate outside height (Z_local = -29.5 .. 0.0)
 
 MOUNT_HOLE_DIA_MM  = 2.70     # 4x M2.5 clearance holes on top flange
-MOUNT_HOLE_X_MM    = 9.00     # +/- 9.00 mm in X
-MOUNT_HOLE_Y1_MM   = 19.60    # Matches bay housing Y = -26.0 when outboard face is at Y = -45.6
-MOUNT_HOLE_Y2_MM   = 27.60    # Matches bay housing Y = -18.0 when outboard face is at Y = -45.6
+MOUNT_HOLE_X_MM    = 10.00    # +/- 10.00 mm in X
+MOUNT_HOLE_Y1_MM   = 24.70    # Matches servo pod Y = -31.50 when outboard face is at Y = -56.20
+MOUNT_HOLE_Y2_MM   = 33.70    # Matches servo pod Y = -22.50 when outboard face is at Y = -56.20
 
-AXLE_HOLE_DIA_MM   = 3.10     # 2x M3 coaxial outboard bearing support holes
-AXLE_HOLE_X_MM     = 7.30     # Matches +/- 7.30 mm Hip & Knee servo axes
-AXLE_HOLE_Z_MM     = -12.60   # Matches Z_assy = +9.50 when top outer face Z_local=0 is at Z_assy = +22.10
+AXLE_HOLE_DIA_MM   = 3.10     # 2x M3 coaxial outboard support bearing holes (Left/Right reversible!)
+AXLE_HOLE_X_MM     = 9.00     # Matches +/- 9.00 mm Hip & Knee servo axes
+AXLE_HOLE_Z_MM     = -23.00   # Matches Z_assy = +22.10 when top outer face Z_local=0 is at Z_assy = +45.1002
 
 ALU_COLOR          = (0.72, 0.75, 0.79)
 

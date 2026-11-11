@@ -10,8 +10,8 @@
   },
   "features": {
     "flat_x_mm": 166.0,
-    "flat_y_mm": 76.11,
-    "cut_length_mm": 731.1,
+    "flat_y_mm": 68.11,
+    "cut_length_mm": 715.1,
     "holes": 24,
     "bends": 2,
     "countersinks": 0
@@ -23,7 +23,6 @@
     "process": "Fiber Laser",
     "finish": null,
     "services": [
-      "deburring",
       "bending"
     ],
     "bend_angles": [
@@ -36,13 +35,13 @@
     "flat": "leg_flank_bracket.flat.dxf",
     "unmapped": [],
     "dfm": {
-      "at": "2026-11-11T17:36:49Z",
-      "pass": 37,
+      "at": "2026-11-11T18:59:55Z",
+      "pass": 35,
       "fail": 0,
       "warn": 0,
       "failed": [],
-      "source_sha256": "dfb6f3605b75a11f45d9f402803679836408789d518e43a6998807477e4e5876",
-      "flat_sha256": "93bbaad9d17c99400541b4dfabadadac597098948a542d5d73f3bf87ed87710d",
+      "source_sha256": "2f01e25318ccc8d44b7adb52095b9a636e6c6be6f17d6b6ced6e5982d247196b",
+      "flat_sha256": "db45e55aa2d6e64faa9f65e50966ac665e9fa522d7e4b9df2a91c08c0f97bb2d",
       "catalog_generated_at": "2026-11-05T21:51:54.194741Z",
       "specs_generated_at": "2026-11-05T21:51:55.112063Z"
     }

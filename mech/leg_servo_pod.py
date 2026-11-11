@@ -39,28 +39,28 @@ import FreeCAD as App
 import Part
 
 # --- Named Parameters (mm) ---
-TURRET_WIDTH_X_MM     = 31.20    # Compact 31.2 mm fore-aft saddle width
-TURRET_FRONT_Y_MM     = -25.40   # Sits inside -25.50 mm bend tangent of `leg_flank_bracket`
+TURRET_WIDTH_X_MM     = 35.60    # Compact 35.6 mm fore-aft saddle width (18.0 mm servo-to-servo spacing)
+TURRET_FRONT_Y_MM     = -23.50   # Sits inside -24.50 mm outer face of `leg_flank_bracket`
 TURRET_BACK_Y_MM      = -1.20    # 1.20 mm clear of laptop's +/-148.30 mm upper palmrest edge
 TURRET_BOT_Z_MM       = 0.00     # Seats flat on `leg_flank_bracket` Z = 0.00 mm top face
-TURRET_TOP_Z_MM       = 33.10    # Places `leg_hip_bracket` axle holes coaxially at Z = +22.10 mm!
+TURRET_TOP_Z_MM       = 43.50    # High-clearance overhead bridge (`17.6 mm` above Z=22.10 servo shafts!)
 
-SERVO_CENTER_X_MM     = 7.30     # Symmetric left/right MG90S centerlines (+/- 7.30 mm)
+SERVO_CENTER_X_MM     = 9.00     # Symmetric left/right MG90S centerlines (+/- 9.00 mm -> 18.0 mm spacing)
 SERVO_POCKET_W_X_MM   = 12.60    # Clears 12.2 mm MG90S servo thickness
 SERVO_POCKET_H_Z_MM   = 23.20    # Clears 22.8 mm MG90S servo case height (Z = +5.00 .. +28.20)
 SERVO_POCKET_Z0_MM    = 5.00     # Solid 5.00 mm floor for M2.5 rail inserts & lower servo ear screws
-SERVO_POCKET_DEPTH_Y  = 21.40    # Pocket from Y = -25.40 to Y = -4.00 (leaves 2.80 mm rear wall)
+SERVO_POCKET_DEPTH_Y  = 19.60    # Pocket from Y = -23.50 to Y = -3.90 (clears 19.0 mm rear MG90S body)
 
-CANOPY_OUT_Y_MM       = -34.40   # Roof overhang supporting `leg_hip_bracket` top flange
+CANOPY_OUT_Y_MM       = -36.50   # High-arch roof overhang supporting `leg_hip_bracket` above linkage
 CANOPY_IN_Y_MM        = -1.20
-CANOPY_WIDTH_X_MM     = 28.00    # Matches `leg_hip_bracket` 28.0 mm width
-CANOPY_THICK_Z_MM     = 3.80     # Stiff upper bridge roof (Z = 29.30 .. 33.10)
-BRACKET_BOLT_X_MM     = 9.00     # +/- 9.00 mm M2.5 mounting pattern
-BRACKET_BOLT_Y1_MM    = -29.90   # Matches `leg_hip_bracket` Y_local = +19.60 when placed at Y = -49.50
-BRACKET_BOLT_Y2_MM    = -21.90   # Matches `leg_hip_bracket` Y_local = +27.60 when placed at Y = -49.50
+CANOPY_WIDTH_X_MM     = 30.00    # Matches `leg_hip_bracket` 30.0 mm width
+CANOPY_THICK_Z_MM     = 3.80     # Stiff upper bridge roof (Z = 39.70 .. 43.50 -> 17.6 mm crank headroom!)
+BRACKET_BOLT_X_MM     = 10.00    # +/- 10.00 mm M2.5 mounting pattern
+BRACKET_BOLT_Y1_MM    = -31.50   # Matches `leg_hip_bracket` Y_local = +24.70 when placed at Y = -56.20
+BRACKET_BOLT_Y2_MM    = -22.50   # Matches `leg_hip_bracket` Y_local = +33.70 when placed at Y = -56.20
 
 RAIL_BOLT_X_MM        = 7.00     # +/- 7.00 mm M2.5 floor hole pattern
-RAIL_BOLT_Y_LIST      = (-8.00, -17.00)  # Exact match to `leg_flank_bracket` OUTBOARD_BOLT_Y_MM
+RAIL_BOLT_Y_LIST      = (-8.50, -14.50)  # Exact match to `leg_flank_bracket` OUTBOARD_BOLT_Y_MM
 
 PA12_COLOR            = (0.20, 0.21, 0.23)
 

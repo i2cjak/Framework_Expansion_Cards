@@ -23,15 +23,15 @@ import FreeCAD as App
 import Part
 
 # --- Named Parameters (mm) ---
-NECK_WIDTH_Y_MM    = 16.2    # Fits inside 16.80 mm tibia U-channel gap (0.3 mm per side clearance)
-NECK_DEPTH_X_MM    = 13.0    # Fore-aft ankle block depth along X
-ARCH_SPAN_X_MM     = 16.4    # Outer fore-aft width across the twin TPU flexure ribs
+NECK_WIDTH_Y_MM    = 14.6    # Fits inside 16.80 mm tibia U-channel gap & clears 0.89 mm inner bend radii!
+NECK_DEPTH_X_MM    = 10.0    # Fore-aft ankle block depth along X (R=5.0 mm < 8.90 mm front web distance!)
+ARCH_SPAN_X_MM     = 13.8    # Outer fore-aft width across twin TPU flexure ribs (+/-6.9 mm -> >0.9 mm clear!)
 DOME_RADIUS_MM     = 11.0    # Ø22.0 mm compliant hemisphere contact sole
-BOLT_Z_ABOVE_BASE  = 19.0    # M3 ankle cross-bolt height above Z=0 ground contact tip
+BOLT_Z_ABOVE_BASE  = 22.5    # M3 ankle cross-bolt height above Z=0 ground tip (15.2 mm above dome shoulder!)
 BOLT_HOLE_DIA_MM   = 3.20    # M3 clearance bore along Y
-FLEX_SLOT_HALF_X   = 2.6     # Stadium suspension window half-span in X (total width = 10.0 mm)
-FLEX_SLOT_RAD_Z    = 2.4     # Stadium suspension window radius (height = 4.8 mm -> ~3 mm travel)
-FLEX_SLOT_Z_MID    = 11.4    # Centered between contact dome and ankle cross-bore
+FLEX_SLOT_HALF_X   = 1.9     # Stadium suspension window half-span in X (total width = 8.4 mm)
+FLEX_SLOT_RAD_Z    = 2.2     # Stadium suspension window radius (height = 4.4 mm -> ~3 mm travel)
+FLEX_SLOT_Z_MID    = 10.6    # Centered between contact dome and ankle cross-bore
 TPU_COLOR          = (0.16, 0.17, 0.19)
 
 REPO_ROOT = Path("/home/h/Documents/i2cjak/Framework_Expansion_Cards")
@@ -43,26 +43,33 @@ LOG_PATH  = MECH_DIR / "leg_foot_pad.log"
 def build():
     doc = App.newDocument("leg_foot_pad")
 
-    # 1. Bottom contact dome: sphere R=11 centered at (0, 0, 11), cut above Z = 8.5 mm for wide stable paw
+    # 1. Bottom contact dome: sphere R=11 centered at (0, 0, 11), cut above Z = 7.3 mm (15.2 mm below bolt > 12.9 mm tibia corner!)
     sphere = Part.makeSphere(DOME_RADIUS_MM, App.Vector(0, 0, DOME_RADIUS_MM))
-    upper_cut = Part.makeBox(40.0, 40.0, 30.0, App.Vector(-20.0, -20.0, 8.5))
+    upper_cut = Part.makeBox(40.0, 40.0, 30.0, App.Vector(-20.0, -20.0, 7.3))
     dome = sphere.cut(upper_cut)
 
-    # 2. Compliant flexure-arch body (Z = 8.5 .. 15.0 mm, X = -8.2..+8.2, Y = -8.1..+8.1)
+    # 2. Compliant flexure-arch body (Z = 7.3 .. 13.6 mm)
     arch_block = Part.makeBox(
         ARCH_SPAN_X_MM,
         NECK_WIDTH_Y_MM,
-        6.5,
-        App.Vector(-ARCH_SPAN_X_MM * 0.5, -NECK_WIDTH_Y_MM * 0.5, 8.5),
+        6.3,
+        App.Vector(-ARCH_SPAN_X_MM * 0.5, -NECK_WIDTH_Y_MM * 0.5, 7.3),
     )
 
-    # 3. Upper ankle mounting tongue nesting inside tibia U-channel (Z = 14.5 .. 23.0 mm)
-    neck = Part.makeBox(
+    # 3. Upper ankle mounting tongue with rounded R=5.0mm top clevis ear (Z = 13.2 .. 27.5 mm)
+    neck_lower = Part.makeBox(
         NECK_DEPTH_X_MM,
         NECK_WIDTH_Y_MM,
-        8.5,
-        App.Vector(-NECK_DEPTH_X_MM * 0.5, -NECK_WIDTH_Y_MM * 0.5, 14.5),
+        BOLT_Z_ABOVE_BASE - 13.2,
+        App.Vector(-NECK_DEPTH_X_MM * 0.5, -NECK_WIDTH_Y_MM * 0.5, 13.2),
     )
+    neck_cap = Part.makeCylinder(
+        NECK_DEPTH_X_MM * 0.5,
+        NECK_WIDTH_Y_MM,
+        App.Vector(0.0, -NECK_WIDTH_Y_MM * 0.5, BOLT_Z_ABOVE_BASE),
+        App.Vector(0.0, 1.0, 0.0),
+    )
+    neck = neck_lower.fuse(neck_cap)
 
     solid = dome.fuse(arch_block).fuse(neck).removeSplitter()
 

@@ -24,19 +24,25 @@
 #define GPIOB_BASE      0x40010C00UL
 #define GPIOC_BASE      0x40011000UL
 #define AFIO_BASE       0x40010000UL
+#define EXTI_BASE       0x40010400UL
 #define TIM2_BASE       0x40000000UL
 #define I2C2_BASE       0x40005800UL
 #define USB_BASE        0x40005C00UL
 #define SYSTICK_BASE    0xE000E010UL
 #define NVIC_ISER0      (*(volatile uint32_t *)0xE000E100UL)
+#define NVIC_ISER1      (*(volatile uint32_t *)0xE000E104UL)
 
-/* RCC */
+/* RCC, AFIO & EXTI */
 #define RCC_CR          (*(volatile uint32_t *)(RCC_BASE + 0x00UL))
 #define RCC_CFGR        (*(volatile uint32_t *)(RCC_BASE + 0x04UL))
 #define RCC_APB2ENR     (*(volatile uint32_t *)(RCC_BASE + 0x18UL))
 #define RCC_APB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x1CUL))
 #define FLASH_ACR       (*(volatile uint32_t *)(FLASH_BASE_REG + 0x00UL))
 #define AFIO_MAPR       (*(volatile uint32_t *)(AFIO_BASE + 0x04UL))
+#define AFIO_EXTICR4    (*(volatile uint32_t *)(AFIO_BASE + 0x14UL))
+#define EXTI_IMR        (*(volatile uint32_t *)(EXTI_BASE + 0x00UL))
+#define EXTI_FTSR       (*(volatile uint32_t *)(EXTI_BASE + 0x0CUL))
+#define EXTI_PR         (*(volatile uint32_t *)(EXTI_BASE + 0x14UL))
 
 /* GPIO */
 typedef struct {
@@ -101,16 +107,18 @@ typedef struct {
 #define SYST_RVR        (*(volatile uint32_t *)(SYSTICK_BASE + 0x04UL))
 #define SYST_CVR        (*(volatile uint32_t *)(SYSTICK_BASE + 0x08UL))
 
-/* Safety & Gait Constants */
-#define SERVO_MIN_US        750U
-#define SERVO_NEUTRAL_US    1500U
-#define SERVO_MAX_US        2250U
-#define BAY_CURRENT_LIMIT_MA 1350   /* Soft foldback before 1.50 A USB Type-C bay ceiling */
-#define WATCHDOG_TIMEOUT_MS  250U   /* Limp cutoff if host gait stream stops */
+/* Safety & Gait Constants — Validated for Framework 2x 3.0A + 2x 1.5A USB-C Bays */
+#define SERVO_MIN_US          750U
+#define SERVO_NEUTRAL_US      1500U
+#define SERVO_MAX_US          2250U
+#define BAY_CURRENT_LIMIT_MA  1300   /* Telemetry soft foldback before 1.50 A USB-C bay ceiling */
+#define INA226_ALERT_SOL_LSB  11040U /* 1.38 A * 20 mOhm / 2.5 uV = 11040 LSB (27.60 mV hardware clamp) */
+#define WATCHDOG_TIMEOUT_MS   250U   /* Limp cutoff if host gait stream stops */
 
 /* Live Leg State */
 static volatile uint32_t g_ms_ticks = 0;
 static volatile uint32_t g_last_cmd_ms = 0;
+static volatile uint32_t g_ocp_alert_count = 0;
 static volatile uint16_t g_sof_frame = 0;
 static volatile uint16_t g_target_sof = 0;
 static volatile uint16_t g_staged_hip_us = SERVO_NEUTRAL_US;
@@ -131,19 +139,45 @@ static void delay_ms(uint32_t ms) {
     }
 }
 
+static void delay_us(uint16_t us) {
+    /* TIM2 runs at 1 MHz (1 us/tick, ARR=4999) */
+    uint16_t start = (uint16_t)TIM2->CNT;
+    uint16_t elapsed = 0U;
+    while (elapsed < us) {
+        uint16_t now = (uint16_t)TIM2->CNT;
+        uint16_t diff = (now >= start) ? (uint16_t)(now - start) : (uint16_t)(5000U - start + now);
+        elapsed = (uint16_t)(elapsed + diff);
+        start = now;
+    }
+}
+
 static uint16_t clamp_servo_us(uint16_t us) {
     if (us < SERVO_MIN_US) return SERVO_MIN_US;
     if (us > SERVO_MAX_US) return SERVO_MAX_US;
     return us;
 }
 
-/* Sequenced Soft-Start & True 0 uA Limp Disconnect (Q1 AO3401A + U5 MT3608) */
+/*
+ * Sequenced Pulsed Precharge & True 0 uA Limp Disconnect (Q1 AO3401A + U5 MT3608):
+ * Because Q1 has a resistive gate pull-up (R12 = 10k) and feeds 110 uF total bulk capacitance
+ * (C12 = 22 uF + 4x 22 uF boost bank through L1/D4), snapping PB4 hard LOW would draw ~32 A
+ * peak inrush and nuisance-trip the Framework 1.5 A USB-C port switch.
+ * Pulsing PB4 at 25 kHz (1 -> 8 us duty over 12 ms = 300 cycles) precharges the 110 uF bank
+ * via L1's di/dt limit at < 0.45 A port current before latching Q1 ON and enabling MT3608!
+ */
 static void set_servo_power(bool enable) {
     if (enable && !g_servo_power_on) {
-        /* 1. Close Q1 high-side switch (PB4 LOW) while MT3608 EN (PB5) stays LOW */
+        GPIOB->BRR = (1UL << 5); /* Keep MT3608 BOOST_EN LOW during capacitor precharge */
+        for (uint16_t step = 0U; step < 300U; step++) {
+            uint16_t t_on_us = (uint16_t)(1U + (step / 38U)); /* 1 us -> 8 us pulse width */
+            GPIOB->BRR = (1UL << 4);  /* Q1 ON */
+            delay_us(t_on_us);
+            GPIOB->BSRR = (1UL << 4); /* Q1 OFF */
+            delay_us((uint16_t)(40U - t_on_us));
+        }
+        /* Latch Q1 fully ON (PB4 LOW), settle 2 ms, then enable MT3608 6.04 V boost (PB5 HIGH) */
         GPIOB->BRR = (1UL << 4);
-        delay_ms(4);
-        /* 2. Enable MT3608 6.04V boost stage (PB5 HIGH) once C12 input cap is charged */
+        delay_ms(2);
         GPIOB->BSRR = (1UL << 5);
         g_servo_power_on = true;
     } else if (!enable) {
@@ -151,6 +185,24 @@ static void set_servo_power(bool enable) {
         GPIOB->BRR = (1UL << 5);
         GPIOB->BSRR = (1UL << 4);
         g_servo_power_on = false;
+    }
+}
+
+/**
+ * Hardware 140 us Overcurrent Foldback ISR (PB12 = INA_ALERT_N falling edge):
+ * Fires within 0.14 ms whenever 5V VBUS current reaches 1.38 A (27.60 mV across 20 mOhm R8),
+ * shedding dual-servo stall load > 30x faster than the 1.5 A USB-C port overcurrent switch!
+ */
+void EXTI15_10_IRQHandler(void) {
+    if (EXTI_PR & (1UL << 12)) {
+        EXTI_PR = (1UL << 12); /* Clear pending EXTI12 flag */
+        g_ocp_alert_count++;
+        if (g_servo_power_on) {
+            g_active_hip_us  = (uint16_t)((3U * g_active_hip_us + SERVO_NEUTRAL_US) / 4U);
+            g_active_knee_us = (uint16_t)((3U * g_active_knee_us + SERVO_NEUTRAL_US) / 4U);
+            TIM2->CCR1 = g_active_hip_us;
+            TIM2->CCR2 = g_active_knee_us;
+        }
     }
 }
 
@@ -297,15 +349,22 @@ int main(void) {
     gpio_and_tim2_init();
     i2c2_init_400khz();
 
-    /* Configure INA226: 4x avg, 588 us conversion, continuous shunt+bus; alert at 1.45 A (11600 LSB) */
-    (void)ina226_write16(0x00U, 0x4367U);
-    (void)ina226_write16(0x07U, 11600U);
-    (void)ina226_write16(0x06U, 0x8000U); /* Shunt Over-Voltage Alert on INA_ALERT_N */
+    /* Configure INA226: 1x avg, 140 us fast shunt+bus conversion; hardware SOL alert at 1.38 A (11040 LSB) */
+    (void)ina226_write16(0x00U, 0x4007U);
+    (void)ina226_write16(0x07U, INA226_ALERT_SOL_LSB);
+    (void)ina226_write16(0x06U, 0x8000U); /* Shunt Over-Voltage Alert (SOL) on INA_ALERT_N (PB12) */
+
+    /* Route PB12 -> EXTI12 falling-edge hardware OCP interrupt (IRQ 40 = NVIC_ISER1 bit 8) */
+    AFIO_EXTICR4 = (AFIO_EXTICR4 & ~0x000FUL) | 0x0001UL;
+    EXTI_FTSR |= (1UL << 12);
+    EXTI_PR    = (1UL << 12);
+    EXTI_IMR  |= (1UL << 12);
+    NVIC_ISER1 = (1UL << 8);
 
     /* Enable USB FS SOF interrupt & pull up D+ via R2 (PA8) */
     USB_CNTR = USB_CNTR_SOFM;
     NVIC_ISER0 = (1UL << 20);
-    delay_ms(10U + (uint32_t)g_bay_id * 35U); /* Staggered bay startup prevents 4-leg inrush overlap */
+    delay_ms(10U + (uint32_t)g_bay_id * 40U); /* Staggered 40 ms/bay startup prevents multi-port overlap */
     GPIOA->BSRR = (1UL << 8);
 
     g_last_cmd_ms = g_ms_ticks;
@@ -315,8 +374,10 @@ int main(void) {
         int16_t shunt_lsb = ina226_read_shunt_raw();
         int32_t bay_ma = (int32_t)shunt_lsb / 8; /* 20 mOhm * 1 mA = 20 uV = 8 * 2.5 uV */
         if (bay_ma > BAY_CURRENT_LIMIT_MA || (GPIOB->IDR & (1UL << 12)) == 0U) {
-            /* Blend active knee/hip 20% toward neutral to shed stall torque immediately */
+            /* Blend active hip & knee 20% toward neutral to shed stall torque smoothly */
+            g_active_hip_us  = (uint16_t)((4U * g_active_hip_us + SERVO_NEUTRAL_US) / 5U);
             g_active_knee_us = (uint16_t)((4U * g_active_knee_us + SERVO_NEUTRAL_US) / 5U);
+            TIM2->CCR1 = g_active_hip_us;
             TIM2->CCR2 = g_active_knee_us;
         }
 

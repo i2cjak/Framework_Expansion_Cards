@@ -1,0 +1,116 @@
+{
+  "rom_grid": {
+    "reachable_poses": 85,
+    "collision_poses": 0,
+    "full_laptop_assembly_collisions": 0,
+    "transmission_angle_deg_range": [
+      31.1,
+      93.7
+    ],
+    "hip_servo_deg_range": [
+      -88.2,
+      -17.2
+    ],
+    "knee_servo_deg_range": [
+      -47.3,
+      74.9
+    ],
+    "min_clearances_mm": {
+      "Rail_vs_Tibia_mm": 9.7,
+      "Rail_vs_Pushrod_mm": 6.7,
+      "FemurIn_vs_Pushrod_mm": 3.168,
+      "FemurIn_vs_Tibia_mm": 0.6,
+      "ServoPod_vs_KneeHorn_mm": 2.216,
+      "ServoPod_vs_Pushrod_mm": 1.516,
+      "HipBracket_vs_Pushrod_mm": 5.316,
+      "HipHorn_vs_KneeHorn_mm": 8.121,
+      "Tibia_vs_FootPad_mm": 0.547
+    },
+    "inter_leg_opposing_swing_gap_mm": 43.28
+  },
+  "gaits": [
+    {
+      "gait": "4-Leg Stand",
+      "3d_collisions": 0,
+      "max_hip_torque_nm": 0.152,
+      "max_knee_torque_nm": 0.026,
+      "torque_margin_pct_of_stall": 34.6,
+      "avg_per_port_vbus_a": 0.57,
+      "peak_per_port_vbus_a": 0.577,
+      "peak_per_port_power_w": 2.88,
+      "pct_of_1p5A_port": 38.5,
+      "pct_of_3p0A_port": 19.2,
+      "peak_4bay_total_a": 2.307,
+      "peak_4bay_total_w": 11.54,
+      "pct_of_45W_host_budget": 25.6
+    },
+    {
+      "gait": "Belly Push-Up",
+      "3d_collisions": 0,
+      "max_hip_torque_nm": 0.154,
+      "max_knee_torque_nm": 0.131,
+      "torque_margin_pct_of_stall": 35.0,
+      "avg_per_port_vbus_a": 0.475,
+      "peak_per_port_vbus_a": 1.255,
+      "peak_per_port_power_w": 6.27,
+      "pct_of_1p5A_port": 83.7,
+      "pct_of_3p0A_port": 41.8,
+      "peak_4bay_total_a": 5.019,
+      "peak_4bay_total_w": 25.1,
+      "pct_of_45W_host_budget": 55.8
+    },
+    {
+      "gait": "Static Crawl",
+      "3d_collisions": 0,
+      "max_hip_torque_nm": 0.3,
+      "max_knee_torque_nm": 0.101,
+      "torque_margin_pct_of_stall": 68.2,
+      "avg_per_port_vbus_a": 0.72,
+      "peak_per_port_vbus_a": 1.216,
+      "peak_per_port_power_w": 6.08,
+      "pct_of_1p5A_port": 81.0,
+      "pct_of_3p0A_port": 40.5,
+      "peak_4bay_total_a": 3.265,
+      "peak_4bay_total_w": 16.32,
+      "pct_of_45W_host_budget": 36.3
+    },
+    {
+      "gait": "Paced Trot (0.85Hz)",
+      "3d_collisions": 0,
+      "max_hip_torque_nm": 0.386,
+      "max_knee_torque_nm": 0.116,
+      "torque_margin_pct_of_stall": 87.8,
+      "avg_per_port_vbus_a": 0.673,
+      "peak_per_port_vbus_a": 1.508,
+      "peak_per_port_power_w": 7.54,
+      "pct_of_1p5A_port": 100.5,
+      "pct_of_3p0A_port": 50.3,
+      "peak_4bay_total_a": 3.541,
+      "peak_4bay_total_w": 17.7,
+      "pct_of_45W_host_budget": 39.3
+    },
+    {
+      "gait": "Sprint Trot (1.05Hz)",
+      "3d_collisions": 0,
+      "max_hip_torque_nm": 0.432,
+      "max_knee_torque_nm": 0.142,
+      "torque_margin_pct_of_stall": 98.1,
+      "avg_per_port_vbus_a": 0.745,
+      "peak_per_port_vbus_a": 1.721,
+      "peak_per_port_power_w": 8.6,
+      "pct_of_1p5A_port": 114.7,
+      "pct_of_3p0A_port": 57.4,
+      "peak_4bay_total_a": 4.104,
+      "peak_4bay_total_w": 20.52,
+      "pct_of_45W_host_budget": 45.6
+    }
+  ],
+  "port_power_validation": {
+    "host_spec": "2 ports @ 5V/3.0A (15W) + 2 ports @ 5V/1.5A (7.5W) = 45.0W total (PD input)",
+    "hard_inrush_no_softstart_a": 32.41,
+    "pulsed_softstart_peak_a": 0.22,
+    "dual_servo_stall_vbus_raw_a": 2.53,
+    "ina226_hw_alert_limit_a": 1.38,
+    "ina226_alert_response_ms": 0.14
+  }
+}
