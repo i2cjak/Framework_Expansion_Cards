@@ -24,10 +24,10 @@ TURRET_FRONT_Y_MM     = -23.50
 BRACKET_OUT_Y_MM      = -56.20
 BRACKET_TOP_Z_MM      = 45.1002
 TIBIA_MID_Y_MM        = -44.20
+HIP_HORN_Y0_MM        = -28.60
 KNEE_HORN_Y0_MM       = -28.60
 PUSHROD_Y0_MM         = -31.20
 INBOARD_FEMUR_Y0_MM   = -36.40
-HIP_HORN_Y0_MM        = -38.55
 OUTBOARD_FEMUR_Y0_MM  = -49.968
 
 FEMUR_LEN_MM          = 38.0
@@ -42,12 +42,14 @@ REAR_BAY_X_MM         = +65.60
 FRONT_POD_X_MM        = -56.00
 REAR_POD_X_MM         = +56.00
 
+PCB_IN_BAY_PLACEMENT  = App.Placement(App.Vector(-148.50, 121.10, 2.852), App.Rotation())
+
 # --- Electro-Mechanical & Framework USB-C Port Parameters ---
 TOTAL_MASS_KG         = 1.58      # 1.30 kg Framework Laptop 13 + 0.28 kg 4-leg + 2-rail kit
 GRAVITY_MPS2          = 9.81
 V_VBUS_V              = 5.00
 V_SERVO_BOOST_V       = 6.04      # MT3608 output: 0.60 * (1 + 68k / 7.5k) = 6.04 V
-BOOST_EFF             = 0.89      # MT3608 + FXL0530-4R7-M + SS34 measured efficiency at 0.3..1.3A
+BOOST_EFF             = 0.89      # MT3608 + MWSA0518S-4R7MT + SS34FA efficiency at 0.3..1.3A
 I_MCU_IDLE_VBUS_A     = 0.032     # STM32F103 @ 72 MHz + INA226 + LEDs on 3.3V LDO
 I_SERVO_IDLE_6V_A     = 0.018     # Digital/analog MG90S quiescent @ 6.04V per servo
 MG90S_STALL_NM        = 0.44      # 4.5 kg-cm stall torque @ 6.04 V
@@ -76,7 +78,7 @@ def sagittal_link_placement(p1x: float, p1z: float, p2x: float, p2z: float, y_st
     return App.Placement(App.Vector(p1x, y_start, p1z), rot)
 
 
-def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float, bore_r: float = 1.55, hub_bore_r: float | None = None) -> Part.Shape:
+def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float, bore_r: float = 1.55, hub_bore_r: float | None = None, cut_end_bore: bool = True) -> Part.Shape:
     c1 = Part.makeCylinder(r1, thick, App.Vector(x1, y_front, z1), App.Vector(0, -1, 0))
     c2 = Part.makeCylinder(r2, thick, App.Vector(x2, y_front, z2), App.Vector(0, -1, 0))
     dx, dz = x2 - x1, z2 - z1
@@ -96,8 +98,33 @@ def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, 
         solid = c1.fuse(c2).fuse(web)
     rb1 = bore_r if hub_bore_r is None else hub_bore_r
     b1 = Part.makeCylinder(rb1, thick + 1.0, App.Vector(x1, y_front + 0.5, z1), App.Vector(0, -1, 0))
-    b2 = Part.makeCylinder(bore_r, thick + 1.0, App.Vector(x2, y_front + 0.5, z2), App.Vector(0, -1, 0))
-    return solid.cut(b1).cut(b2).removeSplitter()
+    solid = solid.cut(b1)
+    if cut_end_bore:
+        b2 = Part.makeCylinder(bore_r, thick + 1.0, App.Vector(x2, y_front + 0.5, z2), App.Vector(0, -1, 0))
+        solid = solid.cut(b2)
+    return solid.removeSplitter()
+
+
+def make_hip_horn_and_standoffs(kin: dict) -> tuple[Part.Shape, Part.Shape]:
+    ux = (kin["kx"] - kin["hx"]) / FEMUR_LEN_MM
+    uz = (kin["kz"] - kin["hz"]) / FEMUR_LEN_MM
+    hip_end_x = kin["hx"] + 7.5 * ux
+    hip_end_z = kin["hz"] + 7.5 * uz
+    h1 = make_horn_solid(
+        kin["hx"], kin["hz"], hip_end_x, hip_end_z,
+        HIP_HORN_Y0_MM, 2.0, 5.2, 5.2,
+        bore_r=1.10, hub_bore_r=2.52, cut_end_bore=False,
+    )
+    standoffs = []
+    for lat in (-3.0, +3.0):
+        mx = hip_end_x - lat * uz
+        mz = hip_end_z + lat * ux
+        mh = Part.makeCylinder(1.10, 3.0, App.Vector(mx, HIP_HORN_Y0_MM + 0.5, mz), App.Vector(0, -1, 0))
+        h1 = h1.cut(mh)
+        so = Part.makeCylinder(1.75, 5.76, App.Vector(mx, -30.62, mz), App.Vector(0, -1, 0))
+        bolt = Part.makeCylinder(0.95, 11.4, App.Vector(mx, -28.55, mz), App.Vector(0, -1, 0))
+        standoffs.append(so.fuse(bolt))
+    return h1.removeSplitter(), standoffs[0].fuse(standoffs[1]).removeSplitter()
 
 
 def solve_leg_ik_exact(ankle_x: float, ankle_z: float, s_dir: float = 1.0) -> dict | None:
@@ -176,7 +203,6 @@ def compute_servo_torques_nm(ankle_x: float, ankle_z: float, fx_foot_n: float, f
     def unwrap_diff(a: float, b: float) -> float:
         return (a - b + math.pi) % (2.0 * math.pi) - math.pi
 
-    # G = d(theta_hip, theta_knee) / d(x_mm, z_mm) [rad / m]
     g11 = unwrap_diff(kx_p["theta_hip"], kx_m["theta_hip"]) / (2.0 * eps * 1e-3)
     g21 = unwrap_diff(kx_p["theta_knee"], kx_m["theta_knee"]) / (2.0 * eps * 1e-3)
     g12 = unwrap_diff(kz_p["theta_hip"], kz_m["theta_hip"]) / (2.0 * eps * 1e-3)
@@ -185,7 +211,6 @@ def compute_servo_torques_nm(ankle_x: float, ankle_z: float, fx_foot_n: float, f
     det = g11 * g22 - g12 * g21
     if abs(det) < 1e-6:
         return None
-    # J = d(x, z) / d(theta_hip, theta_knee) = G^{-1} [m / rad]
     j11, j12 =  g22 / det, -g12 / det
     j21, j22 = -g21 / det,  g11 / det
 
@@ -198,6 +223,20 @@ def placed(shp: Part.Shape, pl: App.Placement) -> Part.Shape:
     c = shp.copy()
     c.Placement = pl.multiply(c.Placement)
     return c
+
+
+def shape_pair_int_vol(a: Part.Shape, b: Part.Shape) -> float:
+    if not a.BoundBox.intersect(b.BoundBox):
+        return 0.0
+    sa = a.Solids if len(a.Solids) > 1 else [a]
+    sb = b.Solids if len(b.Solids) > 1 else [b]
+    vol = 0.0
+    for s1 in sa:
+        bb1 = s1.BoundBox
+        for s2 in sb:
+            if bb1.intersect(s2.BoundBox):
+                vol += s1.common(s2).Volume
+    return vol
 
 
 def main():
@@ -213,6 +252,13 @@ def main():
     shp_pushrod = Part.read(str(MECH_DIR / "leg_knee_pushrod.step"))
     shp_tibia   = Part.read(str(MECH_DIR / "leg_tibia_strut.step"))
     shp_foot    = Part.read(str(MECH_DIR / "leg_foot_pad.step"))
+    shp_pcb     = Part.read(str(REPO_ROOT / "Day_06_Walking_Legs" / "build" / "board.step"))
+
+    # Verify full 86-solid PCB fit inside `leg_bay_housing`
+    pcb_placed = placed(shp_pcb, PCB_IN_BAY_PLACEMENT)
+    pcb_vs_bay_mm3 = shape_pair_int_vol(pcb_placed, shp_bay)
+    print(f"\n[0/4] Full 86-solid Day_06_Walking_Legs/build/board.step vs leg_bay_housing: {pcb_vs_bay_mm3:.6f} mm^3")
+    assert pcb_vs_bay_mm3 < 1e-3, f"PCB interferes with leg_bay_housing by {pcb_vs_bay_mm3:.4f} mm^3!"
 
     # Static flank environment (Rail + Laptop Chassis + 2x Bay Housings)
     laptop_flank = Part.makeBox(228.9, 60.0, 14.8, App.Vector(-114.45, 0.0, 0.0))
@@ -222,9 +268,7 @@ def main():
 
     def build_pose_solids(pod_x: float, kin: dict) -> dict[str, Part.Shape]:
         pod_pl = App.Placement(App.Vector(pod_x, 0.0, 0.0), App.Rotation())
-        hip_end_x = kin["hx"] + 7.5 * (kin["kx"] - kin["hx"]) / FEMUR_LEN_MM
-        hip_end_z = kin["hz"] + 7.5 * (kin["kz"] - kin["hz"]) / FEMUR_LEN_MM
-        h1 = make_horn_solid(kin["hx"], kin["hz"], hip_end_x, hip_end_z, HIP_HORN_Y0_MM, 2.0, 5.2, 4.2, hub_bore_r=1.55)
+        h1, hip_standoffs = make_hip_horn_and_standoffs(kin)
         h2 = make_horn_solid(kin["sx"], kin["sz"], kin["crx"], kin["crz"], KNEE_HORN_Y0_MM, 2.0, 5.2, 3.8, hub_bore_r=2.52)
 
         tibia_rot = rot_from_cols((kin["ex_x"], 0.0, kin["ex_z"]), (0.0, kin["s_dir"], 0.0), (kin["uz_x"], 0.0, kin["uz_z"]))
@@ -233,7 +277,7 @@ def main():
         s_list, sp_list = [], []
         for sx in (-SERVO_X_OFFSET_MM, SERVO_X_OFFSET_MM):
             rear_case  = Part.makeBox(12.2, 19.0, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM + 0.10, 5.20))
-            ears       = Part.makeBox(12.2, 2.2, 31.2, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 2.25, 1.00))
+            ears       = Part.makeBox(12.2, 2.2, 31.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 2.25, 0.70))
             front_case = Part.makeBox(12.2, 2.2, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 4.45, 5.20))
             boss       = Part.makeCylinder(5.5, 0.6, App.Vector(sx, TURRET_FRONT_Y_MM - 4.45, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
             srv_bore   = Part.makeCylinder(1.55, 10.0, App.Vector(sx, TURRET_FRONT_Y_MM - 2.0, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
@@ -242,13 +286,14 @@ def main():
             sp_bore    = Part.makeCylinder(1.55, 4.0, App.Vector(sx, TURRET_FRONT_Y_MM - 4.5, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
             sp_list.append(sp_cyl.cut(sp_bore))
 
-        p_hip = Part.makeCylinder(1.48, 28.9, App.Vector(kin["hx"], -27.5, kin["hz"]), App.Vector(0, -1, 0))
-        p_srv = Part.makeCylinder(1.48, 3.25, App.Vector(kin["sx"], -27.5, kin["sz"]), App.Vector(0, -1, 0))
-        p_crk = Part.makeCylinder(1.48, 4.90, App.Vector(kin["crx"], -28.5, kin["crz"]), App.Vector(0, -1, 0))
-        p_kne = Part.makeCylinder(1.48, 20.4, App.Vector(kin["kx"], -34.0, kin["kz"]), App.Vector(0, -1, 0))
-        p_bel = Part.makeCylinder(1.48, 23.4, App.Vector(kin["bx"], -31.0, kin["bz"]), App.Vector(0, -1, 0))
-        p_ank = Part.makeCylinder(1.48, 20.4, App.Vector(kin["ax"], -34.0, kin["az"]), App.Vector(0, -1, 0))
-        pins = p_hip.fuse([p_srv, p_crk, p_kne, p_bel, p_ank])
+        p_spl_h = Part.makeCylinder(1.25, 3.25, App.Vector(kin["hx"], -27.5, kin["hz"]), App.Vector(0, -1, 0))
+        p_spl_k = Part.makeCylinder(1.25, 3.25, App.Vector(kin["sx"], -27.5, kin["sz"]), App.Vector(0, -1, 0))
+        p_hip   = Part.makeCylinder(1.48, 22.8, App.Vector(kin["hx"], -35.0, kin["hz"]), App.Vector(0, -1, 0))
+        p_crk   = Part.makeCylinder(1.48, 4.90, App.Vector(kin["crx"], -28.5, kin["crz"]), App.Vector(0, -1, 0))
+        p_kne   = Part.makeCylinder(1.48, 20.4, App.Vector(kin["kx"], -34.0, kin["kz"]), App.Vector(0, -1, 0))
+        p_bel   = Part.makeCylinder(1.48, 23.4, App.Vector(kin["bx"], -31.0, kin["bz"]), App.Vector(0, -1, 0))
+        p_ank   = Part.makeCylinder(1.48, 20.4, App.Vector(kin["ax"], -34.0, kin["az"]), App.Vector(0, -1, 0))
+        pins = p_hip.fuse([p_spl_h, p_spl_k, p_crk, p_kne, p_bel, p_ank])
 
         return {
             "Rail": shp_rail,
@@ -259,6 +304,7 @@ def main():
             "Splines": placed(sp_list[0].fuse(sp_list[1]), pod_pl),
             "HipBracket": placed(shp_bracket, pod_pl.multiply(App.Placement(App.Vector(0.0, BRACKET_OUT_Y_MM, BRACKET_TOP_Z_MM), App.Rotation()))),
             "HipHorn": placed(h1, pod_pl),
+            "HipStandoffs": placed(hip_standoffs, pod_pl),
             "KneeHorn": placed(h2, pod_pl),
             "FemurIn": placed(shp_femur, pod_pl.multiply(sagittal_link_placement(kin["hx"], kin["hz"], kin["kx"], kin["kz"], INBOARD_FEMUR_Y0_MM))),
             "FemurOut": placed(shp_femur, pod_pl.multiply(sagittal_link_placement(kin["hx"], kin["hz"], kin["kx"], kin["kz"], OUTBOARD_FEMUR_Y0_MM))),
@@ -278,6 +324,7 @@ def main():
         "Rail_vs_Pushrod_mm": 999.0,
         "FemurIn_vs_Pushrod_mm": 999.0,
         "FemurIn_vs_Tibia_mm": 999.0,
+        "HipStandoffs_vs_Pushrod_mm": 999.0,
         "ServoPod_vs_KneeHorn_mm": 999.0,
         "ServoPod_vs_Pushrod_mm": 999.0,
         "HipBracket_vs_Pushrod_mm": 999.0,
@@ -320,12 +367,12 @@ def main():
             if pose_hit:
                 collision_poses += 1
 
-            # Track exact minimum 3D surface-to-surface clearances across critical pairs
             for key, a_name, b_name in (
                 ("Rail_vs_Tibia_mm", "Rail", "Tibia"),
                 ("Rail_vs_Pushrod_mm", "Rail", "Pushrod"),
                 ("FemurIn_vs_Pushrod_mm", "FemurIn", "Pushrod"),
                 ("FemurIn_vs_Tibia_mm", "FemurIn", "Tibia"),
+                ("HipStandoffs_vs_Pushrod_mm", "HipStandoffs", "Pushrod"),
                 ("ServoPod_vs_KneeHorn_mm", "ServoPod", "KneeHorn"),
                 ("ServoPod_vs_Pushrod_mm", "ServoPod", "Pushrod"),
                 ("HipBracket_vs_Pushrod_mm", "HipBracket", "Pushrod"),
@@ -350,8 +397,8 @@ def main():
 
     # 2. INTER-LEG & FULL 67-OBJECT LAPTOP ASSEMBLY BOOLEAN CHECK
     print("\n[2/4] Checking Inter-Leg Swing Envelope (Front Leg @ -56 vs Rear Leg @ +56)...")
-    front_aft_kin = solve_leg_ik_exact(+24.0, -44.0, 1.0)   # Front leg swung max aft (+X)
-    rear_fore_kin = solve_leg_ik_exact(-24.0, -44.0, 1.0)   # Rear leg swung max forward (-X)
+    front_aft_kin = solve_leg_ik_exact(+24.0, -44.0, 1.0)
+    rear_fore_kin = solve_leg_ik_exact(-24.0, -44.0, 1.0)
     s_front = build_pose_solids(FRONT_POD_X_MM, front_aft_kin)
     s_rear = build_pose_solids(REAR_POD_X_MM, rear_fore_kin)
     f_leg_union = s_front["Tibia"].fuse([s_front["FootPad"], s_front["FemurIn"], s_front["Pushrod"]])
@@ -396,7 +443,7 @@ def main():
 
             n_stance = max(1, sum(1 for g in on_ground if g))
             fz_per_stance = (w_total_n / n_stance) * impact_mult
-            fx_prop = 0.18 * fz_per_stance  # horizontal propulsion / braking shear
+            fx_prop = 0.18 * fz_per_stance
 
             total_i_step = 0.0
             for b in range(4):
@@ -416,19 +463,16 @@ def main():
                 if step < 0:
                     continue
 
-                # Add link/rotor inertial torque
                 th_nm += 4.5e-5 * (omega_h / max(dt, 0.005))
                 tk_nm += 3.5e-5 * (omega_k / max(dt, 0.005))
                 max_tau_hip = max(max_tau_hip, th_nm)
                 max_tau_knee = max(max_tau_knee, tk_nm)
 
-                # 6.04 V Servo current draw (torque current + slewing current + idle)
                 kt = MG90S_STALL_NM / (MG90S_STALL_I_6V_A - I_SERVO_IDLE_6V_A)
                 i_hip_6v = I_SERVO_IDLE_6V_A + (th_nm / kt) + MG90S_SPEED_I_6V_A * min(1.0, omega_h / MG90S_NO_LOAD_RAD_S)
                 i_knee_6v = I_SERVO_IDLE_6V_A + (tk_nm / kt) + MG90S_SPEED_I_6V_A * min(1.0, omega_k / MG90S_NO_LOAD_RAD_S)
                 i_6v_total = i_hip_6v + i_knee_6v
 
-                # Reflect through 6.04V MT3608 boost stage (eta = 89%) + 5V MCU/INA226 quiescent
                 p_out_w = V_SERVO_BOOST_V * i_6v_total
                 i_vbus = I_MCU_IDLE_VBUS_A + (p_out_w / BOOST_EFF) / V_VBUS_V
                 max_bay_i_vbus[b] = max(max_bay_i_vbus[b], i_vbus)
@@ -437,7 +481,6 @@ def main():
 
             if step >= 0:
                 max_total_i_vbus = max(max_total_i_vbus, total_i_step)
-                # Sample 16 keyframes along gait for exact 3D boolean check!
                 if step % (n_steps // 16) == 0:
                     sh = build_pose_solids(FRONT_POD_X_MM, poses[0][2])
                     ns = list(sh.keys())
@@ -475,39 +518,34 @@ def main():
         )
         return res
 
-    g_stand = sim_gait("4-Leg Stand",        0.50,  0.0,  0.0, -52.83, 0.99, 1.00, (0.0, 0.0, 0.0, 0.0))
-    g_push  = sim_gait("Belly Push-Up",      0.45,  2.0, 14.0, -56.00, 0.99, 1.10, (0.0, 0.0, 0.0, 0.0))
-    g_crawl = sim_gait("Static Crawl",       0.65, 28.0, 15.0, -52.83, 0.75, 1.15, (0.00, 0.50, 0.75, 0.25))
+    g_stand = sim_gait("4-Leg Stand",         0.50,  0.0,  0.0, -52.83, 0.99, 1.00, (0.0, 0.0, 0.0, 0.0))
+    g_push  = sim_gait("Belly Push-Up",       0.45,  2.0, 14.0, -56.00, 0.99, 1.10, (0.0, 0.0, 0.0, 0.0))
+    g_crawl = sim_gait("Static Crawl",        0.65, 28.0, 15.0, -52.83, 0.75, 1.15, (0.00, 0.50, 0.75, 0.25))
     g_trot0 = sim_gait("Paced Trot (0.85Hz)", 0.85, 24.0, 12.0, -53.50, 0.55, 1.08, (0.00, 0.50, 0.50, 0.00))
     g_trot  = sim_gait("Sprint Trot (1.05Hz)",1.05, 26.0, 13.0, -54.50, 0.50, 1.25, (0.00, 0.50, 0.50, 0.00))
 
     # 4. TRANSIENT INRUSH & DUAL-SERVO STALL CIRCUIT SIMULATION (1.5A vs 3.0A PORTS)
     print("\n[4/4] Simulating Capacitor Precharge Inrush & Dual-Servo Stall on `1.5A` vs `3.0A` Ports...")
-    c_total_f = 110e-6    # C12 (22uF) + C9,C13,C14,C15 (4x 22uF = 88uF)
-    r_loop_ohm = 0.145    # USB-C contact (35mR) + R8 shunt (20mR) + AO3401A Rds_on (55mR) + L1/D4 DCR (35mR)
+    c_total_f = 110e-6
+    r_loop_ohm = 0.145
     i_hard_inrush_a = (V_VBUS_V - 0.30) / r_loop_ohm
 
-    # Simulate 12 ms pulsed PWM precharge on Q1 (PB4: 1.5 us ON / 38.5 us OFF = 3.75% -> ramped to 100%)
     v_cap = 0.0
     dt_us = 1e-6
     peak_soft_inrush_a = 0.0
     for step_us in range(12000):
         period_pos = step_us % 40
-        duty_us = 1 + (step_us // 1500)  # 1 us -> 8 us pulse width across 12 ms
+        duty_us = 1 + (step_us // 1500)
         q1_on = period_pos < duty_us
         if q1_on and v_cap < (V_VBUS_V - 0.30):
-            # Effective series resistance includes Q1 Miller transition + loop inductance L1=4.7uH limiting di/dt!
-            # Over 1..3 us, L1 limits delta_I = (V_in - V_cap) * t_on / L1!
             t_on_s = (period_pos + 1) * 1e-6
             i_ind = min((V_VBUS_V - 0.30 - v_cap) / r_loop_ohm, (V_VBUS_V - 0.30 - v_cap) * t_on_s / 4.7e-6)
-            # Average port current smoothed by input decoupling / USB VBUS bulk (~22 uF host port cap)
             i_port = i_ind * (duty_us / 40.0) + I_MCU_IDLE_VBUS_A
             peak_soft_inrush_a = max(peak_soft_inrush_a, i_port)
             v_cap += (i_ind * dt_us) / c_total_f
     v_cap = min(v_cap, V_VBUS_V - 0.30)
 
-    # Dual-servo simultaneous hard stall current reflected to 5.0V VBUS (unclamped vs INA226 1.38A hardware foldback)
-    i_2stall_6v = 2.0 * MG90S_STALL_I_6V_A  # 1.84 A @ 6.04 V = 11.11 W
+    i_2stall_6v = 2.0 * MG90S_STALL_I_6V_A
     i_2stall_vbus_unclamped = I_MCU_IDLE_VBUS_A + (V_SERVO_BOOST_V * i_2stall_6v / BOOST_EFF) / V_VBUS_V
 
     print(f"  * Hard Q1 step into 110 uF (no soft-start) : {i_hard_inrush_a:.1f} A peak -> WOULD TRIP 1.5A port eFuse!")
@@ -516,30 +554,29 @@ def main():
     print(f"      - On 3.0A ports (2 bays, 15.0W)        : {i_2stall_vbus_unclamped:.2f} A < 3.00 A ({100*i_2stall_vbus_unclamped/3.0:.0f}%) -> Holds continuously!")
     print(f"      - On 1.5A ports (2 bays,  7.5W)        : {i_2stall_vbus_unclamped:.2f} A > 1.50 A -> INA226 SOL Alert (1.38A / 140 us) clamps in 0.14 ms (< 5 ms port OCP!)")
 
-    # Also verify full 67-object walking_laptop_assembly.FCStd if present
+    # Verify full 67-object walking_laptop_assembly.FCStd (including 4x 86-solid Day06PCBs!)
     laptop_fcstd = MECH_DIR / "walking_laptop_assembly.FCStd"
     full_assy_collisions = 0
     if laptop_fcstd.exists():
         doc = App.openDocument(str(laptop_fcstd))
-        objs = [o for o in doc.Objects if hasattr(o, "Shape") and not o.Shape.isNull() and o.Shape.Volume > 0.1]
+        objs = [o for o in doc.Objects if hasattr(o, "Shape") and not o.Shape.isNull() and len(o.Shape.Solids) > 0]
         for i in range(len(objs)):
             for j in range(i + 1, len(objs)):
                 o1, o2 = objs[i], objs[j]
-                pair_lbl = {o1.Label, o2.Label}
-                # Allow cosmetic display overlap between laptop unibody and underside support rail contact face if <= 0.01
                 if not o1.Shape.BoundBox.intersect(o2.Shape.BoundBox):
                     continue
-                v_int = o1.Shape.common(o2.Shape).Volume
+                v_int = shape_pair_int_vol(o1.Shape, o2.Shape)
                 if v_int > 0.02:
                     full_assy_collisions += 1
                     print(f"    ! Assembly interference: {o1.Label} x {o2.Label} = {v_int:.3f} mm^3")
         App.closeDocument(doc.Name)
-        print(f"  Full 67-object walking_laptop_assembly.FCStd interferences: {full_assy_collisions}")
+        print(f"  Full {len(objs)}-object walking_laptop_assembly.FCStd interferences (with 4x 86-solid PCBs): {full_assy_collisions}")
 
     summary = {
         "rom_grid": {
             "reachable_poses": valid_poses,
             "collision_poses": collision_poses,
+            "pcb_vs_bay_housing_mm3": round(pcb_vs_bay_mm3, 6),
             "full_laptop_assembly_collisions": full_assy_collisions,
             "transmission_angle_deg_range": [round(gamma_min, 1), round(gamma_max, 1)],
             "hip_servo_deg_range": [round(hip_deg_min, 1), round(hip_deg_max, 1)],

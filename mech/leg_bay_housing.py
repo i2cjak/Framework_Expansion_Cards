@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 """
-MJF PA12 Flush Expansion-Card Bay Plug (`mech/leg_bay_housing.py`, `qty: 4`)
+MJF PA12 Open-Top Flush Expansion-Card Bay Cartridge (`mech/leg_bay_housing.py`, `qty: 4`)
 for Day 06 Walking Legs — Rear-Set Port Anchor for `leg_flank_bracket`.
 
 Coordinate convention: mm, Z up, laptop outboard bezel facing -Y (`Y = +0.20 mm`),
-bay insertion direction (USB-C plug) facing +Y (`Y = +0.20 .. +30.00 mm`),
+bay insertion direction (USB-C plug) facing +Y (`Y = +0.20 .. +32.00 mm`),
 fore/aft laptop flank axis along +/-X (`30.0 mm` body, `32.0 mm` T-rails).
 
 Mechanical architecture:
   1. Slides flush into the Framework Laptop 13's rear-set Expansion Card bays (`Y_laptop = +36.0 mm`
-     Front Port and `Y_laptop = +76.6 mm` Rear Port), housing the 4-layer `Day_06_Walking_Legs` PCB
-     and engaging the chassis T-rails and underside release latch.
-  2. Beveled outboard face (`Y = +0.20 mm` at `Z = +6.80 mm` tapering to `Y = +6.80 mm` at `Z = 0.00 mm`)
-     matches the Framework Laptop 13 lower chassis bevel while providing a recessed `10.0 x 3.0 mm`
-     front wire-exit port (`Z = +1.40 .. +4.40 mm`) for the 4-wire servo harness running along the
-     top deck of `leg_flank_bracket`.
-  3. Flat underside (`Z = 0.00 mm`, `Y = +6.80 .. +30.00 mm`) bolts directly to the inboard top face
-     of the SendCutSend `ALU-080` `leg_flank_bracket` (`4x M2.5` heat-set insert bosses per module at
-     `X = +/-7.00 mm`, `Y = +8.00` & `+17.00 mm` -> `8x M2.5` bolts per flank across the `40.6 mm`
-     two-bay baseline!).
+     Front Port and `Y_laptop = +76.6 mm` Rear Port), housing the double-sided 4-layer
+     `Day_06_Walking_Legs` PCB (`board.step` placed at `(-148.50, +121.10, +2.85)`) from above (`+Z`)
+     with `0.000 mm^3` component interference and engaging the chassis T-rails + underside latch.
+  2. Open-top front connector aperture (`16.4 x 4.05 mm`, `X = -8.20 .. +8.20 mm`, `Z = +2.75 .. +6.80 mm`)
+     exposes both side-entry 3-pin 1.0 mm JST-SH servo headers (`J2` Hip, `J3` Knee) for straight-in
+     outboard mating, while top access exposes `H1`/`H2` M2 mounting screws and `J4` 4-pin SWD header.
+  3. Flat underside (`Z = 0.00 mm`, `Y = +4.50 .. +32.00 mm`) bolts directly to the inboard top face
+     of the SendCutSend `ALU-080` `leg_flank_bracket` via `4x M2.5 x 2.5 mm` (`OD 3.5 mm`) brass
+     heat-set insert bosses per module at `X = +/-7.00 mm`, `Y = +8.50` & `+14.50 mm` (`Ø3.25 x 2.55 mm`
+     blind insert bores -> `8x M2.5` bolts per flank across the `40.6 mm` two-bay baseline!).
 
 Exports:
   - mech/leg_bay_housing.FCStd
@@ -38,17 +38,18 @@ RAIL_SPAN_X_MM        = 32.00    # Side T-rail outer span
 RAIL_HEIGHT_Z_MM      = 1.80     # T-rail tongue thickness (Z = 2.40 .. 4.20)
 BAY_HEIGHT_Z_MM       = 6.80     # Standard Framework Expansion Card height (Z = 0.00 .. 6.80)
 BAY_Y_OUT_TOP_MM      = 0.20     # Flush with +/-148.1 mm upper bezel
-BAY_Y_OUT_BOT_MM      = 6.60     # Matches laptop lower beveled skirt so rail sits flush at Z = 0
-BAY_Y_IN_MM           = 30.00    # Full 30 mm bay depth
+BAY_Y_OUT_BOT_MM      = 4.50     # Flat floor from Y = 4.50 .. 32.00 mm (clears Y = 8.50 bosses!)
+BAY_Y_IN_MM           = 32.00    # Standard 32.00 mm Framework Expansion Card depth
 
-PCB_POCKET_W_X_MM     = 26.40    # Clears 26.0 mm Day 06 PCB width
-PCB_POCKET_Y0_MM      = 3.40
-PCB_POCKET_Y1_MM      = 28.60
-PCB_BOSS_SPAN_X_MM    = 22.60    # Exact H1..H2 spacing (22.60 mm)
-PCB_BOSS_Y_MM         = 11.50    # M2 boss Y position inside bay pocket
+PCB_POCKET_W_X_MM     = 26.30    # Clears 26.00 mm Day 06 PCB width (-13.15 .. +13.15 mm)
+PCB_BOSS_SPAN_X_MM    = 22.60    # Exact H1..H2 M2 hole spacing (+/- 11.30 mm)
+PCB_BOSS_Y_MM         = 11.60    # Exact H1/H2 Y (-109.50 + 121.10 = +11.60 mm)
+PCB_SEAT_Z_MM         = 2.85     # Bare PCB bottom Z (FR4 Z = 2.85 .. 3.65; top JST Z_max = 6.605 mm)
 
 RAIL_BOLT_X_MM        = 7.00     # +/- 7.00 mm fore-aft bolt spacing matching `leg_flank_bracket`
 RAIL_BOLT_Y_LIST      = (8.50, 14.50)  # Exact match to `leg_flank_bracket` INBOARD_BOLT_Y_MM
+M25_INSERT_BORE_R_MM  = 1.625    # Ø3.25 mm blind bore for M2.5 x 2.5 mm (OD 3.5 mm) heat-set insert
+M25_INSERT_DEPTH_Z_MM = 2.55     # Blind depth inside Ø4.90 mm boss (boss top Z = 2.75 mm < 2.85 mm FR4)
 
 PA12_COLOR            = (0.20, 0.21, 0.23)
 
@@ -61,67 +62,91 @@ LOG_PATH  = MECH_DIR / "leg_bay_housing.log"
 def build():
     doc = App.newDocument("leg_bay_housing")
 
-    # 1. Beveled-front Expansion Card body matching Framework Laptop 13 side profile
+    # 1. Beveled-front Expansion Card body (30.0 x 31.8 x 6.8 mm, Y = 0.20 .. 32.00 mm)
     x0 = -BAY_WIDTH_X_MM * 0.5
     pts = [
         App.Vector(x0, BAY_Y_OUT_BOT_MM, 0.0),
         App.Vector(x0, BAY_Y_IN_MM, 0.0),
         App.Vector(x0, BAY_Y_IN_MM, BAY_HEIGHT_Z_MM),
         App.Vector(x0, BAY_Y_OUT_TOP_MM, BAY_HEIGHT_Z_MM),
-        App.Vector(x0, BAY_Y_OUT_TOP_MM, BAY_HEIGHT_Z_MM - 1.40),
+        App.Vector(x0, BAY_Y_OUT_TOP_MM, 2.80),
+        App.Vector(x0, 0.90, 1.00),
         App.Vector(x0, BAY_Y_OUT_BOT_MM, 0.0),
     ]
     bay_body = Part.Face(Part.makePolygon(pts)).extrude(App.Vector(BAY_WIDTH_X_MM, 0.0, 0.0))
 
-    # 2. Side guide T-rails along both sides of bay cartridge: X = -16..+16, Y = 4.0..28.5, Z = 2.4..4.2
+    # 2. Side guide T-rails along both sides of bay cartridge: X = -16..+16, Y = 3.00..30.50, Z = 2.40..4.20
     rails = Part.makeBox(
         RAIL_SPAN_X_MM,
-        24.50,
+        27.50,
         RAIL_HEIGHT_Z_MM,
-        App.Vector(-RAIL_SPAN_X_MM * 0.5, 4.00, 2.40),
+        App.Vector(-RAIL_SPAN_X_MM * 0.5, 3.00, 2.40),
     )
 
     solid = bay_body.fuse(rails).removeSplitter()
 
-    # 3. Internal PCB & component cavity (Y = 3.60 .. 29.50, Z = 2.00 .. 5.80 + upper PCB lip Y = 2.60 .. 3.80, Z = 3.15 .. 5.80)
-    pcb_cavity = Part.makeBox(
+    # 3. Stepped open-top PCB & bottom-SMD cavity (drops in straight from +Z!)
+    #    - Upper PCB & top-component tub: Y = 0.95 .. 31.25, Z = 2.75 .. 7.00
+    #    - Mid bottom-passive pocket:     Y = 1.55 .. 31.25, Z = 1.85 .. 2.80
+    #    - Deep front power-stage sump:   Y = 2.00 .. 16.00, Z = 1.00 .. 1.90 (clears L1/D4/1206 caps at Z_min = 1.165)
+    tub_upper = Part.makeBox(
         PCB_POCKET_W_X_MM,
-        29.50 - 3.60,
-        3.80,
-        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 3.60, 2.00),
+        31.25 - 0.95,
+        7.00 - 2.75,
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 0.95, 2.75),
     )
-    pcb_front_lip = Part.makeBox(
+    tub_mid = Part.makeBox(
         PCB_POCKET_W_X_MM,
-        1.40,
-        2.65,
-        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 2.60, 3.15),
+        31.25 - 1.55,
+        2.80 - 1.85,
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 1.55, 1.85),
     )
-    # Rear USB-C & inboard card shoulder opening (Y = 27.5 .. 30.5, Z = 2.0 .. 5.6, 26.2 mm wide)
-    usbc_opening = Part.makeBox(26.20, 3.50, 3.60, App.Vector(-13.10, 27.50, 2.00))
-    # Outboard (-Y) low-profile servo harness exit port (10.0 x 2.8 mm, Z = 2.10 .. 4.90)
-    harness_exit = Part.makeBox(10.00, 5.00, 2.80, App.Vector(-5.00, -0.50, 2.10))
-    # Underside latch catch pocket at inboard end (Y = 21.5 .. 25.0, Z = 0.0 .. 0.8, clear of Y=8.5,14.5 bolts!)
-    latch_pocket = Part.makeBox(8.00, 3.50, 0.80, App.Vector(-4.00, 21.50, 0.00))
+    tub_sump = Part.makeBox(
+        PCB_POCKET_W_X_MM,
+        21.50 - 1.70,
+        1.90 - 1.00,
+        App.Vector(-PCB_POCKET_W_X_MM * 0.5, 1.70, 1.00),
+    )
 
-    solid = solid.cut(pcb_cavity).cut(pcb_front_lip).cut(usbc_opening).cut(harness_exit).cut(latch_pocket)
+    # Rear straddle-mount USB-C plug slot (`J1` Amphenol 12401981E412A: X = -4.19..+4.26, Z_min = 1.94)
+    usbc_slot = Part.makeBox(9.60, 4.50, 5.25, App.Vector(-4.80, 28.20, 1.75))
 
-    # 4. Internal M2 PCB standoffs up to Z = 3.20 mm (X = +/-11.30 mm, Y = 11.50 mm)
+    # Outboard (-Y) front aperture exposing J2 (Hip) & J3 (Knee) 3-pin JST-SH headers (X = -8.20 .. +8.20)
+    servo_hdr_port = Part.makeBox(16.40, 3.20, 4.25, App.Vector(-8.20, -0.20, 2.75))
+
+    # Underside latch catch pocket at inboard end (Y = 22.0 .. 25.5, Z = 0.0 .. 0.75 -> 1.10 mm PA12 floor above!)
+    latch_pocket = Part.makeBox(8.00, 3.50, 0.75, App.Vector(-4.00, 22.00, -0.05))
+
+    solid = (
+        solid.cut(tub_upper)
+        .cut(tub_mid)
+        .cut(tub_sump)
+        .cut(usbc_slot)
+        .cut(servo_hdr_port)
+        .cut(latch_pocket)
+    )
+
+    # 4. Internal M2 PCB standoffs up to Z = 2.85 mm (`H1`/`H2` at X = +/-11.30 mm, Y = +11.60 mm)
     for bx in (-PCB_BOSS_SPAN_X_MM * 0.5, PCB_BOSS_SPAN_X_MM * 0.5):
-        boss = Part.makeCylinder(2.10, 1.20, App.Vector(bx, PCB_BOSS_Y_MM, 2.00), App.Vector(0, 0, 1))
+        boss = Part.makeCylinder(2.10, PCB_SEAT_Z_MM - 1.00, App.Vector(bx, PCB_BOSS_Y_MM, 1.00), App.Vector(0, 0, 1))
         solid = solid.fuse(boss)
     for bx in (-PCB_BOSS_SPAN_X_MM * 0.5, PCB_BOSS_SPAN_X_MM * 0.5):
-        pilot = Part.makeCylinder(0.85, 2.50, App.Vector(bx, PCB_BOSS_Y_MM, 1.00), App.Vector(0, 0, 1))
+        pilot = Part.makeCylinder(0.85, 2.50, App.Vector(bx, PCB_BOSS_Y_MM, 0.50), App.Vector(0, 0, 1))
         solid = solid.cut(pilot)
 
-    # 5. 4x M2.5 bottom mounting holes matching `leg_flank_bracket` (`X = +/-7.00, Y = +8.00 & +17.00`)
+    # 5. 4x M2.5 bottom heat-set insert bosses (`X = +/-7.00, Y = +8.50 & +14.50`, OD = 4.90 mm, Z = 0.00..2.75 mm)
     for by in RAIL_BOLT_Y_LIST:
         for bx in (-RAIL_BOLT_X_MM, RAIL_BOLT_X_MM):
-            # Reinforcing internal boss pad up to Z = 2.60 mm (clears 0.8 mm PCB bottom at Z = 2.80 mm!)
-            pad = Part.makeCylinder(2.60, 0.60, App.Vector(bx, by, 2.00), App.Vector(0, 0, 1))
+            pad = Part.makeCylinder(2.45, 2.75 - 1.00, App.Vector(bx, by, 1.00), App.Vector(0, 0, 1))
             solid = solid.fuse(pad)
     for by in RAIL_BOLT_Y_LIST:
         for bx in (-RAIL_BOLT_X_MM, RAIL_BOLT_X_MM):
-            bh = Part.makeCylinder(1.05, 2.50, App.Vector(bx, by, -0.30), App.Vector(0, 0, 1))
+            bh = Part.makeCylinder(
+                M25_INSERT_BORE_R_MM,
+                M25_INSERT_DEPTH_Z_MM + 0.20,
+                App.Vector(bx, by, -0.20),
+                App.Vector(0, 0, 1),
+            )
             solid = solid.cut(bh)
 
     solid = solid.removeSplitter()
@@ -180,3 +205,5 @@ except Exception:
 finally:
     if App.GuiUp:
         os._exit(exit_code)
+    elif exit_code != 0:
+        raise SystemExit(exit_code)

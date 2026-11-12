@@ -10,15 +10,16 @@ fore/aft laptop flank axis along +/-X (`X = -83.0 .. +83.0 mm`; `-X` toward lapt
 Shows one complete laptop flank subassembly (`Right Flank` orientation):
   1. `mech/leg_flank_bracket.step` — SendCutSend `ALU-080` (`2.032 mm` / 12-gauge `5052-H32`)
      `166.0 x 57.0 x 12.5 mm` CNC-bent inverted U-channel stance-extension rail.
-  2. 2x `mech/leg_bay_housing.step` + `Day_06_Walking_Legs` PCBs bolted at the **rear-set physical
-     port positions** (`X_rail = +25.00 mm` Front Port & `X_rail = +65.60 mm` Rear Port, `40.60 mm`
-     exact Framework Laptop 13 port pitch).
-  3. Low-profile 4-wire servo ribbon harnesses routed forward along the top deck of `leg_flank_bracket`
-     from the rear-set bay plugs into the Front (`X_rail = -56.00 mm`) & Rear (`X_rail = +56.00 mm`)
-     servo pods.
+  2. 2x `mech/leg_bay_housing.step` + full component-populated `Day_06_Walking_Legs/build/board.step`
+     PCBs bolted at the **rear-set physical port positions** (`X_rail = +25.00 mm` Front Port &
+     `X_rail = +65.60 mm` Rear Port, `40.60 mm` exact Framework Laptop 13 port pitch).
+  3. Low-profile dual-3-wire `#28 AWG` silicone servo harnesses routed forward along the top deck of
+     `leg_flank_bracket` from the rear-set bay plugs into the Front (`X_rail = -56.00 mm`) & Rear
+     (`X_rail = +56.00 mm`) servo pods.
   4. 2x `mech/leg_servo_pod.step` + 4x horizontal metal-gear `MG90S` servos (splines facing outboard `-Y`)
      + 2x complete 2-DOF sagittal 5-bar/bellcrank aluminum walking legs (`leg_hip_bracket`, paired
-     `leg_femur_link`, `leg_knee_pushrod`, `leg_tibia_strut`, compliant `leg_foot_pad`).
+     `leg_femur_link` coupled to the `HipServo` horn via `2x M2` standoffs, `leg_knee_pushrod`,
+     `leg_tibia_strut`, compliant `leg_foot_pad`).
 
 Exports:
   - mech/walking_leg_assembly.FCStd
@@ -39,10 +40,10 @@ BRACKET_OUT_Y_MM      = -56.20    # Outboard outer face of `leg_hip_bracket`
 BRACKET_TOP_Z_MM      = 45.1002   # Top outer face of `leg_hip_bracket` (43.50 + 1.6002)
 
 TIBIA_MID_Y_MM        = -44.20    # Centerplane of 20.0 mm tibia channel (spans Y = -54.20 .. -34.20; 9.7 mm clear of rail!)
-KNEE_HORN_Y0_MM       = -28.60    # Dedicated inboard knee crank plane (Y = -28.60 .. -30.60)
+HIP_HORN_Y0_MM        = -28.60    # Mounted directly on real HipServo brass spline (Y = -28.60 .. -30.60)
+KNEE_HORN_Y0_MM       = -28.60    # Mounted directly on real KneeServo brass spline (Y = -28.60 .. -30.60)
 PUSHROD_Y0_MM         = -31.20    # Dedicated inboard pushrod plane (Y = -31.20 .. -33.232; 6.7 mm clear of rail!)
 INBOARD_FEMUR_Y0_MM   = -36.40    # Inboard femur inside tibia channel (Y = -36.40 .. -38.432)
-HIP_HORN_Y0_MM        = -38.55    # Hip drive hub inside open channel center (Y = -38.55 .. -40.55)
 OUTBOARD_FEMUR_Y0_MM  = -49.968   # Outboard femur inside tibia channel (Y = -49.968 .. -52.000)
 
 FEMUR_LEN_MM          = 38.0
@@ -57,6 +58,9 @@ FRONT_BAY_X_MM      = +25.00    # Framework 13 Front Port (+36.0 mm in laptop co
 REAR_BAY_X_MM       = +65.60    # Framework 13 Rear Port (+76.6 mm in laptop coords; 40.60 mm port pitch)
 FRONT_POD_X_MM      = -56.00    # Front Leg (-45.0 mm in laptop coords — 81.0 mm forward of Front Port!)
 REAR_POD_X_MM       = +56.00    # Rear Leg (+67.0 mm in laptop coords — 112.0 mm balanced wheelbase!)
+
+# Exact placement of `Day_06_Walking_Legs/build/board.step` inside `leg_bay_housing` local frame
+PCB_IN_BAY_PLACEMENT = App.Placement(App.Vector(-148.50, 121.10, 2.852), App.Rotation())
 
 RAIL_ALU_COLOR      = (0.64, 0.70, 0.77)
 PA12_COLOR          = (0.22, 0.23, 0.26)
@@ -92,7 +96,7 @@ def sagittal_link_placement(p1x: float, p1z: float, p2x: float, p2z: float, y_st
     return App.Placement(App.Vector(p1x, y_start, p1z), rot)
 
 
-def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float, bore_r: float = 1.55, hub_bore_r: float | None = None) -> Part.Shape:
+def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, thick: float, r1: float, r2: float, bore_r: float = 1.55, hub_bore_r: float | None = None, cut_end_bore: bool = True) -> Part.Shape:
     c1 = Part.makeCylinder(r1, thick, App.Vector(x1, y_front, z1), App.Vector(0, -1, 0))
     c2 = Part.makeCylinder(r2, thick, App.Vector(x2, y_front, z2), App.Vector(0, -1, 0))
     dx, dz = x2 - x1, z2 - z1
@@ -112,8 +116,34 @@ def make_horn_solid(x1: float, z1: float, x2: float, z2: float, y_front: float, 
         solid = c1.fuse(c2).fuse(web)
     rb1 = bore_r if hub_bore_r is None else hub_bore_r
     b1 = Part.makeCylinder(rb1, thick + 1.0, App.Vector(x1, y_front + 0.5, z1), App.Vector(0, -1, 0))
-    b2 = Part.makeCylinder(bore_r, thick + 1.0, App.Vector(x2, y_front + 0.5, z2), App.Vector(0, -1, 0))
-    return solid.cut(b1).cut(b2).removeSplitter()
+    solid = solid.cut(b1)
+    if cut_end_bore:
+        b2 = Part.makeCylinder(bore_r, thick + 1.0, App.Vector(x2, y_front + 0.5, z2), App.Vector(0, -1, 0))
+        solid = solid.cut(b2)
+    return solid.removeSplitter()
+
+
+def make_hip_horn_and_standoffs(kin: dict[str, float]) -> tuple[Part.Shape, Part.Shape]:
+    """Builds the spline-mounted HipHorn (`Y = -28.60..-30.60`) and `2x M2` drive standoffs to `InboardFemur` (`Y = -30.62..-36.38`)."""
+    ux = (kin["kx"] - kin["hx"]) / FEMUR_LEN_MM
+    uz = (kin["kz"] - kin["hz"]) / FEMUR_LEN_MM
+    hip_end_x = kin["hx"] + 7.5 * ux
+    hip_end_z = kin["hz"] + 7.5 * uz
+    h1 = make_horn_solid(
+        kin["hx"], kin["hz"], hip_end_x, hip_end_z,
+        HIP_HORN_Y0_MM, 2.0, 5.2, 5.2,
+        bore_r=1.10, hub_bore_r=2.52, cut_end_bore=False,
+    )
+    standoffs = []
+    for lat in (-3.0, +3.0):
+        mx = hip_end_x - lat * uz
+        mz = hip_end_z + lat * ux
+        mh = Part.makeCylinder(1.10, 3.0, App.Vector(mx, HIP_HORN_Y0_MM + 0.5, mz), App.Vector(0, -1, 0))
+        h1 = h1.cut(mh)
+        so = Part.makeCylinder(1.75, 5.76, App.Vector(mx, -30.62, mz), App.Vector(0, -1, 0))
+        bolt = Part.makeCylinder(0.95, 11.4, App.Vector(mx, -28.55, mz), App.Vector(0, -1, 0))
+        standoffs.append(so.fuse(bolt))
+    return h1.removeSplitter(), standoffs[0].fuse(standoffs[1]).removeSplitter()
 
 
 def solve_leg_kinematics(ankle_x: float, ankle_z: float, s_dir: float = 1.0) -> dict[str, float]:
@@ -176,7 +206,7 @@ def build():
     shp_pushrod = Part.read(str(MECH_DIR / "leg_knee_pushrod.step"))
     shp_tibia   = Part.read(str(MECH_DIR / "leg_tibia_strut.step"))
     shp_foot    = Part.read(str(MECH_DIR / "leg_foot_pad.step"))
-    pcb_step    = REPO_ROOT / "Day_06_Walking_Legs" / "build" / "board_only.step"
+    pcb_step    = REPO_ROOT / "Day_06_Walking_Legs" / "build" / "board.step"
     shp_pcb     = Part.read(str(pcb_step)) if pcb_step.exists() else None
 
     def add_obj(name: str, shp: Part.Shape, pl: App.Placement, col: tuple[float, float, float]):
@@ -193,19 +223,17 @@ def build():
         bay_pl = App.Placement(App.Vector(bx, 0.0, 0.0), App.Rotation())
         add_obj(f"{btag}_BayHousing", shp_bay, bay_pl, PA12_COLOR)
         if shp_pcb is not None:
-            bb = shp_pcb.BoundBox
-            pcb_pl = App.Placement(
-                App.Vector(bx - 0.5 * (bb.XMin + bb.XMax), 17.8 - 0.5 * (bb.YMin + bb.YMax), 3.22 - bb.ZMin),
-                App.Rotation(),
-            )
-            add_obj(f"{btag}_Day06PCB", shp_pcb, pcb_pl, PCB_COLOR)
+            add_obj(f"{btag}_Day06PCB", shp_pcb, bay_pl.multiply(PCB_IN_BAY_PLACEMENT), PCB_COLOR)
 
-    # 3. Low-profile sleeved 4-wire servo harnesses running forward along rail deck (`Z = 0.05 .. 1.65 mm`)
-    h_front_run = Part.makeBox(81.0, 3.6, 1.6, App.Vector(FRONT_POD_X_MM, -1.0, 0.05))
-    h_front_in  = Part.makeBox(4.8, 4.2, 1.6, App.Vector(FRONT_BAY_X_MM - 2.4, -1.0, 0.05))
-    h_rear_run  = Part.makeBox(12.0, 3.6, 1.6, App.Vector(REAR_POD_X_MM, -1.0, 0.05))
-    h_rear_in   = Part.makeBox(4.8, 4.2, 1.6, App.Vector(REAR_BAY_X_MM - 2.4, -1.0, 0.05))
-    harness_shp = h_front_run.fuse([h_front_in, h_rear_run, h_rear_in]).removeSplitter()
+    # 3. Low-profile `#28 AWG` silicone servo harnesses rising cleanly into `J2`/`J3` front aperture (`Z = 3.80..4.60`)
+    h_parts = [
+        Part.makeBox(81.0, 1.20, 0.90, App.Vector(FRONT_POD_X_MM, -1.10, 0.05)),
+        Part.makeBox(12.0, 1.20, 0.90, App.Vector(REAR_POD_X_MM, -1.10, 0.05)),
+    ]
+    for cx in (FRONT_BAY_X_MM, REAR_BAY_X_MM):
+        h_parts.append(Part.makeBox(10.0, 1.20, 4.55, App.Vector(cx - 5.0, -1.10, 0.05)))
+        h_parts.append(Part.makeBox(10.0, 1.80, 0.80, App.Vector(cx - 5.0, +0.10, 3.80)))
+    harness_shp = h_parts[0].fuse(h_parts[1:]).removeSplitter()
     add_obj("ServoHarnesses", harness_shp, App.Placement(), HARNESS_COLOR)
 
     # 4. Front (`X = -56.0`) & Rear (`X = +56.0`) Modular Servo Pods + 2-DOF Sagittal Legs
@@ -218,7 +246,7 @@ def build():
         s_list, sp_list = [], []
         for sx in (-SERVO_X_OFFSET_MM, SERVO_X_OFFSET_MM):
             rear_case  = Part.makeBox(12.2, 19.0, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM + 0.10, 5.20))
-            ears       = Part.makeBox(12.2, 2.2, 31.2, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 2.25, 1.00))
+            ears       = Part.makeBox(12.2, 2.2, 31.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 2.25, 0.70))
             front_case = Part.makeBox(12.2, 2.2, 22.8, App.Vector(sx - 6.1, TURRET_FRONT_Y_MM - 4.45, 5.20))
             boss       = Part.makeCylinder(5.5, 0.6, App.Vector(sx, TURRET_FRONT_Y_MM - 4.45, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
             srv_bore   = Part.makeCylinder(1.55, 10.0, App.Vector(sx, TURRET_FRONT_Y_MM - 2.0, SERVO_AXIS_Z_MM), App.Vector(0, -1, 0))
@@ -229,9 +257,7 @@ def build():
         add_obj(f"{ltag}_Servos", s_list[0].fuse(s_list[1]), pod_pl, SERVO_BODY_COLOR)
         add_obj(f"{ltag}_Splines", sp_list[0].fuse(sp_list[1]), pod_pl, SERVO_CAP_COLOR)
 
-        hip_end_x = kin["hx"] + 7.5 * (kin["kx"] - kin["hx"]) / FEMUR_LEN_MM
-        hip_end_z = kin["hz"] + 7.5 * (kin["kz"] - kin["hz"]) / FEMUR_LEN_MM
-        h1 = make_horn_solid(kin["hx"], kin["hz"], hip_end_x, hip_end_z, HIP_HORN_Y0_MM, 2.0, 5.2, 4.2, hub_bore_r=1.55)
+        h1, hip_standoffs = make_hip_horn_and_standoffs(kin)
         h2 = make_horn_solid(kin["sx"], kin["sz"], kin["crx"], kin["crz"], KNEE_HORN_Y0_MM, 2.0, 5.2, 3.8, hub_bore_r=2.52)
         add_obj(f"{ltag}_Horns", h1.fuse(h2), pod_pl, HORN_COLOR)
 
@@ -256,13 +282,14 @@ def build():
         foot_pl = pod_pl.multiply(App.Placement(App.Vector(kin["ax"], TIBIA_MID_Y_MM, kin["az"] - FOOT_BOLT_Z_MM), App.Rotation()))
         add_obj(f"{ltag}_FootPad", shp_foot, foot_pl, TPU_COLOR)
 
-        p_hip = Part.makeCylinder(1.48, 28.9, App.Vector(kin["hx"], -27.5, kin["hz"]), App.Vector(0, -1, 0))
-        p_srv = Part.makeCylinder(1.48, 3.25, App.Vector(kin["sx"], -27.5, kin["sz"]), App.Vector(0, -1, 0))
-        p_crk = Part.makeCylinder(1.48, 4.90, App.Vector(kin["crx"], -28.5, kin["crz"]), App.Vector(0, -1, 0))
-        p_kne = Part.makeCylinder(1.48, 20.4, App.Vector(kin["kx"], -34.0, kin["kz"]), App.Vector(0, -1, 0))
-        p_bel = Part.makeCylinder(1.48, 23.4, App.Vector(kin["bx"], -31.0, kin["bz"]), App.Vector(0, -1, 0))
-        p_ank = Part.makeCylinder(1.48, 20.4, App.Vector(kin["ax"], -34.0, kin["az"]), App.Vector(0, -1, 0))
-        add_obj(f"{ltag}_Pins", p_hip.fuse([p_srv, p_crk, p_kne, p_bel, p_ank]), pod_pl, STEEL_PIN_COLOR)
+        p_spl_h = Part.makeCylinder(1.25, 3.25, App.Vector(kin["hx"], -27.5, kin["hz"]), App.Vector(0, -1, 0))
+        p_spl_k = Part.makeCylinder(1.25, 3.25, App.Vector(kin["sx"], -27.5, kin["sz"]), App.Vector(0, -1, 0))
+        p_hip   = Part.makeCylinder(1.48, 22.8, App.Vector(kin["hx"], -35.0, kin["hz"]), App.Vector(0, -1, 0))
+        p_crk   = Part.makeCylinder(1.48, 4.90, App.Vector(kin["crx"], -28.5, kin["crz"]), App.Vector(0, -1, 0))
+        p_kne   = Part.makeCylinder(1.48, 20.4, App.Vector(kin["kx"], -34.0, kin["kz"]), App.Vector(0, -1, 0))
+        p_bel   = Part.makeCylinder(1.48, 23.4, App.Vector(kin["bx"], -31.0, kin["bz"]), App.Vector(0, -1, 0))
+        p_ank   = Part.makeCylinder(1.48, 20.4, App.Vector(kin["ax"], -34.0, kin["az"]), App.Vector(0, -1, 0))
+        add_obj(f"{ltag}_Pins", p_hip.fuse([p_spl_h, p_spl_k, p_crk, p_kne, p_bel, p_ank, hip_standoffs]), pod_pl, STEEL_PIN_COLOR)
 
     # M2.5 rail fasteners under active bays (+25, +65.6) & active pods (-56, +56)
     bolts = []

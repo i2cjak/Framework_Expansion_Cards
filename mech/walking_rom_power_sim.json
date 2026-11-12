@@ -2,6 +2,7 @@
   "rom_grid": {
     "reachable_poses": 85,
     "collision_poses": 0,
+    "pcb_vs_bay_housing_mm3": 0.0,
     "full_laptop_assembly_collisions": 0,
     "transmission_angle_deg_range": [
       31.1,
@@ -20,10 +21,11 @@
       "Rail_vs_Pushrod_mm": 6.7,
       "FemurIn_vs_Pushrod_mm": 3.168,
       "FemurIn_vs_Tibia_mm": 0.6,
-      "ServoPod_vs_KneeHorn_mm": 2.216,
-      "ServoPod_vs_Pushrod_mm": 1.516,
+      "HipStandoffs_vs_Pushrod_mm": 10.796,
+      "ServoPod_vs_KneeHorn_mm": 1.816,
+      "ServoPod_vs_Pushrod_mm": 1.116,
       "HipBracket_vs_Pushrod_mm": 5.316,
-      "HipHorn_vs_KneeHorn_mm": 8.121,
+      "HipHorn_vs_KneeHorn_mm": 0.658,
       "Tibia_vs_FootPad_mm": 0.547
     },
     "inter_leg_opposing_swing_gap_mm": 43.28
